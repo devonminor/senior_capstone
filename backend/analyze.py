@@ -1,5 +1,13 @@
 import sklearn
 from word2number import w2n
+import re
+import nltk
+
+# nltk.download('punkt')
+# nltk.download('stopwords')
+
+# from nltk.corpus import stopwords
+# from nltk.tokenize import word_tokenize
 
 # Steps for clustering student responses
 # 
@@ -43,10 +51,58 @@ def convert_text_numbers_to_numeric_numbers(sentence):
 
             # sentence = sentence.replace(word, num2words(word))
 
+def standardize_number(response):
+    elems = re.split(r'(\d+)', response) 
+    split_array = []
+    
+    count = 0
+    while count < len(elems):
+        elems[count] = elems[count].strip()
+        if elems[count].isdigit():
+            if (len(elems) - 2) <= count:
+                rounded_num = round(float(elems[count]), 3)
+                split_array.append(str(rounded_num))
+                count += 1
+                
+            elif elems[count+1] == '.' and elems[count+2].isdigit():
+                rounded_num = round(float("".join([elems[count], elems[count+1], elems[count+2]])), 3)
+                split_array.append(str(rounded_num))
+                count += 3
+            elif elems[count+1] == '/' and elems[count+2].isdigit():
+                rounded_num = round((float(elems[count])) / (float(elems[count+2])), 3)
+                split_array.append(str(rounded_num))
+                count += 3
+            else:
+                rounded_num = round(float(elems[count]), 3)
+                split_array.append(str(rounded_num))
+                count += 1
+        elif elems[count] == '.':
+            if (len(elems) - 1) <= count:
+                count += 1;
+            elif elems[count+1].isdigit():
+                rounded_num = round(float("".join([elems[count], elems[count+1]])), 3)
+                split_array.append(str(rounded_num))
+                count += 2;
+        else:
+            get_string = re.sub('[^A-Za-z0-9]+', ' ', elems[count])
+            if not get_string.isspace():
+                split_array.append(get_string)
+            count += 1
+
+    return (' '.join(split_array)).strip()
+
 # main
 if __name__ == "__main__":
-    convert_text_numbers_to_numeric_numbers("I have five dogs, three cats, and seventy seven birds")
-    # responses = load_data("responses.txt")
+    # convert_text_numbers_to_numeric_numbers("I have five dogs, three cats, and seventy seven birds")
+    responses = load_data("backend/test_responses.txt")
     # print(responses)
+    print(standardize_number(" .74567asdkjf"))
+    print(standardize_number("241.13457Volts"))
+    print(standardize_number("241/77 Ohms"))
+    print(standardize_number("11/8 Ohms"))
+    print(standardize_number("241 Ohms"))
+    print(standardize_number("2/5 Ohms"))
+
 
     
+    # print(re.split(r'(\d+\.\d+)', "    1238.845 Volts") )
