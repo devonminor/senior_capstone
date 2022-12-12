@@ -1,11 +1,10 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
+import Form from 'react-bootstrap/Form'
+import InputGroup from 'react-bootstrap/InputGroup'
 
 export default function QuestionInput() {
   return (
     <>
-      <InputGroup className="mb-3">
+      <InputGroup className="mb-4">
         <InputGroup.Text id="question-input">Q:</InputGroup.Text>
         <Form.Control
           placeholder="Type question here"
@@ -13,8 +12,6 @@ export default function QuestionInput() {
           aria-describedby="question-input"
         />
       </InputGroup>
-
-      <br></br>
 
       <InputGroup className="mb-3">
         <InputGroup.Text id="a-input">A:</InputGroup.Text>

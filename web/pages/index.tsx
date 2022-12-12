@@ -1,4 +1,4 @@
-import QuestionInput from '/pages/QuestionInput';
+import QuestionInput from '/pages/QuestionInput'
 
 export default function Home() {
   return (
