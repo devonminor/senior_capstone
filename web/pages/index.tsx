@@ -1,55 +1,69 @@
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
+import QuestionInput from '/pages/QuestionInput'
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import Button from 'react-bootstrap/Button';
+import CloseButton from 'react-bootstrap/CloseButton';
+
 
 export default function Home() {
   return (
     <>
-      <InputGroup className="mb-3">
-        <InputGroup.Text id="question-input">Q:</InputGroup.Text>
-        <Form.Control
-          placeholder="Type question here"
-          aria-label="Question"
-          aria-describedby="question-input"
-        />
-      </InputGroup>
+      <div className="courseName">ES 2</div>
+      <Tabs
+      defaultActiveKey="profile"
+      id="justify-tab-example"
+      className="mb-3"
+      fill
+      >
+        <Tab eventKey="lectures" title="Lectures">
+        </Tab>
+        <Tab eventKey="roster" title="Roster">
+        </Tab>
+        <Tab eventKey="statistics" title="Statistics">
+        </Tab>
+        <Tab eventKey="class-settings" title="Class Settings">
+        </Tab>
+      </Tabs>
 
-      <br></br>
+      <div className="lectureDate">Monday, December 13, 2022</div>
 
-      <InputGroup className="mb-3">
-        <InputGroup.Text id="a-input">A:</InputGroup.Text>
-        <Form.Control
-          placeholder="Type answer here"
-          aria-label="Option A"
-          aria-describedby="a-input"
-        />
-      </InputGroup>
+      <QuestionInput></QuestionInput>
 
-      <InputGroup className="mb-3">
-        <InputGroup.Text id="b-input">B:</InputGroup.Text>
-        <Form.Control
-          placeholder="Type answer here"
-          aria-label="Option B"
-          aria-describedby="b-input"
-        />
-      </InputGroup>
+      <h3 className="live">Live</h3>
 
-      <InputGroup className="mb-3">
-        <InputGroup.Text id="c-input">C:</InputGroup.Text>
-        <Form.Control
-          placeholder="Type answer here"
-          aria-label="Option C"
-          aria-describedby="c-input"
-        />
-      </InputGroup>
+      <div className="questionBox">
+        <div className="row">
+          <div className="col1">What is your name?</div>
+          <div className="col2">3/18 answered</div>
+        </div>  
+      </div>
 
-      <InputGroup className="mb-3">
-        <InputGroup.Text id="d-input">D:</InputGroup.Text>
-        <Form.Control
-          placeholder="Type answer here"
-          aria-label="Option D"
-          aria-describedby="d-input"
-        />
-      </InputGroup>
+      <h3 className="notLive">Waiting to go live</h3>
+
+      <div className="questionBox">
+        <div className="row">
+          <div className="col1">What is your major?</div>
+          <div className="col2"><CloseButton /></div>
+        </div>  
+      </div>
+      <div className="questionBox">
+        <div className="row">
+          <div className="col1">What year/month are you graduating?</div>
+          <div className="col2"><CloseButton /></div>
+        </div>  
+      </div>
+      <div className="questionBox">
+        <div className="row">
+          <div className="col1">How has your experience in the School of Engineering been?</div>
+          <div className="col2"><CloseButton /></div>
+        </div>  
+      </div>
+      <div className="questionBox">
+        <div className="row">
+          <div className="col1">Name your favorite 3 courses at Tufts.</div>
+          <div className="col2"><CloseButton /></div>
+        </div>  
+      </div>
     </>
   );
 }
