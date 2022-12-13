@@ -44,3 +44,26 @@ a {
   float: right;
   overflow: hidden;
 }
+
+.inputBlock {
+  background-color: #afadad;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 5px;
+}
+
+
+.textArea {
+  display: table-cell;
+  width: 80%;
+  float: left;
+  overflow: hidden;
+}
+
+.buttonArea {
+  display: table-cell;
+  width: 80px;
+  float: right;
+  overflow: hidden;
+  padding-left: 40px;
+}
