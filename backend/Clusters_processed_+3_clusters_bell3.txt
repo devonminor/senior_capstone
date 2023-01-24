@@ -1,0 +1,23 @@
+Results Using Cosine Function 
+Cluster: 0 --> 3k ohms  | 0.8k ohms  | 6k ohms  | 6k ohms  | 
+Cluster: 1 --> .2k  | 
+Cluster: 2 --> 300 ohms  | 300 ohms  | 
+Cluster: 3 --> 1.2kω  | 1k  | .4k  | 
+Cluster: 4 --> 600 ohm  | 
+Cluster: 5 --> 400 ohms  | 480 ohms  | 200 ohms  | 500 ohms  | 
+Cluster: 6 --> 0.2k ohms  | 
+Cluster: 7 --> 100 ohms  | 100 ohms  | 
+Cluster: 8 --> 
+Cluster: 9 --> 
+
+Results Using Eucl Function 
+Cluster: 0 --> 3k ohms  | 0.2k ohms  | 0.8k ohms  | 
+Cluster: 1 --> 6k ohms  | 6k ohms  | 
+Cluster: 2 --> 400 ohms  | 480 ohms  | 200 ohms  | 500 ohms  | 
+Cluster: 3 --> 1.2kω  | 1k  | .4k  | 
+Cluster: 4 --> 100 ohms  | 100 ohms  | 
+Cluster: 5 --> .2k  | 
+Cluster: 6 --> 600 ohm  | 
+Cluster: 7 --> 300 ohms  | 300 ohms  | 
+Cluster: 8 --> 
+Cluster: 9 --> 

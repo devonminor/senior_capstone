@@ -15,10 +15,6 @@ from kneed import KneeLocator
 
 from word2number import w2n
 import re
-<<<<<<< HEAD
-from quantulum3 import parser
-import nltk
-=======
 import nltk
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -32,22 +28,12 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial import distance
 from sklearn.preprocessing import StandardScaler
 from kneed import KneeLocator
->>>>>>> production
 
 # nltk.download('punkt')
 # nltk.download('stopwords')
 
-<<<<<<< HEAD
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from nltk.stem import SnowballStemmer
-
-from sklearn.cluster import KMeans
-
-=======
 # from nltk.corpus import stopwords
 # from nltk.tokenize import word_tokenize
->>>>>>> production
 
 # Steps for clustering student responses
 # 
@@ -100,8 +86,6 @@ def convert_text_numbers_to_numeric_numbers(sentence):
             to_num_arr.append(word)
             continue
     return (" ".join(str(x) for x in to_num_arr))
-<<<<<<< HEAD
-=======
 
 def standardize_number(text):
     elems = re.split(r'(\d+)', text) 
@@ -144,7 +128,6 @@ def standardize_number(text):
 
     return (" ".join(split_array)).strip()
 
->>>>>>> production
 
     
 
@@ -210,151 +193,6 @@ def standardize_number(text):
 # main
 if __name__ == "__main__":
     # convert_text_numbers_to_numeric_numbers("I have five dogs, three cats, and seventy seven birds")
-<<<<<<< HEAD
-    responses = load_data("backend/sample1.txt")
-
-    lowercase_responses = process_data(responses)
-    fp = input_file = open("Clusters.txt", "w")
-
-
-    final_arr = []
-    for elem in lowercase_responses:
-        x = convert_text_numbers_to_numeric_numbers(elem)
-        y = standardize_number(x)
-        final_arr.append(y)
-
-    # cv = CountVectorizer(token_pattern=r"[^\s]+")
-    # word_count = cv.fit_transform(final_arr)
-    # print(word_count.shape)
-
-    # tfidf_transformer=TfidfTransformer(smooth_idf=True,use_idf=True) 
-    # tfidf_transformer.fit(word_count)
-
-    # # print idf values 
-    # df_idf = pd.DataFrame(tfidf_transformer.idf_, index=cv.get_feature_names_out(),columns=["idf_weights"]) 
-    # # sort ascending 
-    # df_idf.sort_values(by=['idf_weights'])
-    # print(df_idf)
-
-
-
-    # vectorizes data so machine can sort better
-    vectorizer = TfidfVectorizer(stop_words='english', token_pattern=r"[^\s]+")
-    test_vector = vectorizer.fit_transform(final_arr)
-
-
-    table = test_vector.todense()
-    df = pd.DataFrame(table, columns=vectorizer.get_feature_names_out())
-
-    # Varying the number of clusters and to see what the optimum k is
-    kmeans_kwargs = {
-    "init": "random",
-    "n_init": 10,
-    "max_iter": 300,
-    }
-
-    # obtain optimum k
-    sse = []
-    for k in range(1, 11):
-        kmeans = KMeans(n_clusters = k, **kmeans_kwargs)
-        kmeans.fit(df)
-        sse.append(kmeans.inertia_)
-
-    kl = KneeLocator(range(1, 11), sse, curve="convex", direction="decreasing")
-    print("True K: " + str(kl.elbow + 1))
-    true_k = kl.elbow + 1
-
-
-
-    # testing euclidian distance function
-    values = distance.cdist(df, df, 'euclidean')
-    df_eucl = pd.DataFrame(values)
-
-
-    kmeans = KMeans(init="random", n_clusters=true_k, n_init=15, max_iter=300)
-    kmeans.fit(df_eucl)
-    predict = kmeans.fit_predict(df_eucl)
-
-    fp.write("\n")
-    fp.write("Results Using Eucl Function \n")
-    for i in range(0, 10):
-        fp.write("Cluster: " + str(i) + " --> ")
-        for x in range(len(final_arr)):
-            if predict[x] == i: 
-                fp.write(final_arr[x])
-                fp.write(" | ")
-        fp.write("\n")
-
-    
-
-    # testing euclidian distance function
-    values = cosine_similarity(df, df)
-    df_cos = pd.DataFrame(values)
-    kmeans = KMeans(init="random", n_clusters=true_k, n_init=15, max_iter=300)
-    kmeans.fit(df_cos)
-    predict = kmeans.fit_predict(df_cos)
-
-    fp.write("Results Using Cosine Function \n")
-    for i in range(0, 10):
-        fp.write("Cluster: " + str(i) + " --> ")
-        for x in range(len(final_arr)):
-            if predict[x] == i: 
-                fp.write(final_arr[x])
-                fp.write(" | ")
-        fp.write("\n")
-    fp.close()
-
-    # Sum_of_squared_distances = []
-    # K = range(2,10)
-    # for k in K:
-    #     km = KMeans(n_clusters=k, max_iter=200, n_init=10)
-    #     km = km.fit(test_vector)
-    #     Sum_of_squared_distances.append(km.inertia_)
-    # plt.plot(K, Sum_of_squared_distances, 'bx-')
-    # plt.xlabel('k')
-    # plt.ylabel('Sum_of_squared_distances')
-    # plt.title('Elbow Method For Optimal k')
-    # plt.show()
-
-
-
-
-
-    # true_k = 8
-    # model = KMeans(n_clusters=true_k, init='k-means++', max_iter=200, n_init=15)
-    # model.fit(test_vector)
-    # labels=model.labels_
-    # results=pd.DataFrame(list(zip(final_arr,labels)),columns=['title','cluster'])
-    # print(results.sort_values(by=['cluster']))
-
-
-
-
-
-
-
-    # print(test_vector)
-
-    # model = KMeans(n_clusters = 5)
-    # model.fit(test_vector)
-
-    # print("Top terms per cluster:")
-    # order_centroids = model.cluster_centers_.argsort()[:, ::-1]
-    # terms = vectorizer.get_feature_names()
-    # for i in range(2):
-    #     print("Cluster %d:" % i),
-    #     for ind in order_centroids[i, :10]:
-    #         print(' %s' % terms[ind]),
-    #     print
-
-
-
-    # print(test_vector)
-    # cluster_map = pd.DataFrame()
-    # cluster_map['cluster'] = km.labels_
-    
-    # print(cluster_map[cluster_map.cluster == 3])
-=======
     
     #print(responses)
 
@@ -444,7 +282,7 @@ if __name__ == "__main__":
     # Calculate true k from the results
     kl = KneeLocator(range(1, 10), sse, curve="convex", direction="decreasing")
     print("True K: " + str(kl.elbow))
-    true_k = kl.elbow
+    true_k = kl.elbow + 3
 
     # ACTUAL K means - COSINE
     kmeans = KMeans(init="random", n_clusters=true_k, n_init=10, max_iter=300)
@@ -454,7 +292,7 @@ if __name__ == "__main__":
     #print(predict)
 
     # Write COSINE results to file
-    fp = input_file = open("Clusters_processed_+0_clusters_bell3.txt", "w")
+    fp = input_file = open("Clusters_processed_+3_clusters_bell3.txt", "w")
     fp.write("Results Using Cosine Function \n")
     for i in range(0, 10):
         fp.write("Cluster: " + str(i) + " --> ")
@@ -487,5 +325,4 @@ if __name__ == "__main__":
     
 
 
->>>>>>> production
 
