@@ -5,3 +5,4 @@ kneed
 quantulum3
 nltk
 pandas
+beanie
