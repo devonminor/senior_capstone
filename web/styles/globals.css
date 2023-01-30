@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html,
 body {
   padding: 0;
@@ -30,18 +34,17 @@ a {
   display: table;
   clear: both;
   overflow: hidden;
+  width: 100%;
+  margin-bottom: 1rem;
 }
 
 .column1 {
-  display: table-cell;
-  width: 150px;
+  width: 15%;
   float: left;
-  margin: 5px 0px 0px 5px;
 }
 
 .column2 {
-  display: table-cell;
-  width: 500px;
+  width: 85%;
   float: right;
   overflow: hidden;
 }
@@ -132,3 +135,4 @@ a {
 .attatchments {
   padding: -10px -10px -10px -10px
 }
+
