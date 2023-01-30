@@ -1,7 +1,7 @@
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import NavBar from '/pages/NavBar'
+import NavBar from '/components/NavBar'
 
 
 export default function Layout({ children }) {
