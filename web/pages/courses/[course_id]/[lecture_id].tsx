@@ -1,4 +1,7 @@
 import { useRouter } from "next/router";
+import TeacherPage from 'pages/TeacherPage';
+
+
 
 const Lecture = () => {
     const router = useRouter();
@@ -10,6 +13,11 @@ const Lecture = () => {
         <div>
             <h4>Course #{course_id}</h4>
             <h5>Lecture #{lecture_id}</h5>
+
+            <TeacherPage
+                course_id = {course_id}
+                lecture_id = {lecture_id}
+            ></TeacherPage>
         </div>
     )
 }
