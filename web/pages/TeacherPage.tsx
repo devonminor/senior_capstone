@@ -11,8 +11,10 @@ type TeacherPageProps = {
 // TODO: handle renderign before course_id prop is defined
 export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
   var course_name = parse_course_id(course_id)
+  var date = parse_lecture_id(lecture_id)
 
   console.log("course name: " + course_name)
+  console.log("date: " + date)
   
   return (
     <>
@@ -35,7 +37,7 @@ export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
         </Tab>
       </Tabs>
 
-      <div className="lectureDate">Monday, December 13, 2022</div>
+      <div className="lectureDate">{date}</div>
 
       <div className="d-grid gap-2" style={{padding: 10}}>
         <Button variant="primary" size="sm">Add a Question</Button>
@@ -84,7 +86,9 @@ export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
 
 // course id must be a string in the form of [characters][digits]
 // e.g. es11, math166
-function parse_course_id(course_id) {
+function parse_course_id(course_id: string) {
+  // TODO: get request for course name parameter of associated course
+  
   if (course_id) {
     var course_id_len = course_id.length
     var parsedString = ""
@@ -115,5 +119,17 @@ function parse_course_id(course_id) {
     }
   
     return parsedString
+  }
+}
+
+function parse_lecture_id(lecture_id: string) {
+  // TODO: get request for date parameter of associated lecture
+  // then parse date accordingly and return
+  
+  if (lecture_id) {
+    const date = new Date().toLocaleDateString();
+    console.log(date)
+
+    return date
   }
 }
