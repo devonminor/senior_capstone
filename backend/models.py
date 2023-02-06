@@ -4,24 +4,6 @@ from pydantic import BaseModel
 from beanie import Document, Link
 from datetime import datetime
 
-class Lecture(Document):
-    numId: int
-    name: str
-    description: Optional[str] = None
-    lastUpdated: datetime = datetime.now()
-    createdAt: datetime = datetime.now()
-    active: bool = False
-    courseId: int
-
-class Course(Document):
-    numId: int
-    name: str
-    description: Optional[str] = None
-    createdAt: datetime = datetime.now()
-    active: bool = False
-    hasActiveLecture: bool = False
-    lectures: Optional[List[Link[Lecture]]] = None
-
 class QuestionType(str, Enum):
     multiple_choice = "multiple_choice"
     short_answer = "short_answer"
@@ -56,6 +38,27 @@ class Question(Document):
     multipleChoiceQuestion: Optional[MultipleChoiceQuestion] = None
     shortAnswerQuestion: Optional[ShortAnswerQuestion] = None
     drawingQuestion: Optional[DrawingQuestion] = None
+    lectureId: int
+
+class Lecture(Document):
+    numId: int
+    name: str
+    description: Optional[str] = None
+    lastUpdated: datetime = datetime.now()
+    createdAt: datetime = datetime.now()
+    active: bool = False
+    courseId: int
+    questions: Optional[List[Link[Question]]] = None
+
+class Course(Document):
+    numId: int
+    name: str
+    description: Optional[str] = None
+    createdAt: datetime = datetime.now()
+    active: bool = False
+    hasActiveLecture: bool = False
+    lectures: Optional[List[Link[Lecture]]] = None
+
 
 Course.update_forward_refs()
 Lecture.update_forward_refs()
