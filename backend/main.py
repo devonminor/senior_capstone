@@ -45,6 +45,22 @@ async def get_course(course_id: int):
 
     return course
 
+# update a course
+@app.put("/courses/{course_id}")
+async def update_course(course_id: int, name: str, description: str, active: bool = False, hasActiveLecture: bool = False):
+    course = await get_course_with_id(course_id)
+
+    if not course:
+        return {'message': 'Course not found'}
+
+    course.name = escape(name)
+    course.description = escape(description)
+    course.active = active
+    course.hasActiveLecture = hasActiveLecture
+
+    await course.save()
+    return course
+
 # delete a course
 @app.delete("/courses/{course_id}")
 async def delete_course(course_id: int):
@@ -56,21 +72,6 @@ async def delete_course(course_id: int):
     await course.delete(link_rule=DeleteRules.DELETE_LINKS)
     return {'message': 'Course deleted'}
 
-# update a course
-@app.put("/courses/{course_id}")
-async def update_course(course_id: int, name: str, description: str, active: bool = False, hasActiveLecture: bool = False):
-    course = await get_course_with_id(course_id)
-
-    if not course:
-        return {'message': 'Course not found'}
-
-    course.name = name
-    course.description = description
-    course.active = active
-    course.hasActiveLecture = hasActiveLecture
-
-    await course.save()
-    return course
 
 ##############################################################################
 ##############################################################################
@@ -126,6 +127,27 @@ async def get_lecture(course_id: int, lecture_id: int):
     lecture = await get_lecture_with_id(lecture_id)
     if not lecture:
         return {'message': 'Lecture not found'}
+
+    return lecture
+
+# update a lecture from a course
+@app.put("/courses/{course_id}/lectures/{lecture_id}")
+async def update_lecture(course_id: int, lecture_id: int, name: str, description: str, active: bool = False):
+    # get course
+    course = await get_course_with_id(course_id)
+    if not course:
+        return {'message': 'Course not found'}
+
+    # get lecture
+    lecture = await get_lecture_with_id(lecture_id)
+    if not lecture:
+        return {'message': 'Lecture not found'}
+
+    # update lecture
+    lecture.name = escape(name)
+    lecture.description = escape(description)
+    lecture.active = active
+    await lecture.save()
 
     return lecture
 
