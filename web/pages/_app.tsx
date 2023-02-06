@@ -4,7 +4,6 @@ import '../styles/globals.css';
 import Layout from '../pages/Layout'
 
 
-// TODO: FIX CHILDREN BUG
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <Layout>

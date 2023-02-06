@@ -37,6 +37,7 @@ a {
 .column1 {
   width: auto;
   float: left;
+  margin: 10px 0px 10px 10px;
 }
 
 .column2 {
