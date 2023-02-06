@@ -1,1 +1,1 @@
-python3 -m flask --app __init__ run
+python3 -m flask --app __init__ run -p 5002
