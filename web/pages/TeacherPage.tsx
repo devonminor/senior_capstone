@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import QuestionInput from '../components/QuestionInput'
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
@@ -12,6 +13,12 @@ type TeacherPageProps = {
 export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
   if (course_id == undefined || lecture_id == undefined) {
     return <></>
+  }
+
+  const [addQuestion, setAddQuestion] = useState(false);
+
+  function handleClick() {
+    setAddQuestion(true)
   }
 
   var course_name = parse_course_id(course_id)
@@ -44,10 +51,10 @@ export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
       <div className="lectureDate">{date}</div>
 
       <div className="d-grid gap-2" style={{padding: 10}}>
-        <Button variant="primary" size="sm">Add a Question</Button>
+        <Button variant="primary" size="sm" onClick={handleClick}>Add a Question</Button>
       </div>
 
-      <QuestionInput></QuestionInput>
+      <QuestionInput addQuestion={addQuestion} setAddQuestion={setAddQuestion}></QuestionInput>
 
       <h3 className="live">Live</h3>
 

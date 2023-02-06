@@ -1,10 +1,21 @@
+import React, { Dispatch } from 'react';
 import Form from 'react-bootstrap/Form'
 import InputGroup from 'react-bootstrap/InputGroup'
 import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
 
+type QuestionInputProps = {
+  addQuestion: boolean
+  setAddQuestion: Dispatch<React.SetStateAction<boolean>>
+}
 
-export default function QuestionInput() {
+export default function QuestionInput({addQuestion, setAddQuestion}: QuestionInputProps) {
+    if (!addQuestion) {return <></>}
+
+    function handleClick() {
+      setAddQuestion(false)
+    }
+  
   return (
     <>
     <div className="inputBlock">
@@ -22,7 +33,7 @@ export default function QuestionInput() {
           </div>
         </div>
         <div className="buttonArea1">
-          <CloseButton />
+          <CloseButton onClick={handleClick}/>
         </div>
         <div className="buttonArea2">
           <Button variant="success">+</Button>
