@@ -1,23 +1,15 @@
-from typing import Optional
+from typing import Optional, List
 from enum import Enum
 from pydantic import BaseModel
-from beanie import Document
+from beanie import Document, Link
 from datetime import datetime
 
-class Course(Document):
-    numId: int
-    name: str
-    description: Optional[str] = None
-    createdAt: datetime = datetime.now()
-    active: bool = False
-    hasActiveLecture: bool = False
 
-class Lecture(Document):
-    name: str
-    description: Optional[str] = None
-    lastUpdated: datetime = datetime.now()
-    createdAt: datetime = datetime.now()
-    active: bool = False
+##############################################################################
+##############################################################################
+##########################      QUESTION MODEL      ##########################
+##############################################################################
+##############################################################################
 
 class QuestionType(str, Enum):
     multiple_choice = "multiple_choice"
@@ -53,6 +45,40 @@ class Question(Document):
     multipleChoiceQuestion: Optional[MultipleChoiceQuestion] = None
     shortAnswerQuestion: Optional[ShortAnswerQuestion] = None
     drawingQuestion: Optional[DrawingQuestion] = None
+    lectureId: int
+
+##############################################################################
+##############################################################################
+##########################      LECTURE MODEL       ##########################
+##############################################################################
+##############################################################################
+
+class Lecture(Document):
+    numId: int
+    name: str
+    description: Optional[str] = None
+    lastUpdated: datetime = datetime.now()
+    createdAt: datetime = datetime.now()
+    active: bool = False
+    courseId: int
+    questions: Optional[List[Link[Question]]] = None
+
+
+##############################################################################
+##############################################################################
+##########################       COURSE MODEL       ##########################
+##############################################################################
+##############################################################################
+
+class Course(Document):
+    numId: int
+    name: str
+    description: Optional[str] = None
+    createdAt: datetime = datetime.now()
+    active: bool = False
+    hasActiveLecture: bool = False
+    lectures: Optional[List[Link[Lecture]]] = None
+
 
 Course.update_forward_refs()
 Lecture.update_forward_refs()
