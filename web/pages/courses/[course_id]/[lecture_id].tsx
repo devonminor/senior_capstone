@@ -1,13 +1,11 @@
 import { useRouter } from "next/router";
-import TeacherPage from 'pages/TeacherPage';
+import TeacherPage from '../../TeacherPage';
 
 
 
 const Lecture = () => {
     const router = useRouter();
     const {course_id, lecture_id} = router.query;
-
-    console.log(router.query)
     
     return (
         <div>
