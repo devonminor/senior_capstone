@@ -1,1 +1,1 @@
-python3 -m flask --app __init__ --debug run -p 5002
+uvicorn main:app --reload --port 5002
