@@ -1,0 +1,1 @@
+python3 -m flask --app __init__ run
