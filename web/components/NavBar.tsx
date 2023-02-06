@@ -1,6 +1,6 @@
 import Nav from 'react-bootstrap/Nav';
 
-export default function NavBar({ children }) {
+export default function NavBar() {
   return (
     <>
     <div className="nav">

@@ -30,17 +30,17 @@ a {
   display: table;
   clear: both;
   overflow: hidden;
-  width: 100%;
+  width: auto;
   margin-bottom: 1rem;
 }
 
 .column1 {
-  width: 15%;
+  width: auto;
   float: left;
 }
 
 .column2 {
-  width: 85%;
+  width: auto;
   float: right;
   overflow: hidden;
 }
@@ -50,6 +50,7 @@ a {
   border-radius: 5px;
   padding: 10px;
   margin: 5px;
+  width: auto;
 }
 
 
@@ -107,6 +108,7 @@ a {
   border-radius: 5px;
   padding: 15px;
   margin: 10px 10px 0px 0px;
+  width: auto;
 }
 
 .col1 {

@@ -29,8 +29,6 @@ export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
   
   return (
     <>
-      <h4>Course #{course_id}</h4>
-      <h5>Lecture #{lecture_id}</h5>
       <div className="courseName">{course_name}</div>
       <Tabs
       defaultActiveKey="profile"

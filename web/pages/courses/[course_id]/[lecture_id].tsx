@@ -9,9 +9,6 @@ const Lecture = () => {
     
     return (
         <div>
-            <h4>Course #{course_id}</h4>
-            <h5>Lecture #{lecture_id}</h5>
-
             <TeacherPage
                 course_id = {course_id}
                 lecture_id = {lecture_id}

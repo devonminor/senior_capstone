@@ -1,10 +1,10 @@
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import NavBar from '/components/NavBar'
+import NavBar from '../components/NavBar'
 
+interface LayoutProps {
+  children: React.ReactNode;
+}
 
-export default function Layout({ children }) {
+export default function Layout({ children }: LayoutProps) {
   return (
     <>
       <div className="row">
