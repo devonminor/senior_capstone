@@ -4,7 +4,7 @@ import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 
-from models import Course
+from models import Course, Lecture, Question
 
 app = Flask(__name__)
 
@@ -41,7 +41,14 @@ async def get_course(id):
 async def start_mongo():
     print("Starting MongoDB...")
     client = AsyncIOMotorClient("mongodb://localhost:27017/PollAnywhere")
-    await init_beanie(database=client.PollAnywhere, document_models=[Course])
+    await init_beanie(database=client.PollAnywhere, document_models=[Course, Lecture, Question])
+
+# async def test_mongo():
+#     print("Testing MongoDB...")
+#     # id = await random_id()
+#     id = 123456
+#     course = Course(name="Test Course", numId=id, description="This is a test course.")
+#     course = await course.insert()
 
 if __name__ == "__main__":
     print("Starting Flask...")
