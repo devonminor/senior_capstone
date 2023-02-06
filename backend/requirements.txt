@@ -1,8 +1,9 @@
 scikit-learn
 word2number
-Flask
 kneed
 quantulum3
 nltk
 pandas
 beanie
+fastapi
+uvicorn[standard]

@@ -8,6 +8,7 @@ class Course(Document):
     numId: int
     name: str
     description: Optional[str] = None
+    createdAt: datetime = datetime.now()
     active: bool = False
     hasActiveLecture: bool = False
 
