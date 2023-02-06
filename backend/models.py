@@ -1,8 +1,17 @@
-from typing import Optional
+from typing import Optional, List
 from enum import Enum
 from pydantic import BaseModel
-from beanie import Document
+from beanie import Document, Link
 from datetime import datetime
+
+class Lecture(Document):
+    numId: int
+    name: str
+    description: Optional[str] = None
+    lastUpdated: datetime = datetime.now()
+    createdAt: datetime = datetime.now()
+    active: bool = False
+    courseId: int
 
 class Course(Document):
     numId: int
@@ -11,13 +20,7 @@ class Course(Document):
     createdAt: datetime = datetime.now()
     active: bool = False
     hasActiveLecture: bool = False
-
-class Lecture(Document):
-    name: str
-    description: Optional[str] = None
-    lastUpdated: datetime = datetime.now()
-    createdAt: datetime = datetime.now()
-    active: bool = False
+    lectures: Optional[List[Link[Lecture]]] = None
 
 class QuestionType(str, Enum):
     multiple_choice = "multiple_choice"
