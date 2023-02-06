@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import TeacherPage from 'pages/TeacherPage';
+import TeacherPage from '../../TeacherPage';
 
 
 

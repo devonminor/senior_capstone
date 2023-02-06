@@ -1,15 +1,19 @@
-import QuestionInput from '/components/QuestionInput'
+import QuestionInput from '../components/QuestionInput'
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
 
+// TODO: identify any better type to use than any
 type TeacherPageProps = {
-  course_id: string;
-  lecture_id: string;
+  course_id: any;
+  lecture_id: any;
 }
-// TODO: handle renderign before course_id prop is defined
 export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
+  if (course_id == undefined || lecture_id == undefined) {
+    return <></>
+  }
+
   var course_name = parse_course_id(course_id)
   var date = parse_lecture_id(lecture_id)
 
