@@ -114,6 +114,19 @@ async def add_lecture(course_id: int, name: str, description: str, active: bool 
 
     return new_lecture
 
+# get all lectures from a course
+@app.get("/courses/{course_id}/lectures/")
+async def get_lectures(course_id: int):
+    # get course
+    course = await get_course_with_id(course_id)
+    if not course:
+        return {'message': 'Course not found'}
+
+    # get lectures
+    lectures = await Lecture.find(Lecture.courseId == course.numId).to_list()
+
+    return lectures
+
 # get a lecture from a course
 @app.get("/courses/{course_id}/lectures/{lecture_id}")
 async def get_lecture(course_id: int, lecture_id: int):
@@ -143,8 +156,10 @@ async def update_lecture(course_id: int, lecture_id: int, name: str, description
         return {'message': 'Lecture not found'}
 
     # update lecture
-    lecture.name = escape(name)
-    lecture.description = escape(description)
+    if (name):
+        lecture.name = escape(name)
+    if (description):
+        lecture.description = escape(description)
     lecture.active = active
     await lecture.save()
 
