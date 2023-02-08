@@ -1,9 +1,9 @@
-from typing import Optional, List
-from enum import Enum
-from pydantic import BaseModel
-from beanie import Document, Link
 from datetime import datetime
+from enum import Enum
+from typing import List, Optional
 
+from beanie import Document, Link
+from pydantic import BaseModel
 
 ##############################################################################
 ##############################################################################

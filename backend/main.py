@@ -1,15 +1,11 @@
-from fastapi import FastAPI
-
-from markupsafe import escape
-
-import asyncio
-from motor.motor_asyncio import AsyncIOMotorClient
-from beanie import init_beanie, DeleteRules
-
-from models import Course, Lecture, Question
-
-from utils import random_course_id, random_lecture_id, get_todays_date
+from beanie import DeleteRules, init_beanie
 from db_utils import get_course_with_id, get_lecture_with_id
+from fastapi import FastAPI
+from markupsafe import escape
+from models import (Course, DrawingQuestion, Lecture, MultipleChoiceQuestion,
+                    Question, ShortAnswerQuestion)
+from motor.motor_asyncio import AsyncIOMotorClient
+from utils import get_todays_date, random_course_id, random_lecture_id
 
 app = FastAPI()
 
@@ -107,11 +103,14 @@ async def add_lecture(course_id: int, name: str, description: str, active: bool 
     await new_lecture.insert()
 
     # update course to reflect new lecture
-    if course.lectures:
-        course.lectures.append(new_lecture)
-    else:
-        course.lectures = [new_lecture]
-    await course.save()
+    # Update this to use mongodb native syntax
+    # https://beanie-odm.dev/tutorial/updating-%26-deleting/
+    await course.update({ "$push": { Course.lectures: new_lecture }})
+    # if course.lectures:
+    #     # course.lectures.append(new_lecture)
+    # else:
+    #     course.lectures = [new_lecture]
+    # await course.save()
 
     return new_lecture
 
@@ -165,7 +164,7 @@ async def delete_lecture(course_id: int, lecture_id: int):
         return {'message': 'Lecture not found'}
 
     # delete lecture from course
-    if (lecture in course.lectures):
+    if (course.lectures and lecture in course.lectures):
         course.lectures.remove(lecture)
     await course.save()
 
@@ -173,6 +172,34 @@ async def delete_lecture(course_id: int, lecture_id: int):
     await lecture.delete(link_rule=DeleteRules.DELETE_LINKS)
 
     return {'message': 'Lecture deleted'}
+
+##############################################################################
+##############################################################################
+##########################     (CRUD) QUESTIONS     ##########################
+##############################################################################
+##############################################################################
+
+# add a new question to a lecture
+@app.post("/courses/{course_id}/lectures/{lecture_id}/questions/")
+async def add_question(course_id: int, lecture_id: int, questionType: str, \
+    mcq: MultipleChoiceQuestion, saq: ShortAnswerQuestion, dq: DrawingQuestion, active: bool = False):
+    return {'message': 'Not implemented'}
+
+# get a question from a lecture
+@app.get("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
+async def get_question(course_id: int, lecture_id: int, question_id: int):
+    return {'message': 'Not implemented'}
+
+# update a question from a lecture
+@app.put("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
+async def update_question(course_id: int, lecture_id: int, question_id: int, questionType: str, \
+    mcq: MultipleChoiceQuestion, saq: ShortAnswerQuestion, dq: DrawingQuestion, active: bool = False):
+    return {'message': 'Not implemented'}
+
+# remove a question from a lecture
+@app.delete("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
+async def delete_question(course_id: int, lecture_id: int, question_id: int):
+    return {'message': 'Not implemented'}
 
 ##############################################################################
 ##############################################################################
@@ -184,6 +211,6 @@ async def delete_lecture(course_id: int, lecture_id: int):
 @app.on_event("startup")
 async def app_init():
     client = AsyncIOMotorClient("mongodb://localhost:27017")
-    app.db = client.PollAnywhere
-    await init_beanie(database=app.db, document_models=[Course, Lecture, Question])
+    # app.db = client.PollAnywhere
+    await init_beanie(database=client.PollAnywhere, document_models=[Course, Lecture, Question])
     
