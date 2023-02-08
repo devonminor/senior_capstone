@@ -31,6 +31,13 @@ async def add_course(name: str, description: str, active: bool = False, hasActiv
     await new_course.insert()
     return new_course
 
+# get all courses
+# TODO: EITHER MAKE THIS ROUTE PROTECTED OR REMOVE IT
+@app.get("/courses/")
+async def get_courses():
+    courses = await Course.find_all().to_list()
+    return courses
+
 # get a course
 @app.get("/courses/{course_id}")
 async def get_course(course_id: int):
