@@ -1,29 +1,25 @@
-import React, { useState, Dispatch} from 'react';
-import QuestionInput from '../components/QuestionInput'
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
+import React, { Dispatch, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import QuestionInput from '../components/QuestionInput';
 
 // TODO: identify any better type to use than any
 type TeacherPageProps = {
   course_id: any;
   lecture_id: any;
 }
+
 export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
-  if (course_id == undefined || lecture_id == undefined) {
+  if (course_id == undefined || lecture_id == undefined)
     return <></>
-  }
 
   const [addQuestion, setAddQuestion] = useState(false);
-
-
 
   var course_name = parse_course_id(course_id)
   var date = parse_lecture_id(lecture_id)
   
-  
-
   console.log("course name: " + course_name)
   console.log("date: " + date)
   
@@ -31,26 +27,22 @@ export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
     <>
       <div className="courseName">{course_name}</div>
       <Tabs
-      defaultActiveKey="profile"
-      id="justify-tab-example"
-      className="mb-3"
-      fill
+        defaultActiveKey="profile"
+        id="justify-tab-example"
+        className="mb-3"
+        fill
       >
-        <Tab eventKey="lectures" title="Lectures">
-        </Tab>
-        <Tab eventKey="roster" title="Roster">
-        </Tab>
-        <Tab eventKey="statistics" title="Statistics">
-        </Tab>
-        <Tab eventKey="class-settings" title="Class Settings">
-        </Tab>
+        <Tab eventKey="lectures" title="Lectures"/>
+        <Tab eventKey="roster" title="Roster"/>
+        <Tab eventKey="statistics" title="Statistics"/>
+        <Tab eventKey="class-settings" title="Class Settings"/>
       </Tabs>
 
       <div className="lectureDate">{date}</div>
 
       <QuestionButton addQuestion={addQuestion} setAddQuestion={setAddQuestion}/>
 
-      <QuestionInput addQuestion={addQuestion} setAddQuestion={setAddQuestion}></QuestionInput>
+      <QuestionInput addQuestion={addQuestion} setAddQuestion={setAddQuestion}/>
 
       <h3 className="live">Live</h3>
 
