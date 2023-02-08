@@ -1,9 +1,9 @@
-from typing import Optional, List
-from enum import Enum
-from pydantic import BaseModel
-from beanie import Document, Link
 from datetime import datetime
+from enum import Enum
+from typing import List, Optional
 
+from beanie import Document, Indexed, Link
+from pydantic import BaseModel
 
 ##############################################################################
 ##############################################################################
@@ -38,6 +38,7 @@ class DrawingQuestion(BaseModel):
     image: str
 
 class Question(Document):
+    numId: Indexed(int)
     questionType: QuestionType
     active: bool = False
     lastUpdated: datetime = datetime.now()
@@ -45,7 +46,7 @@ class Question(Document):
     multipleChoiceQuestion: Optional[MultipleChoiceQuestion] = None
     shortAnswerQuestion: Optional[ShortAnswerQuestion] = None
     drawingQuestion: Optional[DrawingQuestion] = None
-    lectureId: int
+    lectureId: Indexed(int)
 
 ##############################################################################
 ##############################################################################
@@ -54,13 +55,13 @@ class Question(Document):
 ##############################################################################
 
 class Lecture(Document):
-    numId: int
+    numId: Indexed(int)
     name: str
     description: Optional[str] = None
     lastUpdated: datetime = datetime.now()
     createdAt: datetime = datetime.now()
     active: bool = False
-    courseId: int
+    courseId: Indexed(int)
     questions: Optional[List[Link[Question]]] = None
 
 
@@ -71,7 +72,7 @@ class Lecture(Document):
 ##############################################################################
 
 class Course(Document):
-    numId: int
+    numId: Indexed(int)
     name: str
     description: Optional[str] = None
     createdAt: datetime = datetime.now()
