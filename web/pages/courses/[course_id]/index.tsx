@@ -11,6 +11,11 @@ const Course = () => {
 
     var course_name = parse_course_id(course_id)
 
+    function handleClick() {
+        var url = "/courses/" + course_id + "/123456"
+        router.push(url)
+      }
+
     return (
         <div>
             <div className="courseName">{course_name}</div>
@@ -23,15 +28,15 @@ const Course = () => {
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr onClick={handleClick}>
                 <th scope="row">1</th>
                 <td>Building a Web Page Overview</td>
                 </tr>
-                <tr>
+                <tr onClick={handleClick}>
                 <th scope="row">2</th>
                 <td>Setting Up the Backend</td>
                 </tr>
-                <tr>
+                <tr onClick={handleClick}>
                 <th scope="row">3</th>
                 <td>Setting Up the Frontend</td>
                 </tr>
