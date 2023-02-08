@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Dispatch} from 'react';
 import QuestionInput from '../components/QuestionInput'
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
@@ -17,20 +17,18 @@ export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
 
   const [addQuestion, setAddQuestion] = useState(false);
 
-  function handleClick() {
-    setAddQuestion(true)
-  }
+
 
   var course_name = parse_course_id(course_id)
   var date = parse_lecture_id(lecture_id)
+  
+  
 
   console.log("course name: " + course_name)
   console.log("date: " + date)
   
   return (
     <>
-      <h4>Course #{course_id}</h4>
-      <h5>Lecture #{lecture_id}</h5>
       <div className="courseName">{course_name}</div>
       <Tabs
       defaultActiveKey="profile"
@@ -50,9 +48,7 @@ export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
 
       <div className="lectureDate">{date}</div>
 
-      <div className="d-grid gap-2" style={{padding: 10}}>
-        <Button variant="primary" size="sm" onClick={handleClick}>Add a Question</Button>
-      </div>
+      <QuestionButton addQuestion={addQuestion} setAddQuestion={setAddQuestion}/>
 
       <QuestionInput addQuestion={addQuestion} setAddQuestion={setAddQuestion}></QuestionInput>
 
@@ -142,5 +138,27 @@ function parse_lecture_id(lecture_id: string) {
     console.log(date)
 
     return date
+  }
+}
+
+type QuestionButtonProps = {
+  addQuestion: boolean
+  setAddQuestion: Dispatch<React.SetStateAction<boolean>>
+}
+
+function QuestionButton({addQuestion, setAddQuestion}: QuestionButtonProps) {
+  function handleClick() {
+    setAddQuestion(true)
+  }
+
+  if (addQuestion == true) {
+    return (<></>)
+  }
+  else {
+    return (
+      <div className="d-grid gap-2" style={{padding: 10}}>
+        <Button variant="primary" size="sm" active={false} onClick={handleClick}>Add a Question</Button>
+      </div>
+    )
   }
 }
