@@ -9,10 +9,7 @@ const Lecture = () => {
     
     return (
         <div>
-            <TeacherPage
-                course_id = {course_id}
-                lecture_id = {lecture_id}
-            ></TeacherPage>
+            <TeacherPage course_id={course_id} lecture_id={lecture_id}/>
         </div>
     )
 }
