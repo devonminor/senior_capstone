@@ -14,7 +14,7 @@ const Course = () => {
     function handleClick() {
         var url = "/courses/" + course_id + "/123456"
         router.push(url)
-      }
+    }
 
     return (
         <div>
