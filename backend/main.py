@@ -113,11 +113,6 @@ async def add_lecture(course_id: int, name: str, description: str, active: bool 
     # Update this to use mongodb native syntax
     # https://beanie-odm.dev/tutorial/updating-%26-deleting/
     await course.update({ "$push": { Course.lectures: new_lecture }})
-    # if course.lectures:
-    #     # course.lectures.append(new_lecture)
-    # else:
-    #     course.lectures = [new_lecture]
-    # await course.save()
 
     return new_lecture
 

@@ -62,7 +62,7 @@ class Lecture(Document):
     createdAt: datetime = datetime.now()
     active: bool = False
     courseId: Indexed(int)
-    questions: Optional[List[Link[Question]]] = None
+    questions: Optional[List[Link[Question]]] = []
 
 
 ##############################################################################
@@ -78,7 +78,7 @@ class Course(Document):
     createdAt: datetime = datetime.now()
     active: bool = False
     hasActiveLecture: bool = False
-    lectures: Optional[List[Link[Lecture]]] = None
+    lectures: Optional[List[Link[Lecture]]] = []
 
 
 Course.update_forward_refs()
