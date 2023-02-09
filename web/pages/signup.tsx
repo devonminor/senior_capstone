@@ -9,23 +9,7 @@ const Signup = () => {
                 </div>
             </div>
             
-
-        <div className="d-flex justify-content-center">
-            <div className="row">
-                <div className="col">
-                    <figure className="text-center">
-                        <blockquote className="blockquote">
-                            <p>Education is the passport to the future, for tomorrow belongs to those who prepare for it today</p>
-                        </blockquote>
-                        <figcaption className="blockquote-footer">
-                            Malcom X <cite title="Source Title"></cite>
-                        </figcaption>
-                    </figure>
-                </div>
-            </div>
-        </div>
-
-        <div className="container">
+            <div className="container">
                 <div className="d-flex justify-content-center">
                     <div className="row">
                         <div className="col">

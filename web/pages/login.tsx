@@ -27,20 +27,12 @@ const Login = () => {
                             
                             </div>
                         </div>
+
                         <div className="form-group">
                             <div className="row">
                                 <label htmlFor="exampleInputPassword1">Password</label>
                                 <input type="password" className="form-control" id="loginPassword" placeholder="Password"/>
                             </div>
-                        </div>
-                        <div className="form-check"> 
-                            <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-                            <label className="form-check-label" htmlFor="exampleCheck1">I agree to the Terms of Conditions</label>
-                        </div>
-
-                        <div className="form-check"> 
-                            <input type="checkbox" className="form-check-input" id="loginStaySigned"/>
-                            <label className="form-check-label" htmlFor="loginStaySigned">Keep me Logged In</label>
                         </div>
 
                         <div className="d-flex justify-content-center">
