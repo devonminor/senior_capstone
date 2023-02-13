@@ -7,7 +7,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   return (
     <>
-      <div className="row">
+      <div className="layoutrow">
         <div className="column1">
           <NavBar></NavBar>
         </div>

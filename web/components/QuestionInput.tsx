@@ -1,8 +1,7 @@
 import React, { Dispatch } from 'react';
 import Form from 'react-bootstrap/Form'
-import InputGroup from 'react-bootstrap/InputGroup'
 import Button from 'react-bootstrap/Button';
-import CloseButton from 'react-bootstrap/CloseButton';
+import Modal from 'react-bootstrap/Modal';
 
 type QuestionInputProps = {
   addQuestion: boolean
@@ -17,89 +16,79 @@ export default function QuestionInput({addQuestion, setAddQuestion}: QuestionInp
     }
   
   return (
-    <>
-    <div className="inputBlock">
-      <div className="row">
-        <div className="textArea">
-          <div className="dropdown">
-            <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Multiple Choice
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a className="dropdown-item" href="#">Multiple Choice</a>
-              <a className="dropdown-item" href="#">Free Response</a>
-              <a className="dropdown-item" href="#">Free Drawing</a>
+    <Modal show={addQuestion} onHide={handleClick}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Modal.Title>Question</Modal.Title>
+
+          <Form>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea1"
+            >
+              <Form.Control as="textarea" rows={3} />
+            </Form.Group>
+          </Form>
+          
+
+          <Modal.Title>Attachments</Modal.Title>
+
+          <input type="file"></input>
+
+          <br></br>
+          <br></br>
+
+          <Modal.Title>Response Options</Modal.Title>
+          
+          <div className="input-group mb-2 mr-sm-2">
+            <div className="input-group-prepend">
+              <div className="input-group-text">A</div>
             </div>
+            <input type={"text"} className="form-control" id="inlineFormInputGroupUsername2" placeholder="Username"/>
           </div>
-        </div>
-        <div className="buttonArea1">
-          <CloseButton onClick={handleClick}/>
-        </div>
-        <div className="buttonArea2">
-          <Button variant="success">+</Button>
-        </div>
-        <hr className="line"></hr>
-      </div>
-      <div className="row">
-          <h5>Question</h5>
-            <InputGroup className="mb-4">
-              <InputGroup.Text id="question-input">Q:</InputGroup.Text>
-              <Form.Control
-                placeholder="Type question here"
-                aria-label="Question"
-                aria-describedby="question-input"
-              />
-            </InputGroup>
 
-          <h5>Attachments</h5>
-          <form>
-            <div className="form-group">
-              <input type="file" className="form-control-file" id="exampleFormControlFile1"></input>
+          <div className="input-group mb-2 mr-sm-2">
+            <div className="input-group-prepend">
+              <div className="input-group-text">B</div>
             </div>
-          </form>
+            <input type={"text"} className="form-control" id="inlineFormInputGroupUsername2" placeholder="Username"/>
+          </div>
+
+          <div className="input-group mb-2 mr-sm-2">
+            <div className="input-group-prepend">
+              <div className="input-group-text">C</div>
+            </div>
+            <input type={"text"} className="form-control" id="inlineFormInputGroupUsername2" placeholder="Username"/>
+          </div>
+
+          <div className="input-group mb-2 mr-sm-2">
+            <div className="input-group-prepend">
+              <div className="input-group-text">D</div>
+            </div>
+            <input type={"text"} className="form-control" id="inlineFormInputGroupUsername2" placeholder="Username"/>
+          </div>
 
           <br></br>
-          <br></br>
 
-          <h5>Response Options</h5>
+          <Modal.Title> Time Limit</Modal.Title>
 
-          <InputGroup className="mb-3">
-            <InputGroup.Text id="a-input">A:</InputGroup.Text>
-            <Form.Control
-              placeholder="Type answer here"
-              aria-label="Option A"
-              aria-describedby="a-input"
-            />
-          </InputGroup>
+          <div className="input-group mb-3">
+            <select className="custom-select" id="inputGroupSelect02">
+              <option selected>Choose...</option>
+              <option value="1">30 seconds</option>
+              <option value="2">60 seconds</option>
+              <option value="3">120 seconds</option>
+            </select>
+          </div>
 
-          <InputGroup className="mb-3">
-            <InputGroup.Text id="b-input">B:</InputGroup.Text>
-            <Form.Control
-              placeholder="Type answer here"
-              aria-label="Option B"
-              aria-describedby="b-input"
-            />
-          </InputGroup>
-
-          <InputGroup className="mb-3">
-            <InputGroup.Text id="c-input">C:</InputGroup.Text>
-            <Form.Control
-              placeholder="Type answer here"
-              aria-label="Option C"
-              aria-describedby="c-input"
-            />
-          </InputGroup>
-
-          <InputGroup className="mb-3">
-            <InputGroup.Text id="d-input">D:</InputGroup.Text>
-            <Form.Control
-              placeholder="Type answer here"
-              aria-label="Option D"
-              aria-describedby="d-input"
-            />
-          </InputGroup>
-        </div>
-    </div>
-    </>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleClick}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
   );
 }

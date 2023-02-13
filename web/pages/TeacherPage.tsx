@@ -5,6 +5,8 @@ import parse_course_id from "../components/parse_course_id";
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import QuestionInput from '../components/QuestionInput';
+import '../styles/QuestionInput.module.css';
+
 
 // TODO: identify any better type to use than any
 type TeacherPageProps = {
@@ -106,14 +108,9 @@ function QuestionButton({addQuestion, setAddQuestion}: QuestionButtonProps) {
     setAddQuestion(true)
   }
 
-  if (addQuestion == true) {
-    return (<></>)
-  }
-  else {
-    return (
-      <div className="d-grid gap-2" style={{padding: 10}}>
-        <Button variant="primary" size="sm" active={false} onClick={handleClick}>Add a Question</Button>
-      </div>
-    )
-  }
+  return (
+    <div className="d-grid gap-2" style={{padding: 10}}>
+      <Button variant="primary" size="sm" active={false} onClick={handleClick}>Add a Question</Button>
+    </div>
+  )
 }

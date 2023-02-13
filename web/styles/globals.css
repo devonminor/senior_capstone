@@ -25,56 +25,28 @@ a {
   }
 }
 
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-  overflow: hidden;
-  width: auto;
-  margin-bottom: 1rem;
+.layoutrow {
+  height: 100vh
 }
 
 .column1 {
-  width: auto;
+  width: max-content;
   float: left;
-  margin: 10px 0px 10px 10px;
+  padding: 10px 10px 10px 10px;
+  background-color: #c7c5c5;
+  height: 100%;
 }
 
 .column2 {
   width: auto;
-  float: right;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  height: 100%;
+  background-color: #ffffff71;
 }
 
-.inputBlock {
-  background-color: #afadad;
-  border-radius: 5px;
-  padding: 10px;
-  margin: 5px;
-  width: auto;
-}
-
-
-.textArea {
-  display: table-cell;
-  width: 78%;
-  float: left;
-  overflow: hidden;
-  padding-bottom: 10px;
-}
-
-.buttonArea1 {
-  display: table-cell;
-  width: 40px;
-  overflow: hidden;
-  padding-top: 6px;
-}
-
-.buttonArea2 {
-  display: table-cell;
-  width: 60px;
-  overflow: hidden;
-}
 
 .courseName {
   background-color: #92b8ff;
