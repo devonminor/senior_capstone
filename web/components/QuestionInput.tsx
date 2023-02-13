@@ -2,6 +2,8 @@ import React, { Dispatch } from 'react';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 type QuestionInputProps = {
   addQuestion: boolean
@@ -18,7 +20,11 @@ export default function QuestionInput({addQuestion, setAddQuestion}: QuestionInp
   return (
     <Modal show={addQuestion} onHide={handleClick}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <DropdownButton id="dropdown-basic-button" title="Multiple Choice">
+            <Dropdown.Item href="#/action-1">Multiple Choice</Dropdown.Item>
+            <Dropdown.Item href="#/action-2">Free Response</Dropdown.Item>
+            <Dropdown.Item href="#/action-3">Free Drawing</Dropdown.Item>
+          </DropdownButton>
         </Modal.Header>
         <Modal.Body>
           <Modal.Title>Question</Modal.Title>

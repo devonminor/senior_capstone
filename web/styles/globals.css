@@ -35,14 +35,14 @@ a {
   padding: 10px 10px 10px 10px;
   background-color: #c7c5c5;
   height: 100%;
+  width: max-content;
 }
 
 .column2 {
   width: auto;
-  overflow: hidden;
+  overflow: scroll;
   display: flex;
-  justify-content: center;
-  margin: 0 auto;
+  padding: 10px;
   height: 100%;
   background-color: #ffffff71;
 }
@@ -107,3 +107,31 @@ a {
   padding: -10px -10px -10px -10px
 }
 
+.cardContainer {
+  display: table;
+  height: 100%;
+  width: max-content;
+  
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  min-width: min-content;
+  margin: 10px;
+}
+
+.cardImage {
+  max-width: 100%;
+  height: auto;
+  padding: 10px;
+}
+
+.heading {
+  text-align: left;
+  margin: 10px;
+}
+
+.button {
+  text-align: right;
+  margin: 10px;
+}

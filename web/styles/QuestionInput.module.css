@@ -11,7 +11,7 @@
   display: table;
   clear: both;
   overflow: hidden;
-  width: min-content;
+  width: max-content;
   margin-bottom: 1rem;
 }
 
