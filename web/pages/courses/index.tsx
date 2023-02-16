@@ -56,7 +56,7 @@ const Courses = () => {
                         <div className="card-body">
                         <h5 className="card-title">MATH 42</h5>
                         <p className="card-text"><small className="text-muted">Fall 2022</small></p>
-                        <a href="/courses/cs170" className="btn btn-primary">View Course</a>
+                        <a href="/courses/math42" className="btn btn-primary">View Course</a>
                         </div>
                     </div>
                 </div>

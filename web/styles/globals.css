@@ -135,3 +135,12 @@ a {
   text-align: right;
   margin: 10px;
 }
+
+.navbar {
+  min-height: 12%;
+}
+
+.PAlogo {
+  height: 70.7px;
+  width: 100px;
+}
