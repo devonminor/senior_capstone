@@ -28,7 +28,6 @@ export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
   
   return (
     <>
-      <div className="courseName">{course_name}</div>
       <Tabs
         defaultActiveKey="profile"
         id="justify-tab-example"
@@ -40,8 +39,6 @@ export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
         <Tab eventKey="statistics" title="Statistics"/>
         <Tab eventKey="class-settings" title="Class Settings"/>
       </Tabs>
-
-      <div className="lectureDate">{date}</div>
 
       <QuestionButton addQuestion={addQuestion} setAddQuestion={setAddQuestion}/>
 

@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import jumbo from "../../public/Tufts_Jumbos_logo.png"
 import Image from 'next/image'
 import Button from 'react-bootstrap/Button';
@@ -6,14 +5,10 @@ import Col from 'react-bootstrap/Col';
 
 
 const Courses = () => {
-    const router = useRouter();
 
     return (
         <div>
             <div className="row">
-                <Col className="heading">
-                    <h1>Courses Page</h1>
-                </Col>
                 <Col className="button">
                     <Button variant="primary">Add Course</Button>
                 </Col>

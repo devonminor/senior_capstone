@@ -18,8 +18,6 @@ const Course = () => {
 
     return (
         <div>
-            <div className="courseName">{course_name}</div>
-
             <table className="table table-hover">
             <thead>
                 <tr>

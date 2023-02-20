@@ -36,4 +36,5 @@ export default function parse_course_id(course_id: string) {
   
     return parsedString
   }
+  else {return ("")}
 }

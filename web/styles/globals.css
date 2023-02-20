@@ -47,16 +47,6 @@ a {
   background-color: #ffffff71;
 }
 
-
-.courseName {
-  background-color: #92b8ff;
-  border-radius: 20px;
-  padding: 10px;
-  margin: 5px 10px 10px 10px;
-  text-align: center;
-  font-size: 40px;
-}
-
 .lectureDate {
   background-color: #c4c4c4;
   border-radius: 5px;
@@ -136,11 +126,58 @@ a {
   margin: 10px;
 }
 
-.navbar {
-  min-height: 12%;
+.navbarCustom {
+  min-height: 75px;
+  max-height: 12vh;
+}
+
+.navContainer {
+  max-height: 100%;
+  width: 100%;
 }
 
 .PAlogo {
-  height: 70.7px;
-  width: 100px;
+  min-height: 60px;
+  max-height: 10vh;
+  width: auto;
+}
+
+.gearIcon {
+  height: 70%;
+  width: auto;
+}
+
+.courseName {
+  background-color: #c6c6c699;
+  border-radius: 20px;
+  text-align: center;
+  height: 80%;
+}
+
+.courseText {
+  font-size: 6vh;
+  max-height: 100%;
+  min-height: 60px;
+  color: rgba(128, 0, 0, 0.771);
+  font-family: 'Times New Roman', serif;
+  font-weight: bold;
+}
+
+.navRow {
+  max-height: 100%;
+  width: 100%
+}
+
+.navLeft {
+  width: 20%;
+  height: 100%;
+}
+
+.navCenter {
+  text-align: center;
+}
+
+.navRight {
+  text-align: right;
+  height: 100%;
 }

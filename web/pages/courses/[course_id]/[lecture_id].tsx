@@ -5,6 +5,7 @@ import TeacherPage from '../../TeacherPage';
 
 const Lecture = () => {
     const router = useRouter();
+    console.log(router.route);
     const {course_id, lecture_id} = router.query;
     
     return (
