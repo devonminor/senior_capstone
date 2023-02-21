@@ -27,59 +27,59 @@ export default function TeacherPage({course_id, lecture_id}: TeacherPageProps) {
   console.log("date: " + date)
   
   return (
-    <>
+    <div className='pageContent'>
       <Tabs
-        defaultActiveKey="profile"
+        defaultActiveKey="questions"
         id="justify-tab-example"
         className="mb-3"
         fill
       >
-        <Tab eventKey="lectures" title="Lectures"/>
+        <Tab eventKey="questions" title="Questions">
+          <QuestionButton addQuestion={addQuestion} setAddQuestion={setAddQuestion}/>
+
+          <QuestionInput addQuestion={addQuestion} setAddQuestion={setAddQuestion}/>
+
+          <h3 className="live">Live</h3>
+
+          <div className="questionBox">
+            <div className="row">
+              <div className="col1">What is your name?</div>
+              <div className="col2">3/18 answered</div>
+            </div>  
+          </div>
+
+          <h3 className="notLive">Waiting to go live</h3>
+
+          <div className="questionBox">
+            <div className="row">
+              <div className="col1">What is your major?</div>
+              <div className="col2"><CloseButton /></div>
+            </div>  
+          </div>
+          <div className="questionBox">
+            <div className="row">
+              <div className="col1">What year/month are you graduating?</div>
+              <div className="col2"><CloseButton /></div>
+            </div>  
+          </div>
+          <div className="questionBox">
+            <div className="row">
+              <div className="col1">How has your experience in the School of Engineering been?</div>
+              <div className="col2"><CloseButton /></div>
+            </div>  
+          </div>
+          <div className="questionBox">
+            <div className="row">
+              <div className="col1">Name your favorite 3 courses at Tufts.</div>
+              <div className="col2"><CloseButton /></div>
+            </div>  
+          </div>
+        </Tab>
         <Tab eventKey="roster" title="Roster"/>
         <Tab eventKey="statistics" title="Statistics"/>
         <Tab eventKey="class-settings" title="Class Settings"/>
       </Tabs>
-
-      <QuestionButton addQuestion={addQuestion} setAddQuestion={setAddQuestion}/>
-
-      <QuestionInput addQuestion={addQuestion} setAddQuestion={setAddQuestion}/>
-
-      <h3 className="live">Live</h3>
-
-      <div className="questionBox">
-        <div className="row">
-          <div className="col1">What is your name?</div>
-          <div className="col2">3/18 answered</div>
-        </div>  
-      </div>
-
-      <h3 className="notLive">Waiting to go live</h3>
-
-      <div className="questionBox">
-        <div className="row">
-          <div className="col1">What is your major?</div>
-          <div className="col2"><CloseButton /></div>
-        </div>  
-      </div>
-      <div className="questionBox">
-        <div className="row">
-          <div className="col1">What year/month are you graduating?</div>
-          <div className="col2"><CloseButton /></div>
-        </div>  
-      </div>
-      <div className="questionBox">
-        <div className="row">
-          <div className="col1">How has your experience in the School of Engineering been?</div>
-          <div className="col2"><CloseButton /></div>
-        </div>  
-      </div>
-      <div className="questionBox">
-        <div className="row">
-          <div className="col1">Name your favorite 3 courses at Tufts.</div>
-          <div className="col2"><CloseButton /></div>
-        </div>  
-      </div>
-    </>
+    </div>
   );
 }
 
