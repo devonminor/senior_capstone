@@ -1,6 +1,7 @@
 from beanie import DeleteRules, init_beanie
 from db_utils import get_course_with_id, get_lecture_with_id
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from markupsafe import escape
 from models import (Course, DrawingQuestion, Lecture, MultipleChoiceQuestion,
                     Question, ShortAnswerQuestion)
@@ -9,15 +10,30 @@ from utils import get_todays_date, random_course_id, random_lecture_id
 
 app = FastAPI()
 
+# Add cors to server
+origins = [
+    "*"
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 ##############################################################################
 ##############################################################################
 ###########################     (CRUD) COURSES     ###########################
 ##############################################################################
 ##############################################################################
 
-# add a new course
+
 @app.post("/courses/")
 async def add_course(name: str, description: str, active: bool = False, hasActiveLecture: bool = False):
+    """
+    Add a new course
+    """
     numId = await random_course_id()
 
     new_course = Course(
@@ -31,16 +47,22 @@ async def add_course(name: str, description: str, active: bool = False, hasActiv
     await new_course.insert()
     return new_course
 
-# get all courses
-# TODO: EITHER MAKE THIS ROUTE PROTECTED OR REMOVE IT
+
 @app.get("/courses/")
 async def get_courses():
+    """
+    Get all courses
+    TODO: EITHER MAKE THIS ROUTE PROTECTED OR REMOVE IT
+    """
     courses = await Course.find_all().to_list()
     return courses
 
-# get a course
+
 @app.get("/courses/{course_id}")
 async def get_course(course_id: int):
+    """
+    Get a course by id 
+    """
     course = await get_course_with_id(course_id)
 
     if not course:
@@ -48,9 +70,12 @@ async def get_course(course_id: int):
 
     return course
 
-# update a course
+
 @app.put("/courses/{course_id}")
 async def update_course(course_id: int, name: str, description: str, active: bool = False, hasActiveLecture: bool = False):
+    """
+    Update a course
+    """
     course = await get_course_with_id(course_id)
 
     if not course:
@@ -64,9 +89,12 @@ async def update_course(course_id: int, name: str, description: str, active: boo
     await course.save()
     return course
 
-# delete a course
+
 @app.delete("/courses/{course_id}")
 async def delete_course(course_id: int):
+    """
+    Delete a course
+    """
     course = await get_course_with_id(course_id)
 
     if not course:
@@ -82,9 +110,11 @@ async def delete_course(course_id: int):
 ##############################################################################
 ##############################################################################
 
-# add a new lecture to a course
 @app.post("/courses/{course_id}/lectures/")
 async def add_lecture(course_id: int, name: str, description: str, active: bool = False):
+    """
+    Add a new lecture to a course
+    """
     # validate input
     if not name:
         name = get_todays_date()
@@ -112,13 +142,16 @@ async def add_lecture(course_id: int, name: str, description: str, active: bool 
     # update course to reflect new lecture
     # Update this to use mongodb native syntax
     # https://beanie-odm.dev/tutorial/updating-%26-deleting/
-    await course.update({ "$push": { Course.lectures: new_lecture }})
+    await course.update({"$push": {Course.lectures: new_lecture}})
 
     return new_lecture
 
-# get all lectures from a course
+
 @app.get("/courses/{course_id}/lectures/")
 async def get_lectures(course_id: int):
+    """
+    Get all lectures from a course
+    """
     # get course
     course = await get_course_with_id(course_id)
     if not course:
@@ -129,9 +162,12 @@ async def get_lectures(course_id: int):
 
     return lectures
 
-# get a lecture from a course
+
 @app.get("/courses/{course_id}/lectures/{lecture_id}")
 async def get_lecture(course_id: int, lecture_id: int):
+    """
+    Get a lecture from a course
+    """
     # get course
     course = await get_course_with_id(course_id)
     if not course:
@@ -144,9 +180,12 @@ async def get_lecture(course_id: int, lecture_id: int):
 
     return lecture
 
-# update a lecture from a course
+
 @app.put("/courses/{course_id}/lectures/{lecture_id}")
 async def update_lecture(course_id: int, lecture_id: int, name: str, description: str, active: bool = False):
+    """
+    Update a lecture from a course
+    """
     # get course
     course = await get_course_with_id(course_id)
     if not course:
@@ -167,9 +206,12 @@ async def update_lecture(course_id: int, lecture_id: int, name: str, description
 
     return lecture
 
-# delete a lecture from a course
+
 @app.delete("/courses/{course_id}/lectures/{lecture_id}")
 async def delete_lecture(course_id: int, lecture_id: int):
+    """
+    Detlete a lecture from a course
+    """
     # get course
     course = await get_course_with_id(course_id)
     if not course:
@@ -196,24 +238,35 @@ async def delete_lecture(course_id: int, lecture_id: int):
 ##############################################################################
 ##############################################################################
 
-# add a new question to a lecture
+
 @app.post("/courses/{course_id}/lectures/{lecture_id}/questions/")
-async def add_question(course_id: int, lecture_id: int, questionType: str, \
-    mcq: MultipleChoiceQuestion, saq: ShortAnswerQuestion, dq: DrawingQuestion, active: bool = False):
+async def add_question(course_id: int, lecture_id: int, questionType: str,
+                       mcq: MultipleChoiceQuestion, saq: ShortAnswerQuestion, dq: DrawingQuestion, active: bool = False):
+    """
+    Add a new question to a lecture
+    """
     return {'message': 'Not implemented'}
 
-# get a question from a lecture
+
 @app.get("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
 async def get_question(course_id: int, lecture_id: int, question_id: int):
+    """
+    Get a question from a lecture
+    """
     return {'message': 'Not implemented'}
 
-# update a question from a lecture
+
 @app.put("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
-async def update_question(course_id: int, lecture_id: int, question_id: int, questionType: str, \
-    mcq: MultipleChoiceQuestion, saq: ShortAnswerQuestion, dq: DrawingQuestion, active: bool = False):
+async def update_question(course_id: int, lecture_id: int, question_id: int, questionType: str,
+                          mcq: MultipleChoiceQuestion, saq: ShortAnswerQuestion, dq: DrawingQuestion, active: bool = False):
+    """
+    Update a question from a lecture
+    """
     return {'message': 'Not implemented'}
 
 # remove a question from a lecture
+
+
 @app.delete("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
 async def delete_question(course_id: int, lecture_id: int, question_id: int):
     return {'message': 'Not implemented'}
@@ -224,10 +277,12 @@ async def delete_question(course_id: int, lecture_id: int, question_id: int):
 ##############################################################################
 ##############################################################################
 
-# start mongodb (beanie) connection on startup
+
 @app.on_event("startup")
 async def app_init():
+    """
+    Start mongodb (beanie) connection on startup
+    """
     client = AsyncIOMotorClient("mongodb://localhost:27017")
     # app.db = client.PollAnywhere
     await init_beanie(database=client.PollAnywhere, document_models=[Course, Lecture, Question])
-    
