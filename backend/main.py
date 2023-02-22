@@ -1,6 +1,6 @@
 from beanie import DeleteRules, init_beanie
 from db_utils import get_course_with_id, get_lecture_with_id
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from markupsafe import escape
 from models import (Course, DrawingQuestion, Lecture, MultipleChoiceQuestion,
@@ -244,7 +244,7 @@ async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: 
     """
     Add a new question to a lecture
     """
-    return {'message': 'Not implemented'}
+    raise HTTPException(status_code=501, detail="Not implemented")
 
 
 @app.get("/courses/{course_id}/lectures/{lecture_id}/questions/")
@@ -252,7 +252,7 @@ async def get_questions(course_id: int, lecture_id: int):
     """
     Questions all questions from a lecture
     """
-    return {'message': 'Not implemented'}
+    raise HTTPException(status_code=501, detail="Not implemented")
 
 
 @app.get("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
@@ -260,7 +260,7 @@ async def get_question(course_id: int, lecture_id: int, question_id: int):
     """
     Get a question from a lecture
     """
-    return {'message': 'Not implemented'}
+    raise HTTPException(status_code=501, detail="Not implemented")
 
 
 @app.put("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
@@ -268,14 +268,15 @@ async def update_question(course_id: int, lecture_id: int, question_id: int, que
     """
     Update a question from a lecture
     """
-    return {'message': 'Not implemented'}
-
-# remove a question from a lecture
+    raise HTTPException(status_code=501, detail="Not implemented")
 
 
 @app.delete("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
 async def delete_question(course_id: int, lecture_id: int, question_id: int):
-    return {'message': 'Not implemented'}
+    """
+    Delete a question from a lecture
+    """
+    raise HTTPException(status_code=501, detail="Not implemented")
 
 ##############################################################################
 ##############################################################################
