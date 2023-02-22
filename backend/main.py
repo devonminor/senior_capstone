@@ -240,10 +240,17 @@ async def delete_lecture(course_id: int, lecture_id: int):
 
 
 @app.post("/courses/{course_id}/lectures/{lecture_id}/questions/")
-async def add_question(course_id: int, lecture_id: int, questionType: str,
-                       mcq: MultipleChoiceQuestion, saq: ShortAnswerQuestion, dq: DrawingQuestion, active: bool = False):
+async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: MultipleChoiceQuestion, saq: ShortAnswerQuestion, dq: DrawingQuestion, active: bool = False):
     """
     Add a new question to a lecture
+    """
+    return {'message': 'Not implemented'}
+
+
+@app.get("/courses/{course_id}/lectures/{lecture_id}/questions/")
+async def get_questions(course_id: int, lecture_id: int):
+    """
+    Questions all questions from a lecture
     """
     return {'message': 'Not implemented'}
 
@@ -257,8 +264,7 @@ async def get_question(course_id: int, lecture_id: int, question_id: int):
 
 
 @app.put("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
-async def update_question(course_id: int, lecture_id: int, question_id: int, questionType: str,
-                          mcq: MultipleChoiceQuestion, saq: ShortAnswerQuestion, dq: DrawingQuestion, active: bool = False):
+async def update_question(course_id: int, lecture_id: int, question_id: int, questionType: str, mcq: MultipleChoiceQuestion, saq: ShortAnswerQuestion, dq: DrawingQuestion, active: bool = False):
     """
     Update a question from a lecture
     """
