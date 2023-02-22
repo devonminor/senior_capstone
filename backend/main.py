@@ -1,3 +1,11 @@
+import json
+import os
+from os import environ as env
+from urllib.parse import quote_plus, urlencode
+
+from authlib.integrations.flask_client import OAuth
+from dotenv import find_dotenv, load_dotenv
+
 from beanie import DeleteRules, init_beanie
 from db_utils import get_course_with_id, get_lecture_with_id
 from fastapi import FastAPI
@@ -6,6 +14,11 @@ from models import (Course, DrawingQuestion, Lecture, MultipleChoiceQuestion,
                     Question, ShortAnswerQuestion)
 from motor.motor_asyncio import AsyncIOMotorClient
 from utils import get_todays_date, random_course_id, random_lecture_id
+
+from fastapi import FastAPI, Depends, Security
+from fastapi_auth0 import Auth0, Auth0User
+import jwt
+from configparser import ConfigParser
 
 app = FastAPI()
 
@@ -113,6 +126,11 @@ async def add_lecture(course_id: int, name: str, description: str, active: bool 
     # Update this to use mongodb native syntax
     # https://beanie-odm.dev/tutorial/updating-%26-deleting/
     await course.update({ "$push": { Course.lectures: new_lecture }})
+    # if course.lectures:
+    #     # course.lectures.append(new_lecture)
+    # else:
+    #     course.lectures = [new_lecture]
+    # await course.save()
 
     return new_lecture
 
@@ -231,3 +249,168 @@ async def app_init():
     # app.db = client.PollAnywhere
     await init_beanie(database=client.PollAnywhere, document_models=[Course, Lecture, Question])
     
+
+
+##############################################################################
+##############################################################################
+###########################         LOGIN          ###########################
+##############################################################################
+##############################################################################
+
+# Current version uses pollanywhereAPI and pollanywhere application 
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
+
+auth0_domain = os.getenv('AUTH0_DOMAIN', '')
+auth0_api_audience = os.getenv('AUTH0_API_AUDIENCE', '')
+
+auth = Auth0(domain=auth0_domain, api_audience=auth0_api_audience, scopes={
+    'read:teacher'  : 'Read teacher resource',
+    'read:student'  : 'Read student resource'
+
+})
+
+
+@app.get("/public")
+async def get_public():
+    return {"message": "Anonymous user"}
+
+@app.get("/secure", dependencies=[Depends(auth.implicit_scheme)])
+async def get_secure(user: Auth0User = Security(auth.get_user)):
+    return {"message": f"{user}"}
+
+@app.get("/secure/teacher", dependencies=[Depends(auth.implicit_scheme)])
+async def get_secure_scoped(user: Auth0User = Security(auth.get_user, scopes=["read:teacher"])):
+    return {"message": f"{user}"}
+
+@app.get("/secure/student", dependencies=[Depends(auth.implicit_scheme)])
+async def get_secure_scoped2(user: Auth0User = Security(auth.get_user, scopes=["read:student"])):
+    return {"message": f"{user}"}
+
+
+# # API version
+# def set_up():
+#     """Sets up configuration for the app"""
+
+#     env = os.getenv("ENV", ".config")
+
+#     if env == ".config":
+#         config = ConfigParser()
+#         config.read(".config")
+#         config = config["AUTH0"]
+#     else:
+#         config = {
+#             "DOMAIN": os.getenv("DOMAIN", "your.domain.com"),
+#             "API_AUDIENCE": os.getenv("API_AUDIENCE", "your.audience.com"),
+#             "ISSUER": os.getenv("ISSUER", "https://your.domain.com/"),
+#             "ALGORITHMS": os.getenv("ALGORITHMS", "RS256"),
+#         }
+#     return config
+# class VerifyToken():
+#     """Does all the token verification using PyJWT"""
+
+#     def __init__(self, token):
+#         self.token = token
+#         self.config = set_up()
+
+#         # This gets the JWKS from a given URL and does processing so you can
+#         # use any of the keys available
+#         jwks_url = f'https://{self.config["DOMAIN"]}/.well-known/jwks.json'
+#         self.jwks_client = jwt.PyJWKClient(jwks_url)
+
+#     def verify(self):
+#         # This gets the 'kid' from the passed token
+#         try:
+#             self.signing_key = self.jwks_client.get_signing_key_from_jwt(
+#                 self.token
+#             ).key
+#         except jwt.exceptions.PyJWKClientError as error:
+#             return {"status": "error", "msg": error.__str__()}
+#         except jwt.exceptions.DecodeError as error:
+#             return {"status": "error", "msg": error.__str__()}
+
+#         try:
+#             payload = jwt.decode(
+#                 self.token,
+#                 self.signing_key,
+#                 algorithms=self.config["ALGORITHMS"],
+#                 audience=self.config["API_AUDIENCE"],
+#                 issuer=self.config["ISSUER"],
+#             )
+#         except Exception as e:
+#             return {"status": "error", "message": str(e)}
+
+#         return payload
+
+
+
+
+# @app.get("/api/public")
+# def public():
+#     """No access token required to access this route"""
+ 
+#     result = {
+#         "status": "success",
+#         "msg": ("Hello from a public endpoint! You don't need to be "
+#                 "authenticated to see this.")
+#     }
+#     return result
+
+
+# # new code 👇
+# @app.get("/api/private")
+# def private(token: str = Depends(token_auth_scheme)):
+#     """A valid access token is required to access this route"""
+ 
+#     result = token.credentials
+
+#     return result
+
+    
+# app.secret_key = env.get("APP_SECRET_KEY")
+
+# oauth = OAuth(app)
+
+# oauth.register(
+#     "auth0",
+#     client_id=env.get("AUTH0_CLIENT_ID"),
+#     client_secret=env.get("AUTH0_CLIENT_SECRET"),
+#     client_kwargs={
+#         "scope": "openid profile email",
+#     },
+#     server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration'
+# )
+
+
+
+# @app.route("/login")
+# def login():
+#     return oauth.auth0.authorize_redirect(
+#         redirect_uri=url_for("callback", _external=True)
+#     )
+
+# @app.route("/callback", methods=["GET", "POST"])
+# def callback():
+#     token = oauth.auth0.authorize_access_token()
+#     session["user"] = token
+#     return redirect("/")
+
+# @app.route("/logout")
+# def logout():
+#     session.clear()
+#     return redirect(
+#         "https://" + env.get("AUTH0_DOMAIN")
+#         + "/v2/logout?"
+#         + urlencode(
+#             {
+#                 "returnTo": url_for("home", _external=True),
+#                 "client_id": env.get("AUTH0_CLIENT_ID"),
+#             },
+#             quote_via=quote_plus,
+#         )
+#     )
+
+# @app.route("/")
+# def home():
+#     return render_template("home.html", session=session.get('user'), pretty=json.dumps(session.get('user'), indent=4))
