@@ -3,10 +3,12 @@ from db_utils import get_course_with_id, get_lecture_with_id
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from markupsafe import escape
-from models import (Course, DrawingQuestion, Lecture, MultipleChoiceQuestion,
-                    Question, ShortAnswerQuestion)
+from models import (Course, DrawingQuestion, Lecture, MultipleChoiceOption,
+                    MultipleChoiceQuestion, Question, QuestionType,
+                    ShortAnswerQuestion)
 from motor.motor_asyncio import AsyncIOMotorClient
 from utils import get_todays_date, random_course_id, random_lecture_id
+from validate import validate_mcq
 
 app = FastAPI()
 
@@ -61,7 +63,7 @@ async def get_courses():
 @app.get("/courses/{course_id}")
 async def get_course(course_id: int):
     """
-    Get a course by id 
+    Get a course by id
     """
     course = await get_course_with_id(course_id)
 
@@ -140,9 +142,8 @@ async def add_lecture(course_id: int, name: str, description: str, active: bool 
     await new_lecture.insert()
 
     # update course to reflect new lecture
-    # Update this to use mongodb native syntax
-    # https://beanie-odm.dev/tutorial/updating-%26-deleting/
-    await course.update({"$push": {Course.lectures: new_lecture}})
+    course.lectures.append(new_lecture)
+    await course.save()
 
     return new_lecture
 
@@ -240,11 +241,59 @@ async def delete_lecture(course_id: int, lecture_id: int):
 
 
 @app.post("/courses/{course_id}/lectures/{lecture_id}/questions/")
-async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: MultipleChoiceQuestion, saq: ShortAnswerQuestion, dq: DrawingQuestion, active: bool = False):
+async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: MultipleChoiceQuestion | None = None, saq: ShortAnswerQuestion | None = None, dq: DrawingQuestion | None = None, active: bool = False):
     """
     Add a new question to a lecture
     """
-    raise HTTPException(status_code=501, detail="Not implemented")
+
+    # get course
+    course = await get_course_with_id(course_id)
+    if not course:
+        return {'message': 'Course not found'}
+
+    # get lecture
+    lecture = await get_lecture_with_id(lecture_id)
+    if not lecture:
+        return {'message': 'Lecture not found'}
+
+    if (QuestionType.MULTIPLE_CHOICE == questionType):
+        # validate the Multiple Choice Question
+        if not validate_mcq(mcq):
+            raise HTTPException(status_code=400, detail="Invalid MCQ")
+
+        # create a new question
+        new_question = Question(
+            questionType=QuestionType.MULTIPLE_CHOICE,
+            lectureId=lecture.numId
+        )
+
+        # create multiple coice question
+        new_mc = MultipleChoiceQuestion(
+            title=escape(mcq.title),
+            subtitle=escape(mcq.subtitle) if mcq.subtitle else None,
+            image=escape(mcq.image) if mcq.image else None,
+        )
+
+        # create options if they exist
+        if mcq.options and len(mcq.options) > 0:
+            for (i, option) in enumerate(mcq.options):
+                new_option = MultipleChoiceOption(
+                    name=escape(option.name),
+                    image=escape(option.image) if option.image else None,
+                    order=escape(option.order)
+                )
+
+                new_mc.options.append(new_option)
+
+        new_question.multipleChoiceQuestion = new_mc
+
+        await new_question.insert()
+
+        # update lecture to reflect new question
+        lecture.questions.append(new_question)
+        await lecture.save()
+
+        return new_question
 
 
 @app.get("/courses/{course_id}/lectures/{lecture_id}/questions/")
