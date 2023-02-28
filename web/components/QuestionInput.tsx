@@ -21,9 +21,9 @@ export default function QuestionInput({addQuestion, setAddQuestion}: QuestionInp
     <Modal show={addQuestion} onHide={handleClick}>
         <Modal.Header closeButton>
           <DropdownButton id="dropdown-basic-button" title="Multiple Choice">
-            <Dropdown.Item href="#/action-1">Multiple Choice</Dropdown.Item>
-            <Dropdown.Item href="#/action-2">Free Response</Dropdown.Item>
-            <Dropdown.Item href="#/action-3">Free Drawing</Dropdown.Item>
+            <Dropdown.Item>Multiple Choice</Dropdown.Item>
+            <Dropdown.Item>Free Response</Dropdown.Item>
+            <Dropdown.Item>Free Drawing</Dropdown.Item>
           </DropdownButton>
         </Modal.Header>
         <Modal.Body>

@@ -1,9 +1,10 @@
 import logo from "../public/Poll_Anywhere_logo.png"
 import gear from "../public/gear-wide-connected.svg"
 import Image from 'next/image'
-import React, { Dispatch } from 'react';
+import React from 'react';
 import parse_course_id from "../components/parse_course_id";
 import { useRouter } from "next/router";
+import styles from "../styles/Layout.module.css"
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -23,24 +24,20 @@ export default function Layout({ children, course_id }: LayoutProps) {
   
   return (
     <div>
-      <nav className="navbar navbarCustom navbar-expand-fluid sticky-top bg-light">
-        <div className="container-fluid navContainer">
-          <div className="row navRow">
-            <div className="col navLeft">
-              <a className="navbar-brand" href="/">
-                <Image className="PAlogo" src={logo} alt="Bootstrap"/>
-              </a>
+      <nav className={`navbar navbar-expand-fluid sticky-top bg-light ${styles.navbarCustom}`}>
+        <div className={`row ${styles.navRow}`}>
+          <div className={`col ${styles.navLeft}`}>
+            <a className="navbar-brand" href="/">
+              <Image className={styles.PAlogo} src={logo} alt="Bootstrap"/>
+            </a>
+          </div>
+          <div className={`col ${styles.navCenter}`}>
+              <h1 className={styles.courseText}>{course_name}</h1>
             </div>
-            <div className="col navCenter">
-                <h1 className="courseText">{course_name}</h1>
-              </div>
-            <div className="col">
-              <div className="navRight">
-                <a href="/settings">
-                  <Image className="gearIcon" src={gear} alt="Bootstrap"/>
-                </a>
-              </div>
-            </div>
+          <div className={`col ${styles.navRight}`}>
+            <a href="/settings">
+              <Image className={styles.gearIcon} src={gear} alt="Bootstrap"/>
+            </a>
           </div>
         </div>
       </nav>

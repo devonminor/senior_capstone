@@ -1,8 +1,8 @@
 export default function Home() {
-  return (
-    <>
-      <h1>Home Page</h1>
-      <a href="/courses/">Example Teacher Dashboard</a>
-    </>
-  );
-}
+    return (
+      <>
+        <h1>Home Page</h1>
+        <a href="/courses/ll88/782234">Example Teacher Dashboard</a>
+      </>
+    );
+  }

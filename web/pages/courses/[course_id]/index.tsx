@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import parse_course_id from "../../../components/parse_course_id";
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import styles from "../../../styles/lecturesPage.module.css"
 
 const Course = () => {
     const router = useRouter();
@@ -19,13 +20,13 @@ const Course = () => {
     }
 
     return (
-        <div>
+        <div className={styles.pageBody}>
             <div className="row">
-                <Col className="button">
+                <Col className={styles.addFolderButton}>
                     <Button variant="primary">Add Folder</Button>
                 </Col>
             </div>
-            <div className="row lecturesContainer">
+            <div className={`row ${styles.lecturesContainer}`}>
                 <table className="table table-striped table-hover">
                     <thead>
                         <tr>
