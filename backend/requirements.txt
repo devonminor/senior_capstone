@@ -12,3 +12,4 @@ authlib
 requests
 fastapi-auth0
 jwt
+markupsafe
