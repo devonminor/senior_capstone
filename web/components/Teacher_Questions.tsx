@@ -16,7 +16,7 @@ export default function Teacher_Questions() {
 
         <h3 className={styles.live}>Live</h3>
         
-        <div className="card">
+        <div className={`card ${styles.cardCustom}`}>
             <div className="card-body">
                 <div className="row">
                     <div className={`col ${styles.questionCardLeft}`}>What is your name?</div>
@@ -27,7 +27,7 @@ export default function Teacher_Questions() {
 
         <h3 className={styles.notLive}>Waiting to go live</h3>
 
-        <div className="card">
+        <div className={`card ${styles.cardCustom}`}>
             <div className="card-body">
                 <div className="row">
                     <div className={`col-6 ${styles.questionCardLeft}`}>What is your major?</div>
@@ -35,7 +35,7 @@ export default function Teacher_Questions() {
                 </div>  
             </div>
         </div>
-        <div className="card">
+        <div className={`card ${styles.cardCustom}`}>
             <div className="card-body">
                 <div className="row">
                     <div className={`col-6 ${styles.questionCardLeft}`}>What year/month are you graduating?</div>
@@ -43,7 +43,7 @@ export default function Teacher_Questions() {
                 </div>  
             </div>
         </div>
-        <div className="card">
+        <div className={`card ${styles.cardCustom}`}>
             <div className="card-body">
                 <div className="row">
                     <div className={`col-6 ${styles.questionCardLeft}`}>Name your favorite 3 courses at Tufts.</div>
@@ -51,8 +51,8 @@ export default function Teacher_Questions() {
                 </div>  
             </div>
         </div>
-        <div className="card">
-            <div className="card-body">
+        <div className={`card ${styles.cardCustom}`}>
+             <div className="card-body">
                 <div className="row">
                     <div className={`col-6 ${styles.questionCardLeft}`}>How has your experience in the School of Engineering been?</div>
                     <div className={`col ${styles.questionCardRight}`}><CloseButton/></div>
