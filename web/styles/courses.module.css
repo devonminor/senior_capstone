@@ -1,0 +1,26 @@
+.pageBody {
+    padding: 5px 20px 0px 20px;
+}
+
+.addCourseButton {
+    text-align: right;
+    margin: 10px 10px 0px 10px;
+}
+
+.cardContainer {
+    padding-top: 10px;
+}
+
+.cardCustom {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    min-width: min-content;
+    margin: 10px;
+    border-radius: 10px;
+
+}
+
+.cardImage {
+    max-width: 100%;
+    height: auto;
+    padding: 10px;
+}

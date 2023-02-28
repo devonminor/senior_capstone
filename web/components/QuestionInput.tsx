@@ -21,9 +21,9 @@ export default function QuestionInput({addQuestion, setAddQuestion}: QuestionInp
     <Modal show={addQuestion} onHide={handleClick}>
         <Modal.Header closeButton>
           <DropdownButton id="dropdown-basic-button" title="Multiple Choice">
-            <Dropdown.Item href="#/action-1">Multiple Choice</Dropdown.Item>
-            <Dropdown.Item href="#/action-2">Free Response</Dropdown.Item>
-            <Dropdown.Item href="#/action-3">Free Drawing</Dropdown.Item>
+            <Dropdown.Item>Multiple Choice</Dropdown.Item>
+            <Dropdown.Item>Free Response</Dropdown.Item>
+            <Dropdown.Item>Free Drawing</Dropdown.Item>
           </DropdownButton>
         </Modal.Header>
         <Modal.Body>
@@ -52,28 +52,28 @@ export default function QuestionInput({addQuestion, setAddQuestion}: QuestionInp
             <div className="input-group-prepend">
               <div className="input-group-text">A</div>
             </div>
-            <input type={"text"} className="form-control" id="inlineFormInputGroupUsername2" placeholder="Username"/>
+            <input type={"text"} className="form-control" id="inlineFormInputGroupUsername2"/>
           </div>
 
           <div className="input-group mb-2 mr-sm-2">
             <div className="input-group-prepend">
               <div className="input-group-text">B</div>
             </div>
-            <input type={"text"} className="form-control" id="inlineFormInputGroupUsername2" placeholder="Username"/>
+            <input type={"text"} className="form-control" id="inlineFormInputGroupUsername2"/>
           </div>
 
           <div className="input-group mb-2 mr-sm-2">
             <div className="input-group-prepend">
               <div className="input-group-text">C</div>
             </div>
-            <input type={"text"} className="form-control" id="inlineFormInputGroupUsername2" placeholder="Username"/>
+            <input type={"text"} className="form-control" id="inlineFormInputGroupUsername2"/>
           </div>
 
           <div className="input-group mb-2 mr-sm-2">
             <div className="input-group-prepend">
               <div className="input-group-text">D</div>
             </div>
-            <input type={"text"} className="form-control" id="inlineFormInputGroupUsername2" placeholder="Username"/>
+            <input type={"text"} className="form-control" id="inlineFormInputGroupUsername2"/>
           </div>
 
           <br></br>
