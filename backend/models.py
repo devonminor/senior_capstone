@@ -11,34 +11,43 @@ from pydantic import BaseModel
 ##############################################################################
 ##############################################################################
 
+
 class QuestionType(str, Enum):
-    multiple_choice = "multiple_choice"
-    short_answer = "short_answer"
-    drawing = "drawing"
+    MULTIPLE_CHOICE = "multiple_choice"
+    SHORT_ANSWER = "short_answer"
+    DRAWING = "drawing"
+
+    @classmethod
+    def has_value(cls, value):
+        return value in cls._value2member_map_
+
 
 class MultipleChoiceOption(BaseModel):
     name: str
-    image: str
+    image: Optional[str]
     order: int
+
 
 class MultipleChoiceQuestion(BaseModel):
     title: str
-    subtitle: str
-    image: str
-    options: list[MultipleChoiceOption]
+    subtitle: Optional[str]
+    image: Optional[str]
+    options: Optional[list[MultipleChoiceOption]] = []
+
 
 class ShortAnswerQuestion(BaseModel):
     title: str
     subtitle: str
     image: str
 
+
 class DrawingQuestion(BaseModel):
     title: str
     subtitle: str
     image: str
 
+
 class Question(Document):
-    numId: Indexed(int)
     questionType: QuestionType
     active: bool = False
     lastUpdated: datetime = datetime.now()
@@ -53,6 +62,7 @@ class Question(Document):
 ##########################      LECTURE MODEL       ##########################
 ##############################################################################
 ##############################################################################
+
 
 class Lecture(Document):
     numId: Indexed(int)
