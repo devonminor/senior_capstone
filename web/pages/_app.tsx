@@ -9,6 +9,8 @@ import { useRouter } from "next/router";
 export default function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
     const {course_id, lecture_id} = router.query;
+
+    console.log(course_id);
         
     return (
         <Layout course_id={course_id}>

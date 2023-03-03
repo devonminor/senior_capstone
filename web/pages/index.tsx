@@ -3,6 +3,7 @@ export default function Home() {
       <>
         <h1>Home Page</h1>
         <a href="/courses/ll88/782234">Example Teacher Dashboard</a>
+        <a href="/StudentDashboard">Student Dashboard</a>
       </>
     );
   }
