@@ -13,6 +13,7 @@ const Courses = () => {
                     <Button variant="primary">Add Course</Button>
                 </Col>
             </div>
+            
 
             <div className={styles.cardContainer}>
                 <div className="row">
