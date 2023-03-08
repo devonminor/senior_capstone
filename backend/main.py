@@ -1,15 +1,17 @@
 import json
 import os
+from configparser import ConfigParser
 from os import environ as env
 from urllib.parse import quote_plus, urlencode
 
+import jwt
 from authlib.integrations.flask_client import OAuth
-from dotenv import find_dotenv, load_dotenv
-
 from beanie import DeleteRules, init_beanie
 from db_utils import get_course_with_id, get_lecture_with_id
-from fastapi import FastAPI, HTTPException
+from dotenv import find_dotenv, load_dotenv
+from fastapi import Depends, FastAPI, HTTPException, Security
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_auth0 import Auth0, Auth0User
 from markupsafe import escape
 from models import (Course, DrawingQuestion, Lecture, MultipleChoiceOption,
                     MultipleChoiceQuestion, Question, QuestionType,
@@ -17,11 +19,6 @@ from models import (Course, DrawingQuestion, Lecture, MultipleChoiceOption,
 from motor.motor_asyncio import AsyncIOMotorClient
 from utils import get_todays_date, random_course_id, random_lecture_id
 from validate import validate_mcq
-
-from fastapi import FastAPI, Depends, Security
-from fastapi_auth0 import Auth0, Auth0User
-import jwt
-from configparser import ConfigParser
 
 app = FastAPI()
 
@@ -314,7 +311,20 @@ async def get_questions(course_id: int, lecture_id: int):
     """
     Questions all questions from a lecture
     """
-    raise HTTPException(status_code=501, detail="Not implemented")
+    # get course
+    course = await get_course_with_id(course_id)
+    if not course:
+        return {'message': 'Course not found'}
+
+    # get lecture
+    lecture = await get_lecture_with_id(lecture_id)
+    if not lecture:
+        return {'message': 'Lecture not found'}
+
+    # get questions
+    questions = await Question.find(Question.lectureId == lecture.numId).to_list()
+
+    return questions
 
 
 @app.get("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
@@ -355,7 +365,6 @@ async def app_init():
     client = AsyncIOMotorClient("mongodb://localhost:27017")
     # app.db = client.PollAnywhere
     await init_beanie(database=client.PollAnywhere, document_models=[Course, Lecture, Question])
-    
 
 
 ##############################################################################
@@ -364,7 +373,7 @@ async def app_init():
 ##############################################################################
 ##############################################################################
 
-# Current version uses pollanywhereAPI and pollanywhere application 
+# Current version uses pollanywhereAPI and pollanywhere application
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
@@ -373,8 +382,8 @@ auth0_domain = os.getenv('AUTH0_DOMAIN', '')
 auth0_api_audience = os.getenv('AUTH0_API_AUDIENCE', '')
 
 auth = Auth0(domain=auth0_domain, api_audience=auth0_api_audience, scopes={
-    'read:teacher'  : 'Read teacher resource',
-    'read:student'  : 'Read student resource'
+    'read:teacher': 'Read teacher resource',
+    'read:student': 'Read student resource'
 
 })
 
@@ -383,13 +392,16 @@ auth = Auth0(domain=auth0_domain, api_audience=auth0_api_audience, scopes={
 async def get_public():
     return {"message": "Anonymous user"}
 
+
 @app.get("/secure", dependencies=[Depends(auth.implicit_scheme)])
 async def get_secure(user: Auth0User = Security(auth.get_user)):
     return {"message": f"{user}"}
 
+
 @app.get("/secure/teacher", dependencies=[Depends(auth.implicit_scheme)])
 async def get_secure_scoped(user: Auth0User = Security(auth.get_user, scopes=["read:teacher"])):
     return {"message": f"{user}"}
+
 
 @app.get("/secure/student", dependencies=[Depends(auth.implicit_scheme)])
 async def get_secure_scoped2(user: Auth0User = Security(auth.get_user, scopes=["read:student"])):
@@ -451,12 +463,10 @@ async def get_secure_scoped2(user: Auth0User = Security(auth.get_user, scopes=["
 #         return payload
 
 
-
-
 # @app.get("/api/public")
 # def public():
 #     """No access token required to access this route"""
- 
+
 #     result = {
 #         "status": "success",
 #         "msg": ("Hello from a public endpoint! You don't need to be "
@@ -469,12 +479,12 @@ async def get_secure_scoped2(user: Auth0User = Security(auth.get_user, scopes=["
 # @app.get("/api/private")
 # def private(token: str = Depends(token_auth_scheme)):
 #     """A valid access token is required to access this route"""
- 
+
 #     result = token.credentials
 
 #     return result
 
-    
+
 # app.secret_key = env.get("APP_SECRET_KEY")
 
 # oauth = OAuth(app)
@@ -488,7 +498,6 @@ async def get_secure_scoped2(user: Auth0User = Security(auth.get_user, scopes=["
 #     },
 #     server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration'
 # )
-
 
 
 # @app.route("/login")
