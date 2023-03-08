@@ -1,19 +1,27 @@
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import LectureRow from '../../../components/LectureRow';
+import { getLecturesForCourse } from '../../../lib/api';
 import styles from '../../../styles/lecturesPage.module.css';
 
-const Course = () => {
+const Lectures = () => {
     const router = useRouter();
     const course_id = router.query.course_id;
+    const [lectures, setLectures] = useState([]);
+
+    useEffect(() => {
+        if (typeof course_id === 'string') {
+            getLecturesForCourse(course_id).then((res) => {
+                console.log(res);
+                setLectures(res);
+            });
+        }
+    }, [course_id]);
 
     if (typeof course_id != 'string') {
         return <></>;
-    }
-
-    function handleClick() {
-        var url = `/courses/${course_id}/lectures/123456`;
-        router.push(url);
     }
 
     return (
@@ -32,18 +40,20 @@ const Course = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr onClick={handleClick}>
-                            <th scope='row'>1</th>
-                            <td>Building a Web Page Overview</td>
-                        </tr>
-                        <tr onClick={handleClick}>
-                            <th scope='row'>2</th>
-                            <td>Setting Up the Backend</td>
-                        </tr>
-                        <tr onClick={handleClick}>
-                            <th scope='row'>3</th>
-                            <td>Setting Up the Frontend</td>
-                        </tr>
+                        {/* TODO: Give this a proper Lecture type */}
+                        {lectures &&
+                            lectures.map((lecture: any, i: number) => {
+                                return (
+                                    <LectureRow
+                                        key={lecture.numId}
+                                        row={i + 1}
+                                        router={router}
+                                        course_id={course_id}
+                                        lecture_id={lecture.numId}
+                                        lecture_name={lecture.name}
+                                    />
+                                );
+                            })}
                     </tbody>
                 </table>
             </div>
@@ -51,4 +61,4 @@ const Course = () => {
     );
 };
 
-export default Course;
+export default Lectures;
