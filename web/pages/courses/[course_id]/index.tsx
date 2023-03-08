@@ -12,7 +12,7 @@ const Course = () => {
     }
 
     function handleClick() {
-        var url = `/courses/${course_id}/123456`;
+        var url = `/courses/${course_id}/lectures/123456`;
         router.push(url);
     }
 
