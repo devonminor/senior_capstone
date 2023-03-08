@@ -1,57 +1,54 @@
-import { useRouter } from "next/router";
-import parse_course_id from "../../../components/parse_course_id";
+import { useRouter } from 'next/router';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
-import styles from "../../../styles/lecturesPage.module.css"
+import styles from '../../../styles/lecturesPage.module.css';
 
 const Course = () => {
     const router = useRouter();
     const course_id = router.query.course_id;
 
-    if (typeof course_id != "string") {
-        return <></>
+    if (typeof course_id != 'string') {
+        return <></>;
     }
 
-    var course_name = parse_course_id(course_id)
-
     function handleClick() {
-        var url = "/courses/" + course_id + "/123456"
-        router.push(url)
+        var url = '/courses/' + course_id + '/123456';
+        router.push(url);
     }
 
     return (
         <div className={styles.pageBody}>
-            <div className="row">
+            <div className='row'>
                 <Col className={styles.addFolderButton}>
-                    <Button variant="primary">Add Folder</Button>
+                    <Button variant='primary'>Add Folder</Button>
                 </Col>
             </div>
             <div className={`row ${styles.lecturesContainer}`}>
-                <table className="table table-striped table-hover">
+                <table className='table table-striped table-hover'>
                     <thead>
                         <tr>
-                        <th scope="col">Unit #</th>
-                        <th scope="col"></th>
+                            <th scope='col'>Unit #</th>
+                            <th scope='col'></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr onClick={handleClick}>
-                            <th scope="row">1</th>
+                            <th scope='row'>1</th>
                             <td>Building a Web Page Overview</td>
                         </tr>
                         <tr onClick={handleClick}>
-                            <th scope="row">2</th>
+                            <th scope='row'>2</th>
                             <td>Setting Up the Backend</td>
                         </tr>
                         <tr onClick={handleClick}>
-                            <th scope="row">3</th>
+                            <th scope='row'>3</th>
                             <td>Setting Up the Frontend</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Course;

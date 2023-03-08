@@ -4,7 +4,6 @@ import React from 'react';
 import gear from '../public/gear-wide-connected.svg';
 import logo from '../public/Poll_Anywhere_logo.png';
 import styles from '../styles/Layout.module.css';
-import parse_course_id from './parse_course_id';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -17,9 +16,13 @@ export default function Layout({ children, course_id }: LayoutProps) {
 
     if (router.route == '/courses') {
         course_name = 'My Courses';
-    } else if (parse_course_id(course_id).length > 0) {
-        course_name = parse_course_id(course_id);
+    } else {
+        // TODO: Add logic to parse course_id and return course name
+        course_name = 'Course Name To Be Here';
     }
+    // }else if (parse_course_id(course_id).length > 0) {
+    //     course_name = parse_course_id(course_id);
+    // }
 
     return (
         <div>
