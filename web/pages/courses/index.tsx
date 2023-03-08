@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import { Container, Row } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import CourseCard from '../../components/CourseCard';
@@ -7,6 +8,7 @@ import styles from '../../styles/courses.module.css';
 
 const Courses = () => {
     const [courses, setCourses] = useState([]);
+    const [displayAddCourse, toggleAddCourse] = useState(false);
 
     useEffect(() => {
         getCourses().then((res) => {
@@ -17,8 +19,9 @@ const Courses = () => {
     return (
         <div className={styles.pageBody}>
             <div className='row'>
+                <h2>Instructor Courses</h2>
                 <Col className={styles.addCourseButton}>
-                    <Button variant='primary'>Add Course</Button>
+                    <Button variant='primary'>Create a Course</Button>
                 </Col>
             </div>
 
@@ -39,6 +42,55 @@ const Courses = () => {
                         })}
                 </div>
             </div>
+
+            <div className='row'>
+                <h2>Student Courses</h2>
+                <div className='d-grid gap-2 mx-4 my-3'>
+                    <Button
+                        variant='btn btn-outline-primary'
+                        onClick={() => toggleAddCourse(!displayAddCourse)}
+                    >
+                        Add Course
+                    </Button>
+                </div>
+            </div>
+
+            {displayAddCourse && (
+                <Fragment>
+                    <Container>
+                        <Row className='justify-content-md-center'>
+                            <Col md='auto'>
+                                <form>
+                                    <div className='form-group '>
+                                        <div className='row '>
+                                            <label
+                                                className='justify-content-md-center'
+                                                htmlFor='courseCodeReg'
+                                            >
+                                                Course Code ID
+                                            </label>
+                                            <input
+                                                type='email'
+                                                className='form-control'
+                                                id='courseCodeReg'
+                                                placeholder='Tufts 00000'
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className='d-flex justify-content-center'>
+                                        <button
+                                            type='submit'
+                                            className='btn btn-outline-primary my-2'
+                                        >
+                                            Add
+                                        </button>
+                                    </div>
+                                </form>
+                            </Col>
+                        </Row>
+                    </Container>
+                </Fragment>
+            )}
         </div>
     );
 };

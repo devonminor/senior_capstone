@@ -15,14 +15,11 @@ export default function Layout({ children, course_id }: LayoutProps) {
     const router = useRouter();
 
     if (router.route == '/courses') {
-        course_name = 'My Courses';
+        course_name = 'Dashboard';
     } else {
         // TODO: Add logic to parse course_id and return course name
         course_name = 'Course Name To Be Here';
     }
-    // }else if (parse_course_id(course_id).length > 0) {
-    //     course_name = parse_course_id(course_id);
-    // }
 
     return (
         <div>
