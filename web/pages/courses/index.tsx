@@ -1,9 +1,19 @@
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import CourseCard from '../../components/CourseCard';
+import { getCourses } from '../../lib/api';
 import styles from '../../styles/courses.module.css';
 
 const Courses = () => {
+    const [courses, setCourses] = useState([]);
+
+    useEffect(() => {
+        getCourses().then((res) => {
+            setCourses(res);
+        });
+    }, []);
+
     return (
         <div className={styles.pageBody}>
             <div className='row'>
@@ -14,22 +24,19 @@ const Courses = () => {
 
             <div className={styles.cardContainer}>
                 <div className='row'>
-                    <CourseCard
-                        course_title='CS 116'
-                        course_season='Spring 2023'
-                    />
-                    <CourseCard
-                        course_title='ES 56'
-                        course_season='Spring 2023'
-                    />
-                    <CourseCard
-                        course_title='CS 170'
-                        course_season='Fall 2022'
-                    />
-                    <CourseCard
-                        course_title='MATH 42'
-                        course_season='Fall 2022'
-                    />
+                    {courses &&
+                        // TODO: Give this a proper Course type
+                        // TODO: Add a season to the course in database or remove it from the card
+                        courses.map((course: any) => {
+                            return (
+                                <CourseCard
+                                    key={course.numId}
+                                    course_id={course.numId}
+                                    course_title={course.name}
+                                    course_season={'Spring 2023'}
+                                />
+                            );
+                        })}
                 </div>
             </div>
         </div>

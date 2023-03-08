@@ -3,11 +3,16 @@ import jumbo from '../public/Tufts_Jumbos_logo.png';
 import styles from '../styles/courses.module.css';
 
 interface ICourseCard {
+    course_id: string;
     course_title: string;
     course_season: string;
 }
 
-const CourseCard = ({ course_title, course_season }: ICourseCard) => {
+const CourseCard = ({
+    course_id,
+    course_title,
+    course_season,
+}: ICourseCard) => {
     return (
         <div className='col-sm-3'>
             <div className={styles.cardCustom}>
@@ -24,7 +29,10 @@ const CourseCard = ({ course_title, course_season }: ICourseCard) => {
                                 {course_season}
                             </small>
                         </p>
-                        <a href='/courses/cs116' className='btn btn-primary'>
+                        <a
+                            href={`/courses/${course_id}`}
+                            className='btn btn-primary'
+                        >
                             View Course
                         </a>
                     </div>
