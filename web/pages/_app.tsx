@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import Layout from '../pages/Layout';
+import Layout from '../components/Layout';
 import '../styles/globals.css';
 
 export default function App({ Component, pageProps }: AppProps) {
