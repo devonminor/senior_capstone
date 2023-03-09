@@ -4,21 +4,36 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import { addQuestionToLecture } from '../lib/api';
+import { QuestionTypeEnum } from '../lib/types';
 import QuestionTimeLimit from './QuestionTimeLimit';
 import ResponseOption from './ResponseOption';
 
 type QuestionInputProps = {
+    course_id: string;
+    lecture_id: string;
     addQuestion: boolean;
     setAddQuestion: Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function QuestionInput({
+    course_id,
+    lecture_id,
     addQuestion,
     setAddQuestion,
 }: QuestionInputProps) {
     const defaultNumResponseOptions = 2;
 
-    const handleClick = () => {
+    const handleSave = () => {
+        addQuestionToLecture(
+            course_id,
+            lecture_id,
+            QuestionTypeEnum.MULTIPLE_CHOICE,
+            questionTitle
+        ).then((res) => {
+            // reload the page to update the question list
+            window.location.reload();
+        });
         setAddQuestion(false);
     };
 
@@ -27,12 +42,11 @@ export default function QuestionInput({
             index: number;
         }[]
     >([]);
+    const [questionTitle, setQuestionTitle] = useState('');
 
+    // When the modal opens, reset it to the default state
     useEffect(() => {
-        console.log(responseOptions);
-    }, [responseOptions]);
-
-    useEffect(() => {
+        setQuestionTitle('');
         setResponseOptions(
             [...Array(defaultNumResponseOptions)].map((_, i) => {
                 return { index: i, text: '' };
@@ -45,7 +59,7 @@ export default function QuestionInput({
     }
 
     return (
-        <Modal show={addQuestion} onHide={handleClick}>
+        <Modal show={addQuestion} onHide={() => setAddQuestion(false)}>
             <Modal.Header closeButton>
                 <DropdownButton
                     id='dropdown-basic-button'
@@ -65,7 +79,14 @@ export default function QuestionInput({
                             className='mb-3'
                             controlId='exampleForm.ControlTextarea1'
                         >
-                            <Form.Control as='textarea' rows={3} />
+                            <Form.Control
+                                as='textarea'
+                                rows={3}
+                                value={questionTitle}
+                                onChange={(e) => {
+                                    setQuestionTitle(e.target.value);
+                                }}
+                            />
                         </Form.Group>
                     </Form>
 
@@ -114,7 +135,7 @@ export default function QuestionInput({
                 </>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant='primary' onClick={handleClick}>
+                <Button variant='primary' onClick={handleSave}>
                     Save Changes
                 </Button>
             </Modal.Footer>

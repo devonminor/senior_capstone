@@ -1,3 +1,5 @@
+import { QuestionTypeEnum } from "./types";
+
 const API_URL = 'http://localhost:5002';
 
 /******************************************************************************
@@ -54,6 +56,20 @@ export const getQuestionsForLecture = (course_id: string, lecture_id: string) =>
         .catch((err) => {
             console.log(err);
         });
+}
+
+export const addQuestionToLecture = (course_id: string, lecture_id: string, question_type: string, title: string) => {
+    if (question_type === QuestionTypeEnum.MULTIPLE_CHOICE)
+        return fetch(`${API_URL}/courses/${course_id}/lectures/${lecture_id}/questions?questionType=${QuestionTypeEnum.MULTIPLE_CHOICE}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mcq: { title } })
+        })
+            .then((res) => res.json())
+            .catch((err) => {
+                console.log(err);
+            });
+    throw new Error("Question type not supported");
 }
 
 export const removeQuestionFromLecture = (course_id: string, lecture_id: string, question_id: string) => {

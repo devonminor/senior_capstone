@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { QuestionType } from '../lib/types';
+import { QuestionTypeEnum } from '../lib/types';
 import styles from '../styles/TeacherQuestions.module.css';
 import QuestionButton from './QuestionButton';
 import QuestionCard from './QuestionCard';
@@ -28,13 +28,16 @@ const TeacherQuestions = ({
             />
 
             <QuestionInput
+                course_id={course_id}
+                lecture_id={lecture_id}
                 addQuestion={addQuestion}
                 setAddQuestion={setAddQuestion}
             />
 
             {/* Only display a LIVE question if there is one */}
             {liveQuestion &&
-                liveQuestion.questionType === QuestionType.MULTIPLE_CHOICE && (
+                liveQuestion.questionType ===
+                    QuestionTypeEnum.MULTIPLE_CHOICE && (
                     <>
                         <h3 className={styles.live}>Live</h3>
                         <QuestionCard
@@ -50,7 +53,7 @@ const TeacherQuestions = ({
             {questions &&
                 questions.length > 0 &&
                 questions.map((q) => {
-                    if (q.questionType === QuestionType.MULTIPLE_CHOICE)
+                    if (q.questionType === QuestionTypeEnum.MULTIPLE_CHOICE)
                         return (
                             <QuestionCard
                                 key={q._id}
