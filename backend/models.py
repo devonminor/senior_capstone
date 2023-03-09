@@ -48,6 +48,7 @@ class DrawingQuestion(BaseModel):
 
 
 class Question(Document):
+    numId: Indexed(int)
     questionType: QuestionType
     active: bool = False
     lastUpdated: datetime = datetime.now()

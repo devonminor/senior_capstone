@@ -7,7 +7,8 @@ from urllib.parse import quote_plus, urlencode
 import jwt
 from authlib.integrations.flask_client import OAuth
 from beanie import DeleteRules, init_beanie
-from db_utils import get_course_with_id, get_lecture_with_id
+from db_utils import (get_course_with_id, get_lecture_with_id,
+                      get_question_with_id)
 from dotenv import find_dotenv, load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Security
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,7 +18,8 @@ from models import (Course, DrawingQuestion, Lecture, MultipleChoiceOption,
                     MultipleChoiceQuestion, Question, QuestionType,
                     ShortAnswerQuestion)
 from motor.motor_asyncio import AsyncIOMotorClient
-from utils import get_todays_date, random_course_id, random_lecture_id
+from utils import (get_todays_date, random_course_id, random_lecture_id,
+                   random_question_id)
 from validate import validate_mcq
 
 app = FastAPI()
@@ -221,7 +223,7 @@ async def update_lecture(course_id: int, lecture_id: int, name: str, description
 @app.delete("/courses/{course_id}/lectures/{lecture_id}")
 async def delete_lecture(course_id: int, lecture_id: int):
     """
-    Detlete a lecture from a course
+    Delete a lecture from a course
     """
     # get course
     course = await get_course_with_id(course_id)
@@ -271,8 +273,12 @@ async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: 
         if not validate_mcq(mcq):
             raise HTTPException(status_code=400, detail="Invalid MCQ")
 
+        # get a random lecture id
+        numId = await random_question_id()
+
         # create a new question
         new_question = Question(
+            numId=numId,
             questionType=QuestionType.MULTIPLE_CHOICE,
             lectureId=lecture.numId
         )
@@ -348,7 +354,30 @@ async def delete_question(course_id: int, lecture_id: int, question_id: int):
     """
     Delete a question from a lecture
     """
-    raise HTTPException(status_code=501, detail="Not implemented")
+    # get course
+    course = await get_course_with_id(course_id)
+    if not course:
+        return {'message': 'Course not found'}
+
+    # get lecture
+    lecture = await get_lecture_with_id(lecture_id)
+    if not lecture:
+        return {'message': 'Lecture not found'}
+
+    # get question
+    question = await get_question_with_id(question_id)
+    if not question:
+        return {'message': 'Question not found'}
+
+    # delete lecture from course
+    if (course.lectures and lecture in course.lectures and lecture.questions and question in lecture.questions):
+        lecture.questions.remove(question)
+    await lecture.save()
+
+    # delete lecture
+    await question.delete(link_rule=DeleteRules.DELETE_LINKS)
+
+    return {'message': 'Question deleted'}
 
 ##############################################################################
 ##############################################################################

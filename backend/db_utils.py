@@ -13,3 +13,10 @@ async def get_lecture_with_id(lecture_id: int):
     Get a lecture by id from the database
     """
     return await Lecture.find_one(Lecture.numId == lecture_id)
+
+
+async def get_question_with_id(question_id: int):
+    """
+    Get a question by id from the database
+    """
+    return await Question.find_one(Question.numId == question_id)

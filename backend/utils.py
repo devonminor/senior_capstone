@@ -1,8 +1,8 @@
 import random
 from datetime import date
 
-from db_utils import get_course_with_id, get_lecture_with_id
-from models import Course, Lecture, Question
+from db_utils import (get_course_with_id, get_lecture_with_id,
+                      get_question_with_id)
 
 
 def get_todays_date():
@@ -31,5 +31,15 @@ async def random_lecture_id():
     """
     random_int = random.randint(100000, 999999)
     while (await get_lecture_with_id(random_int)):
+        random_int = random.randint(100000, 999999)
+    return random_int
+
+
+async def random_question_id():
+    """
+    return a random 6 digit question id that hasn't already been taken
+    """
+    random_int = random.randint(100000, 999999)
+    while (await get_question_with_id(random_int)):
         random_int = random.randint(100000, 999999)
     return random_int
