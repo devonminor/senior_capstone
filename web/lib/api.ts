@@ -23,3 +23,11 @@ export const getLecturesForCourse = (course_id: string) => {
             console.log(err);
         });
 }
+
+export const getQuestionsForLecture = (course_id: string, lecture_id: string) => {
+    return fetch(`${API_URL}/courses/${course_id}/lectures/${lecture_id}/questions`)
+        .then((res) => res.json())
+        .catch((err) => {
+            console.log(err);
+        });
+}
