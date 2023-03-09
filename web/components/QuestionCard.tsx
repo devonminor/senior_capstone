@@ -1,24 +1,41 @@
 import { CloseButton } from 'react-bootstrap';
+import { removeQuestionFromLecture } from '../lib/api';
 import styles from '../styles/TeacherQuestions.module.css';
 import LiveIcon from './svg/LiveIcon';
 
 interface IQuestionCard {
-    title: string;
+    question: any;
     live?: boolean;
+    course_id: string;
+    lecture_id: string;
 }
 
-const QuestionCard = ({ title, live = false }: IQuestionCard) => {
+const QuestionCard = ({
+    question,
+    live = false,
+    course_id,
+    lecture_id,
+}: IQuestionCard) => {
+    const handleDelete = () => {
+        removeQuestionFromLecture(course_id, lecture_id, question.numId).then(
+            () => {
+                // refresh the page
+                window.location.reload();
+            }
+        );
+    };
+
     return (
         <div className={`card ${styles.cardCustom}`}>
             <div className='card-body'>
                 <div className='row'>
                     <div className={`col-6 ${styles.questionCardLeft}`}>
-                        {title}
+                        {question.multipleChoiceQuestion.title}
                     </div>
                     <div className={`col ${styles.questionCardRight}`}>
                         {live && <LiveIcon fill='green' />}
                         {!live && <LiveIcon fill='darkred' />}
-                        <CloseButton />
+                        <CloseButton onClick={handleDelete} />
                     </div>
                 </div>
             </div>

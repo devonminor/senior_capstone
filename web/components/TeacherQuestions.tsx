@@ -8,9 +8,16 @@ import QuestionInput from './QuestionInput';
 interface ITeacherQuestions {
     liveQuestion: any;
     questions: any[];
+    course_id: string;
+    lecture_id: string;
 }
 
-const TeacherQuestions = ({ liveQuestion, questions }: ITeacherQuestions) => {
+const TeacherQuestions = ({
+    liveQuestion,
+    questions,
+    course_id,
+    lecture_id,
+}: ITeacherQuestions) => {
     const [addQuestion, setAddQuestion] = useState(false);
 
     return (
@@ -31,7 +38,9 @@ const TeacherQuestions = ({ liveQuestion, questions }: ITeacherQuestions) => {
                     <>
                         <h3 className={styles.live}>Live</h3>
                         <QuestionCard
-                            title={liveQuestion.multipleChoiceQuestion.title}
+                            question={liveQuestion}
+                            course_id={course_id}
+                            lecture_id={lecture_id}
                         />
                     </>
                 )}
@@ -45,7 +54,9 @@ const TeacherQuestions = ({ liveQuestion, questions }: ITeacherQuestions) => {
                         return (
                             <QuestionCard
                                 key={q._id}
-                                title={q.multipleChoiceQuestion.title}
+                                question={q}
+                                course_id={course_id}
+                                lecture_id={lecture_id}
                             />
                         );
                 })}

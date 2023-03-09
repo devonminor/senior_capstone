@@ -33,10 +33,16 @@ const Lecture = () => {
             >
                 <Tab eventKey='questions' title='Questions'>
                     <TeacherQuestions
-                        liveQuestion={questions.find((q: any) => {
-                            return q.active;
-                        })}
+                        liveQuestion={
+                            questions &&
+                            questions.length > 0 &&
+                            questions.find((q: any) => {
+                                return q.active;
+                            })
+                        }
                         questions={questions}
+                        course_id={course_id as string}
+                        lecture_id={lecture_id as string}
                     />
                 </Tab>
                 <Tab eventKey='roster' title='Roster'>

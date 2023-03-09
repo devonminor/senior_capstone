@@ -31,3 +31,13 @@ export const getQuestionsForLecture = (course_id: string, lecture_id: string) =>
             console.log(err);
         });
 }
+
+export const removeQuestionFromLecture = (course_id: string, lecture_id: string, question_id: string) => {
+    return fetch(`${API_URL}/courses/${course_id}/lectures/${lecture_id}/questions/${question_id}`, {
+        method: 'DELETE',
+    })
+        .then((res) => res.json())
+        .catch((err) => {
+            console.log(err);
+        });
+}
