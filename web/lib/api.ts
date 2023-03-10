@@ -58,12 +58,12 @@ export const getQuestionsForLecture = (course_id: string, lecture_id: string) =>
         });
 }
 
-export const addQuestionToLecture = (course_id: string, lecture_id: string, question_type: string, title: string) => {
+export const addQuestionToLecture = (course_id: string, lecture_id: string, question_type: string, title: string, options: { name: string, order: number }[]) => {
     if (question_type === QuestionTypeEnum.MULTIPLE_CHOICE)
         return fetch(`${API_URL}/courses/${course_id}/lectures/${lecture_id}/questions?questionType=${QuestionTypeEnum.MULTIPLE_CHOICE}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mcq: { title } })
+            body: JSON.stringify({ mcq: { title, options: options } })
         })
             .then((res) => res.json())
             .catch((err) => {

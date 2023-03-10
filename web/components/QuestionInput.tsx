@@ -6,7 +6,6 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { addQuestionToLecture } from '../lib/api';
 import { QuestionTypeEnum } from '../lib/types';
-import QuestionTimeLimit from './QuestionTimeLimit';
 import ResponseOption from './ResponseOption';
 
 type QuestionInputProps = {
@@ -25,11 +24,15 @@ export default function QuestionInput({
     const defaultNumResponseOptions = 2;
 
     const handleSave = () => {
+        const options = responseOptions.map((option, i) => {
+            return { name: option.text, order: i + 1 };
+        });
         addQuestionToLecture(
             course_id,
             lecture_id,
             QuestionTypeEnum.MULTIPLE_CHOICE,
-            questionTitle
+            questionTitle,
+            options
         ).then((res) => {
             // reload the page to update the question list
             window.location.reload();
@@ -40,6 +43,7 @@ export default function QuestionInput({
     const [responseOptions, setResponseOptions] = useState<
         {
             index: number;
+            text: string;
         }[]
     >([]);
     const [questionTitle, setQuestionTitle] = useState('');
@@ -121,6 +125,7 @@ export default function QuestionInput({
                                             responseOptions.at(-1)!.index +
                                                 1) ||
                                         0,
+                                    text: '',
                                 },
                             ]);
                         }}
@@ -128,10 +133,8 @@ export default function QuestionInput({
                         Add Option
                     </button>
 
-                    <br></br>
-
-                    <Modal.Title>Time Limit</Modal.Title>
-                    <QuestionTimeLimit />
+                    {/* <Modal.Title>Time Limit</Modal.Title>
+                    <QuestionTimeLimit /> */}
                 </>
             </Modal.Body>
             <Modal.Footer>
