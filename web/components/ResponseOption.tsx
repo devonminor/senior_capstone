@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CloseButton } from 'react-bootstrap';
 
 interface IReponseOption {
@@ -6,11 +6,13 @@ interface IReponseOption {
     responseIndex: number;
     responseOptions: {
         index: number;
+        text: string;
     }[];
     setResponseOptions: React.Dispatch<
         React.SetStateAction<
             {
                 index: number;
+                text: string;
             }[]
         >
     >;
@@ -23,6 +25,20 @@ const ResponseOption = ({
 }: IReponseOption) => {
     const [hoveringIndex, setHoveringIndex] = useState(false);
 
+    const [text, setText] = useState('');
+
+    useEffect(() => {
+        // update the response option in the array
+        setResponseOptions(
+            responseOptions.map((responseOption) => {
+                if (responseOption.index === responseIndex) {
+                    return { index: responseIndex, text };
+                }
+                return responseOption;
+            })
+        );
+    }, [text]);
+
     return (
         <div className='input-group mb-2 mr-sm-2'>
             <div className='input-group-prepend'>
@@ -31,7 +47,6 @@ const ResponseOption = ({
                     onMouseEnter={() => setHoveringIndex(true)}
                     onMouseLeave={() => setHoveringIndex(false)}
                     onClick={() => {
-                        console.log('clicked');
                         // remove the response option from the array
                         setResponseOptions(
                             responseOptions.filter(
@@ -49,6 +64,10 @@ const ResponseOption = ({
                 type={'text'}
                 className='form-control'
                 id='inlineFormInputGroupUsername2'
+                value={text}
+                onChange={(e) => {
+                    setText(e.target.value);
+                }}
             />
         </div>
     );
