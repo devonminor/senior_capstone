@@ -10,6 +10,8 @@ uvicorn[standard]
 python-dotenv
 authlib
 requests
-fastapi-auth0
-jwt
 markupsafe
+pydantic
+PyJWT
+starlette
+secure
