@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from beanie import Document, Indexed, Link
 from pydantic import BaseModel
+import tkinter as tk 
 
 ##############################################################################
 ##############################################################################
@@ -35,16 +36,28 @@ class MultipleChoiceQuestion(BaseModel):
     options: Optional[list[MultipleChoiceOption]] = []
 
 
+
 class ShortAnswerQuestion(BaseModel):
-    title: str
+    prompt: str
     subtitle: str
+    answer_space: str
     image: str
+
+class DrawingCanvas(BaseModel, tk):
+    def getCanvas():
+        app = tk()
+        app.geometry("400x400")
+        app.mainloop()
+
+        canvas = tk.Canvas(app, bg='white')
+        canvas.pack(anchor='nw', fill='both', expand=1)
 
 
 class DrawingQuestion(BaseModel):
     title: str
     subtitle: str
     image: str
+    medium: DrawingCanvas
 
 
 class Question(Document):

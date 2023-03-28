@@ -5,7 +5,7 @@ from os import environ as env
 from urllib.parse import quote_plus, urlencode
 
 import jwt
-from authlib.integrations.flask_client import OAuth
+from authlib.integrations.starlette_client import OAuth
 from beanie import DeleteRules, init_beanie
 from db_utils import (get_course_with_id, get_lecture_with_id,
                       get_question_with_id)
