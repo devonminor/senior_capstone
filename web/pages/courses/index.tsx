@@ -5,6 +5,8 @@ import Col from 'react-bootstrap/Col';
 import CourseCard from '../../components/CourseCard';
 import { getCourses } from '../../lib/api';
 import styles from '../../styles/courses.module.css';
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form'
 
 const Courses = () => {
     const [courses, setCourses] = useState([]);
@@ -16,12 +18,49 @@ const Courses = () => {
         });
     }, []);
 
+    function handleShowAddCourse() {
+        toggleAddCourse(true)
+    }
+
+    function handleHideAddQuestion() {
+        toggleAddCourse(false)
+    }
+
     return (
         <div className={styles.pageBody}>
+            <Modal show={displayAddCourse} onHide={handleHideAddQuestion}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Create Course</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Modal.Title>Course Name</Modal.Title>
+
+                    <input className="form-control" type="text"/>
+
+                    <br></br>
+
+                    <Modal.Title>Description</Modal.Title>
+
+                    <Form>
+                        <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlTextarea1"
+                        >
+                        <Form.Control as="textarea" rows={3} />
+                        </Form.Group>
+                    </Form>
+                    </Modal.Body>
+                <Modal.Footer>
+                <Button variant="primary" onClick={handleHideAddQuestion}>
+                    Save Changes
+                </Button>
+                </Modal.Footer>
+            </Modal>
+
             <div className='row'>
                 <h2>Instructor Courses</h2>
                 <Col className={styles.addCourseButton}>
-                    <Button variant='primary'>Create a Course</Button>
+                    <Button variant='primary' onClick={handleShowAddCourse}>Create Course</Button>
                 </Col>
             </div>
 
@@ -94,5 +133,6 @@ const Courses = () => {
         </div>
     );
 };
+
 
 export default Courses;
