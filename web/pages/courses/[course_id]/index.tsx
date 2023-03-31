@@ -5,11 +5,14 @@ import Col from 'react-bootstrap/Col';
 import LectureRow from '../../../components/LectureRow';
 import { getLecturesForCourse } from '../../../lib/api';
 import styles from '../../../styles/lecturesPage.module.css';
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form'
 
 const Lectures = () => {
     const router = useRouter();
     const course_id = router.query.course_id;
     const [lectures, setLectures] = useState([]);
+    const [displayAddFolder, toggleAddFolder] = useState(false);
 
     useEffect(() => {
         if (typeof course_id === 'string') {
@@ -24,11 +27,47 @@ const Lectures = () => {
         return <></>;
     }
 
+    function handleShowAddFolder() {
+        toggleAddFolder(true)
+    }
+
+    function handleHideAddFolder() {
+        toggleAddFolder(false)
+    }
+
     return (
         <div className={styles.pageBody}>
+            <Modal show={displayAddFolder} onHide={handleHideAddFolder}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Create Folder</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Modal.Title>Folder Name</Modal.Title>
+
+                    <input className="form-control" type="text"/>
+
+                    <br></br>
+
+                    <Modal.Title>Description</Modal.Title>
+
+                    <Form>
+                        <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlTextarea1"
+                        >
+                        <Form.Control as="textarea" rows={3} />
+                        </Form.Group>
+                    </Form>
+                    </Modal.Body>
+                <Modal.Footer>
+                <Button variant="primary" onClick={handleHideAddFolder}>
+                    Save Changes
+                </Button>
+                </Modal.Footer>
+            </Modal>
             <div className='row'>
                 <Col className={styles.addFolderButton}>
-                    <Button variant='primary'>Add Folder</Button>
+                    <Button variant='primary' onClick={handleShowAddFolder}>Add Folder</Button>
                 </Col>
             </div>
             <div className={`row ${styles.lecturesContainer}`}>
