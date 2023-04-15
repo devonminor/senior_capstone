@@ -4,7 +4,8 @@ from typing import List, Optional
 
 from beanie import Document, Indexed, Link
 from pydantic import BaseModel
-import tkinter as tk 
+
+# import tkinter as tk
 
 ##############################################################################
 ##############################################################################
@@ -36,28 +37,28 @@ class MultipleChoiceQuestion(BaseModel):
     options: Optional[list[MultipleChoiceOption]] = []
 
 
-
 class ShortAnswerQuestion(BaseModel):
     prompt: str
     subtitle: str
     answer_space: str
     image: str
 
-class DrawingCanvas(BaseModel, tk):
-    def getCanvas():
-        app = tk()
-        app.geometry("400x400")
-        app.mainloop()
 
-        canvas = tk.Canvas(app, bg='white')
-        canvas.pack(anchor='nw', fill='both', expand=1)
+# class DrawingCanvas(BaseModel, tk):
+#     def getCanvas():
+#         app = tk()
+#         app.geometry("400x400")
+#         app.mainloop()
+
+#         canvas = tk.Canvas(app, bg='white')
+#         canvas.pack(anchor='nw', fill='both', expand=1)
 
 
 class DrawingQuestion(BaseModel):
     title: str
     subtitle: str
     image: str
-    medium: DrawingCanvas
+    # medium: DrawingCanvas
 
 
 class Question(Document):
@@ -99,12 +100,28 @@ class Course(Document):
     numId: Indexed(int)
     name: str
     description: Optional[str] = None
+    season: str
     createdAt: datetime = datetime.now()
     active: bool = False
     hasActiveLecture: bool = False
     lectures: Optional[List[Link[Lecture]]] = []
+    teacherEmails: Optional[List[str]] = []
+    studentEmails: Optional[List[str]] = []
 
 
+##############################################################################
+##############################################################################
+##########################       COURSE MODEL       ##########################
+##############################################################################
+##############################################################################
+
+class InternalUser(Document):
+    email: Indexed(str)
+    teacherCourses: Optional[List[Link[Course]]] = []
+    studentCourses: Optional[List[Link[Course]]] = []
+
+
+InternalUser.update_forward_refs()
 Course.update_forward_refs()
 Lecture.update_forward_refs()
 Question.update_forward_refs()

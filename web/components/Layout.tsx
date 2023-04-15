@@ -1,7 +1,9 @@
+import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React from 'react';
-import gear from '../public/gear-wide-connected.svg';
+import React, { useEffect } from 'react';
+import { Button } from 'react-bootstrap';
+import { FaUserCircle } from 'react-icons/fa';
 import logo from '../public/Poll_Anywhere_logo.png';
 import styles from '../styles/Layout.module.css';
 
@@ -11,15 +13,29 @@ interface LayoutProps {
 }
 
 export default function Layout({ children, course_id }: LayoutProps) {
-    var course_name = '';
+    const [courseName, setCourseName] = React.useState<string>('');
     const router = useRouter();
+    const { user, isLoading: userLoading } = useUser();
 
-    if (router.route == '/courses') {
-        course_name = 'Dashboard';
-    } else {
-        // TODO: Add logic to parse course_id and return course name
-        course_name = 'Course Name To Be Here';
-    }
+    useEffect(() => {
+        console.log('user', user);
+    }, [user]);
+
+    useEffect(() => {
+        if (router.route == '/courses') {
+            setCourseName('Dashboard');
+        } else if (
+            router.route == '/courses/[course_id]' ||
+            router.route == '/courses/[course_id]/lectures/[lecture_id]'
+        ) {
+            const { course_id } = router.query;
+            fetch(`/api/courses/${course_id}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    setCourseName(data.name);
+                });
+        }
+    }, [router]);
 
     return (
         <div>
@@ -37,17 +53,30 @@ export default function Layout({ children, course_id }: LayoutProps) {
                         </a>
                     </div>
                     <div className={`col ${styles.navCenter}`}>
-                        <h1 className={styles.courseText}>{course_name}</h1>
+                        <h1 className={styles.courseText}>{courseName}</h1>
                     </div>
-                    <div className={`col ${styles.navRight}`}>
-                        <a href='/settings'>
-                            <Image
-                                className={styles.gearIcon}
-                                src={gear}
-                                alt='Bootstrap'
+                    {/* Logged Out */}
+                    {!user && !userLoading && (
+                        <div className={`col ${styles.navRight}`}>
+                            <Button href='/api/auth/login'>
+                                Login with Google
+                            </Button>
+                        </div>
+                    )}
+                    {/* Logged In */}
+                    {user && (
+                        <div className={`col ${styles.navRight}`}>
+                            <Button href='/api/auth/logout'>Logout</Button>
+                            <FaUserCircle
+                                onClick={() => router.push('/profile')}
+                                style={{
+                                    height: 25,
+                                    width: 'auto',
+                                    marginLeft: 10,
+                                }}
                             />
-                        </a>
-                    </div>
+                        </div>
+                    )}
                 </div>
             </nav>
             <div>

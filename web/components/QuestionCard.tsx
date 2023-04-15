@@ -1,5 +1,6 @@
 import { CloseButton } from 'react-bootstrap';
-import { removeQuestionFromLecture } from '../lib/api';
+import useSWRMutation from 'swr/mutation';
+import { deleteRequest } from '../lib/server_requests';
 import styles from '../styles/TeacherQuestions.module.css';
 import LiveIcon from './svg/LiveIcon';
 
@@ -16,13 +17,15 @@ const QuestionCard = ({
     course_id,
     lecture_id,
 }: IQuestionCard) => {
+    const { trigger } = useSWRMutation('/api/questions', deleteRequest);
+
     const handleDelete = () => {
-        removeQuestionFromLecture(course_id, lecture_id, question.numId).then(
-            () => {
-                // refresh the page
-                window.location.reload();
-            }
-        );
+        trigger({
+            courseId: parseInt(course_id),
+            lectureId: parseInt(lecture_id),
+            questionId: parseInt(question.numId),
+        });
+        window.location.reload();
     };
 
     return (

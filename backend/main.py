@@ -1,14 +1,14 @@
 import secure
 from beanie import DeleteRules, init_beanie
 from db_utils import (get_course_with_id, get_lecture_with_id,
-                      get_question_with_id)
+                      get_question_with_id, get_user_with_email)
 from dependencies import validate_token
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Body, Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from markupsafe import escape
-from models import (Course, DrawingQuestion, Lecture, MultipleChoiceOption,
-                    MultipleChoiceQuestion, Question, QuestionType,
-                    ShortAnswerQuestion)
+from models import (Course, DrawingQuestion, InternalUser, Lecture,
+                    MultipleChoiceOption, MultipleChoiceQuestion, Question,
+                    QuestionType, ShortAnswerQuestion)
 from motor.motor_asyncio import AsyncIOMotorClient
 from utils import (get_todays_date, random_course_id, random_lecture_id,
                    random_question_id)
@@ -53,35 +53,71 @@ app.add_middleware(
 
 ##############################################################################
 ##############################################################################
+##########################           USER           ##########################
+##############################################################################
+##############################################################################
+
+
+@app.get("/me")
+async def me(token: str = Depends(validate_token)):
+    """
+    Return the user from the token
+    """
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+
+    # Get the user from the database. Create one if there is none
+    user = await get_user_with_email(email)
+    if (user is None):
+        # Create a new user
+        new_user = InternalUser(
+            email=email
+        )
+
+        await new_user.insert()
+        return new_user
+
+    return user
+
+##############################################################################
+##############################################################################
 ###########################     (CRUD) COURSES     ###########################
 ##############################################################################
 ##############################################################################
 
 
 @app.post("/courses/")
-async def add_course(name: str, description: str, active: bool = False, hasActiveLecture: bool = False):
+async def add_course(name: str = Body(...), description: str = Body(...), season: str = Body(...), active: bool = False, hasActiveLecture: bool = False, token: str = Depends(validate_token)):
     """
     Add a new course
     """
-    numId = await random_course_id()
+    # get user from token
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+    user = await get_user_with_email(email)
 
+    # create a new course
+    numId = await random_course_id()
     new_course = Course(
         name=escape(name),
         numId=numId,
         description=escape(description),
+        season=season,
         active=active,
-        hasActiveLecture=hasActiveLecture
+        hasActiveLecture=hasActiveLecture,
+        teacherEmails=[user.email]
     )
 
     await new_course.insert()
+
+    user.teacherCourses.append(new_course)
+    await user.save()
+
     return new_course
 
 
 @app.get("/courses/")
-async def get_courses():
+async def get_courses(token: str = Depends(validate_token)):
     """
     Get all courses
-    TODO: EITHER MAKE THIS ROUTE PROTECTED OR REMOVE IT
     """
     courses = await Course.find_all().to_list()
     return courses
@@ -119,15 +155,49 @@ async def update_course(course_id: int, name: str, description: str, active: boo
     return course
 
 
+@app.post("/courses/{course_id}/student")
+async def add_student_to_course(course_id: int, token: str = Depends(validate_token)):
+    """
+    Add a student to a course
+    """
+    # get user from token
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+
+    user = await get_user_with_email(email)
+    if not user:
+        return {'message': 'User not found'}
+
+    course = await get_course_with_id(course_id)
+    if not course:
+        return {'message': 'Course not found'}
+
+    if email not in course.studentEmails:
+        course.studentEmails.append(email)
+        if course not in user.studentCourses:
+            user.studentCourses.append(course)
+            await user.save()
+        await course.save()
+
+    return {'message': 'Student added to course'}
+
+
 @app.delete("/courses/{course_id}")
-async def delete_course(course_id: int):
+async def delete_course(course_id: int, token: str = Depends(validate_token)):
     """
     Delete a course
     """
-    course = await get_course_with_id(course_id)
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
 
+    user = await get_user_with_email(email)
+    if not user:
+        return {'message': 'User not found'}
+
+    course = await get_course_with_id(course_id)
     if not course:
         return {'message': 'Course not found'}
+
+    if email not in course.teacherEmails:
+        return {'message': 'You are not the teacher of this course'}
 
     await course.delete(link_rule=DeleteRules.DELETE_LINKS)
     return {'message': 'Course deleted'}
@@ -140,7 +210,7 @@ async def delete_course(course_id: int):
 ##############################################################################
 
 @app.post("/courses/{course_id}/lectures/")
-async def add_lecture(course_id: int, name: str, description: str, active: bool = False):
+async def add_lecture(course_id: int, name: str = Body(...), description: str = Body(...), active: bool = False, token: str = Depends(validate_token)):
     """
     Add a new lecture to a course
     """
@@ -154,6 +224,12 @@ async def add_lecture(course_id: int, name: str, description: str, active: bool 
     course = await get_course_with_id(course_id)
     if not course:
         return {'message': 'Course not found'}
+
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+    if email not in course.teacherEmails:
+        return {'message': 'You are not authorized to add a lecture to this course.'}
+
+    print(course)
 
     # get a random lecture id
     numId = await random_lecture_id()
@@ -176,7 +252,7 @@ async def add_lecture(course_id: int, name: str, description: str, active: bool 
 
 
 @app.get("/courses/{course_id}/lectures/")
-async def get_lectures(course_id: int):
+async def get_lectures(course_id: int, token: str = Depends(validate_token)):
     """
     Get all lectures from a course
     """
@@ -184,6 +260,10 @@ async def get_lectures(course_id: int):
     course = await get_course_with_id(course_id)
     if not course:
         return {'message': 'Course not found'}
+
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+    if email not in course.teacherEmails and email not in course.studentEmails:
+        return {'message': 'You are not authorized to view lectures from this course.'}
 
     # get lectures
     lectures = await Lecture.find(Lecture.courseId == course.numId).to_list()
@@ -268,7 +348,7 @@ async def delete_lecture(course_id: int, lecture_id: int):
 
 
 @app.post("/courses/{course_id}/lectures/{lecture_id}/questions/")
-async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: MultipleChoiceQuestion | None = None, saq: ShortAnswerQuestion | None = None, dq: DrawingQuestion | None = None, active: bool = False):
+async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: MultipleChoiceQuestion | None = None, saq: ShortAnswerQuestion | None = None, dq: DrawingQuestion | None = None, active: bool = False, token: str = Depends(validate_token)):
     """
     Add a new question to a lecture
     """
@@ -277,6 +357,10 @@ async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: 
     course = await get_course_with_id(course_id)
     if not course:
         return {'message': 'Course not found'}
+
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+    if email not in course.teacherEmails and email not in course.studentEmails:
+        return {'message': 'You are not authorized to add questions to this course.'}
 
     # get lecture
     lecture = await get_lecture_with_id(lecture_id)
@@ -328,7 +412,7 @@ async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: 
 
 
 @app.get("/courses/{course_id}/lectures/{lecture_id}/questions/")
-async def get_questions(course_id: int, lecture_id: int):
+async def get_questions(course_id: int, lecture_id: int, token: str = Depends(validate_token)):
     """
     Questions all questions from a lecture
     """
@@ -336,6 +420,10 @@ async def get_questions(course_id: int, lecture_id: int):
     course = await get_course_with_id(course_id)
     if not course:
         return {'message': 'Course not found'}
+
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+    if email not in course.teacherEmails and email not in course.studentEmails:
+        return {'message': 'You are not authorized to get questions from this course.'}
 
     # get lecture
     lecture = await get_lecture_with_id(lecture_id)
@@ -365,7 +453,7 @@ async def update_question(course_id: int, lecture_id: int, question_id: int, que
 
 
 @app.delete("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
-async def delete_question(course_id: int, lecture_id: int, question_id: int):
+async def delete_question(course_id: int, lecture_id: int, question_id: int, token: str = Depends(validate_token)):
     """
     Delete a question from a lecture
     """
@@ -373,6 +461,11 @@ async def delete_question(course_id: int, lecture_id: int, question_id: int):
     course = await get_course_with_id(course_id)
     if not course:
         return {'message': 'Course not found'}
+
+    # validate token
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+    if email not in course.teacherEmails and email not in course.studentEmails:
+        return {'message': 'You are not authorized to add questions to this course.'}
 
     # get lecture
     lecture = await get_lecture_with_id(lecture_id)
@@ -396,23 +489,6 @@ async def delete_question(course_id: int, lecture_id: int, question_id: int):
 
 ##############################################################################
 ##############################################################################
-#######################        FOR TESTING ONLY        #######################
-##############################################################################
-##############################################################################
-
-
-@app.get("/api/messages/public")
-def public():
-    return {"text": "This is a public message."}
-
-
-@app.get("/api/messages/protected", dependencies=[Depends(validate_token)])
-def protected():
-    return {"text": "This is a protected message."}
-
-
-##############################################################################
-##############################################################################
 ###########################        START UP        ###########################
 ##############################################################################
 ##############################################################################
@@ -425,4 +501,4 @@ async def app_init():
     """
     client = AsyncIOMotorClient("mongodb://localhost:27017")
     # app.db = client.PollAnywhere
-    await init_beanie(database=client.PollAnywhere, document_models=[Course, Lecture, Question])
+    await init_beanie(database=client.PollAnywhere, document_models=[InternalUser, Course, Lecture, Question])

@@ -2,72 +2,48 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import useSWR from 'swr';
+import CreateLectureModal from '../../../components/CreateLectureModal';
 import LectureRow from '../../../components/LectureRow';
-import { getLecturesForCourse } from '../../../lib/api';
+import { fetcher } from '../../../lib/server_requests';
 import styles from '../../../styles/lecturesPage.module.css';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form'
 
 const Lectures = () => {
     const router = useRouter();
     const course_id = router.query.course_id;
     const [lectures, setLectures] = useState([]);
     const [displayAddFolder, toggleAddFolder] = useState(false);
+    const { data: lectureData } = useSWR(
+        `/api/lectures?courseId=${course_id}`,
+        fetcher
+    );
 
     useEffect(() => {
-        if (typeof course_id === 'string') {
-            getLecturesForCourse(course_id).then((res) => {
-                console.log(res);
-                setLectures(res);
-            });
+        if (lectureData) {
+            setLectures(lectureData);
         }
-    }, [course_id]);
+    }, [lectureData]);
 
     if (typeof course_id != 'string') {
         return <></>;
     }
 
-    function handleShowAddFolder() {
-        toggleAddFolder(true)
-    }
-
-    function handleHideAddFolder() {
-        toggleAddFolder(false)
-    }
+    const handleShowAddFolder = () => {
+        toggleAddFolder(true);
+    };
 
     return (
         <div className={styles.pageBody}>
-            <Modal show={displayAddFolder} onHide={handleHideAddFolder}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Create Folder</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Modal.Title>Folder Name</Modal.Title>
+            <CreateLectureModal
+                displayAddFolder={displayAddFolder}
+                toggleAddFolder={toggleAddFolder}
+            />
 
-                    <input className="form-control" type="text"/>
-
-                    <br></br>
-
-                    <Modal.Title>Description</Modal.Title>
-
-                    <Form>
-                        <Form.Group
-                        className="mb-3"
-                        controlId="exampleForm.ControlTextarea1"
-                        >
-                        <Form.Control as="textarea" rows={3} />
-                        </Form.Group>
-                    </Form>
-                    </Modal.Body>
-                <Modal.Footer>
-                <Button variant="primary" onClick={handleHideAddFolder}>
-                    Save Changes
-                </Button>
-                </Modal.Footer>
-            </Modal>
             <div className='row'>
                 <Col className={styles.addFolderButton}>
-                    <Button variant='primary' onClick={handleShowAddFolder}>Add Folder</Button>
+                    <Button variant='primary' onClick={handleShowAddFolder}>
+                        Add Lecture
+                    </Button>
                 </Col>
             </div>
             <div className={`row ${styles.lecturesContainer}`}>
@@ -81,6 +57,7 @@ const Lectures = () => {
                     <tbody>
                         {/* TODO: Give this a proper Lecture type */}
                         {lectures &&
+                            lectures.length > 0 &&
                             lectures.map((lecture: any, i: number) => {
                                 return (
                                     <LectureRow

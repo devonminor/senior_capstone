@@ -34,6 +34,22 @@ const TeacherQuestions = ({
                 setAddQuestion={setAddQuestion}
             />
 
+            {/* If there are no questions, display a block of text telling the user to add questions. */}
+            {questions.length < 1 && (
+                <div
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '1rem',
+                    }}
+                >
+                    <h4>
+                        Click "Add a Question" to start adding questions here.
+                    </h4>
+                </div>
+            )}
+
             {/* Only display a LIVE question if there is one */}
             {liveQuestion &&
                 liveQuestion.questionType ===
@@ -48,7 +64,10 @@ const TeacherQuestions = ({
                     </>
                 )}
 
-            <h3 className={styles.notLive}>Waiting to go live</h3>
+            {/* Only display header if there are questions still waiting to go live */}
+            {questions.length > 0 && (
+                <h3 className={styles.notLive}>Waiting to go live</h3>
+            )}
 
             {questions &&
                 questions.length > 0 &&

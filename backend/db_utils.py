@@ -1,5 +1,4 @@
-from models import Course, Lecture, Question
-
+from models import Course, InternalUser, Lecture, Question
 
 ################## Example code for storing images in Mongodb ##################
 
@@ -18,13 +17,17 @@ from models import Course, Lecture, Question
 # db['images'].insert_one(document)
 
 
-
 # Can decode binary data and open image from the database:
 # document = db['images'].find_one({'name': 'my_image'})
 # binary_data = document['image']
 # image_data = binary_data.decode('utf-8')
 # image = Image.open(io.BytesIO(image_data))
 
+async def get_user_with_email(email: str):
+    """
+    Get a InternalUser by email from the database
+    """
+    return await InternalUser.find_one(InternalUser.email == email)
 
 
 async def get_course_with_id(course_id: int):
@@ -46,4 +49,3 @@ async def get_question_with_id(question_id: int):
     Get a question by id from the database
     """
     return await Question.find_one(Question.numId == question_id)
-

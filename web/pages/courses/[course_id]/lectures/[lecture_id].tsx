@@ -2,26 +2,29 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
+import useSWR from 'swr';
 import TeacherClassSettings from '../../../../components/TeacherClassSettings';
 import TeacherQuestions from '../../../../components/TeacherQuestions';
 import TeacherRoster from '../../../../components/TeacherRoster';
 import TeacherStatistics from '../../../../components/TeacherStatistics';
-import { getQuestionsForLecture } from '../../../../lib/api';
+import { fetcher } from '../../../../lib/server_requests';
 import styles from '../../../../styles/[lecture_id].module.css';
 
 const Lecture = () => {
     const router = useRouter();
     const { course_id, lecture_id } = router.query;
     const [questions, setQuestions] = useState([]); // TODO: type this
+    const { data: questionsData } = useSWR(
+        `/api/questions?courseId=${course_id}&lectureId=${lecture_id}`,
+        fetcher
+    );
 
     useEffect(() => {
-        if (typeof course_id === 'string' && typeof lecture_id === 'string') {
-            getQuestionsForLecture(course_id, lecture_id).then((res) => {
-                console.log(res);
-                setQuestions(res);
-            });
+        if (questionsData) {
+            console.log('questionsData', questionsData);
+            setQuestions(questionsData);
         }
-    }, [course_id, lecture_id]);
+    }, [questionsData]);
 
     return (
         <div className={styles.pageBody}>

@@ -1,46 +1,61 @@
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
+import { fetcher } from '../lib/server_requests';
 import styles from '../styles/TeacherRoster.module.css';
-
-
+import { RosterRow } from './RosterRow';
 
 export default function TeacherRoster() {
+    const router = useRouter();
+    const { course_id } = router.query;
+    const [teachers, setTeachers] = useState([]);
+    const [students, setStudents] = useState([]);
+
+    const { data: courseData } = useSWR(`/api/courses/${course_id}`, fetcher, {
+        revalidateOnFocus: false,
+    });
+
+    useEffect(() => {
+        if (courseData) {
+            setTeachers(courseData.teacherEmails);
+            setStudents(courseData.studentEmails);
+        }
+    }, [courseData]);
+
     return (
         <div className={`row ${styles.rosterContainer}`}>
-                <table className='table table-striped table-hover'>
-                    <thead>
-                        <tr>
-                            <th scope='col'>Name</th>
-                            <th scope='col'>Role</th>
-                            <th scope='col'>Email</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td scope="row">Najib Daoud</td>
-                            <td>Student</td>
-                            <td><a href="mailto:najib.daoud@tufts.edu">najib.daoud@tufts.edu</a></td>
-                        </tr>
-                        <tr>
-                            <td scope="row">Devon Minor</td>
-                            <td>Student</td>
-                            <td><a href="mailto:devon.minor@tufts.edu">devon.minor@tufts.edu</a></td>
-                        </tr>
-                        <tr>
-                            <td scope="row">Anesu Gavh</td>
-                            <td>Student</td>
-                            <td><a href="mailto:anesu.gavh@tufts.edu">anesu.gavh@tufts.edu</a></td>
-                        </tr>
-                        <tr>
-                            <td scope="row">Evan Loconto</td>
-                            <td>Student</td>
-                            <td><a href="mailto:evan.loconto@tufts.edu">evan.loconto@tufts.edu</a></td>
-                        </tr>
-                        <tr>
-                            <td scope="row">Steven Bell</td>
-                            <td>Teacher</td>
-                            <td><a href="mailto:steven.bell@tufts.edu">steven.bell@tufts.edu</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <table className='table table-striped table-hover'>
+                <thead>
+                    <tr>
+                        <th scope='col'>Role</th>
+                        <th scope='col'>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {teachers &&
+                        teachers.length > 0 &&
+                        teachers.map((email: any, i: number) => {
+                            return (
+                                <RosterRow
+                                    role={'Teacher'}
+                                    email={email}
+                                    key={i}
+                                />
+                            );
+                        })}
+                    {students &&
+                        students.length > 0 &&
+                        students.map((email: any, i: number) => {
+                            return (
+                                <RosterRow
+                                    role={'Student'}
+                                    email={email}
+                                    key={i}
+                                />
+                            );
+                        })}
+                </tbody>
+            </table>
+        </div>
     );
 }
