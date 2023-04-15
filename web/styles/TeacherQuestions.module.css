@@ -1,12 +1,21 @@
-.questionCardLeft {
-    width: auto;
+.questionCardRow1 {
+    justify-content: space-between
+}
+
+.questionCardRow2 {
+    display: flex
+}
+
+.questionCardCenter{
+    text-align: center;
 }
 
 .questionCardRight {
     display: flex;
-    justify-content: flex-end;
+    justify-content: right;
     align-items: center;
     text-align: right;
+    width: 10%
 }
 
 .live {

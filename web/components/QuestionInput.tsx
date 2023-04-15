@@ -7,6 +7,9 @@ import Modal from 'react-bootstrap/Modal';
 import useSWRMutation from 'swr/mutation';
 import { postRequest } from '../lib/server_requests';
 import ResponseOption from './ResponseOption';
+import styles from '../styles/QuestionInput.module.css';
+import QuestionTimeLimit from './QuestionTimeLimit';
+
 
 type QuestionInputProps = {
     course_id: string;
@@ -48,59 +51,27 @@ export default function QuestionInput({
         }[]
     >([]);
     const [questionTitle, setQuestionTitle] = useState('');
+    const [questionType, setQuestionType] = useState("multipleChoice");
 
-    // When the modal opens, reset it to the default state
-    useEffect(() => {
-        setQuestionTitle('');
-        setResponseOptions(
-            [...Array(defaultNumResponseOptions)].map((_, i) => {
-                return { index: i, text: '' };
-            })
-        );
-    }, [addQuestion]);
-
-    if (!addQuestion) {
-        return <></>;
+    function handleQType(e: any) {
+        setQuestionType(e.target.value)
+        console.log(e.target.value)
     }
+    
+    // set default question type to multiple choice
+    useEffect(() => {
+        if (addQuestion) {
+            setQuestionType("multipleChoice")
+        }
 
-    return (
-        <Modal show={addQuestion} onHide={() => setAddQuestion(false)}>
-            <Modal.Header closeButton>
-                <DropdownButton
-                    id='dropdown-basic-button'
-                    title='Multiple Choice'
-                >
-                    <Dropdown.Item>Multiple Choice</Dropdown.Item>
-                    <Dropdown.Item>Free Response</Dropdown.Item>
-                    <Dropdown.Item>Free Drawing</Dropdown.Item>
-                </DropdownButton>
-            </Modal.Header>
-            <Modal.Body>
-                <>
-                    <Modal.Title>Question</Modal.Title>
+      }, [addQuestion]);
 
-                    <Form>
-                        <Form.Group
-                            className='mb-3'
-                            controlId='exampleForm.ControlTextarea1'
-                        >
-                            <Form.Control
-                                as='textarea'
-                                rows={3}
-                                value={questionTitle}
-                                onChange={(e) => {
-                                    setQuestionTitle(e.target.value);
-                                }}
-                            />
-                        </Form.Group>
-                    </Form>
-
-                    {/* <Modal.Title>Attachments</Modal.Title>
-
-                    <input type='file'></input> */}
+    const responseOptionsUI =
+                <div>
+                    <br></br>
 
                     <Modal.Title>Response Options</Modal.Title>
-
+                    
                     {/* For each response option, render a ResponseOption */}
                     {responseOptions.map((responseOption, i) => {
                         return (
@@ -133,9 +104,60 @@ export default function QuestionInput({
                     >
                         Add Option
                     </button>
+                </div>
 
-                    {/* <Modal.Title>Time Limit</Modal.Title>
-                    <QuestionTimeLimit /> */}
+    useEffect(() => {
+        setQuestionTitle('');
+        setResponseOptions(
+            [...Array(defaultNumResponseOptions)].map((_, i) => {
+                return { index: i, text: '' };
+            })
+        );
+    }, [addQuestion]);
+
+    if (!addQuestion) {
+        return <></>;
+    }
+
+    return (
+        <Modal show={addQuestion} onHide={() => setAddQuestion(false)}>
+            <Modal.Header closeButton>
+                <select className={`form-select ${styles.questionSelect}`} aria-label="Default select example" onChange={handleQType}>
+                    <option value="multipleChoice">Multiple Choice</option>
+                    <option value="freeResponse">Free Response</option>
+                    <option value="freeDrawing">Free Drawing</option>
+                </select>
+            </Modal.Header>
+            <Modal.Body>
+                <>
+                    <Modal.Title>Question</Modal.Title>
+
+                    <Form>
+                        <Form.Group
+                            className='mb-3'
+                            controlId='exampleForm.ControlTextarea1'
+                        >
+                            <Form.Control
+                                as='textarea'
+                                rows={3}
+                                value={questionTitle}
+                                onChange={(e) => {
+                                    setQuestionTitle(e.target.value);
+                                }}
+                            />
+                        </Form.Group>
+                    </Form>
+
+                    <Modal.Title>Image</Modal.Title>
+
+                    <input type='file'></input>
+                    
+                    {questionType == "multipleChoice" ? responseOptionsUI : <></>}
+                    <br></br>
+                    <br></br>
+
+                    <Modal.Title>Time Limit</Modal.Title>
+                    <QuestionTimeLimit />
                 </>
             </Modal.Body>
             <Modal.Footer>
