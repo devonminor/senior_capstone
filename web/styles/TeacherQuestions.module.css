@@ -1,21 +1,27 @@
-.questionCardRow1 {
+.questionCardContainer {
     justify-content: space-between
 }
 
 .questionCardRow2 {
-    display: flex
 }
 
-.questionCardCenter{
-    text-align: center;
+.questionCardQuestion {
+    align-items: center;
 }
 
-.questionCardRight {
+.numAnswered {
+    align-items: center;
+}
+
+.questionCardIcons {
     display: flex;
     justify-content: right;
     align-items: center;
     text-align: right;
-    width: 10%
+}
+
+.graphIcon {
+    margin-right: 5px;
 }
 
 .live {
