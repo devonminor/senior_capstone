@@ -1,4 +1,7 @@
 import secure
+from bson.binary import Binary
+# from PIL import Image
+from fastapi import status, File, UploadFile
 from beanie import DeleteRules, init_beanie
 from db_utils import (get_course_with_id, get_lecture_with_id,
                       get_question_with_id)
@@ -13,6 +16,21 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from utils import (get_todays_date, random_course_id, random_lecture_id,
                    random_question_id)
 from validate import validate_mcq
+
+
+import cloudinary
+
+cloudinary.config( 
+  cloud_name = "dzayk2ulr", 
+  api_key = "255829849559382", 
+  api_secret = "2FGLq1LipzLzkXViso-0waGkULM",
+  secure = True
+)
+
+
+import cloudinary.uploader
+import cloudinary.api
+
 
 app = FastAPI()
 
@@ -56,7 +74,6 @@ app.add_middleware(
 ###########################     (CRUD) COURSES     ###########################
 ##############################################################################
 ##############################################################################
-
 
 @app.post("/courses/")
 async def add_course(name: str, description: str, active: bool = False, hasActiveLecture: bool = False):
@@ -131,6 +148,7 @@ async def delete_course(course_id: int):
 
     await course.delete(link_rule=DeleteRules.DELETE_LINKS)
     return {'message': 'Course deleted'}
+
 
 
 ##############################################################################
@@ -393,6 +411,26 @@ async def delete_question(course_id: int, lecture_id: int, question_id: int):
     await question.delete(link_rule=DeleteRules.DELETE_LINKS)
 
     return {'message': 'Question deleted'}
+
+@app.post("/upload")
+def upload(question_id: int, file: UploadFile = File(...)):
+    try:
+        contents = file.file.read(1024 * 1024)
+        # with open(file.filename, 'wb') as f:
+        #     f.write(contents)
+    except Exception:
+        return {"message": "There was an error uploading the file"}
+    finally:
+        print(file.filename)
+        cloudinary.uploader.upload(file.filename, 
+        use_filename = True,
+        folder = "questions/",
+        overwrite = True)
+        file.file.close()
+
+    return {"message": f"Successfully uploaded {file.filename}"}
+
+
 
 ##############################################################################
 ##############################################################################

@@ -11,8 +11,8 @@ python-dotenv
 authlib
 requests
 markupsafe
-tkinter
 pydantic
 PyJWT
 starlette
 secure
+cloudinary

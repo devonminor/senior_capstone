@@ -4,7 +4,6 @@ from typing import List, Optional
 
 from beanie import Document, Indexed, Link
 from pydantic import BaseModel
-import tkinter as tk 
 
 ##############################################################################
 ##############################################################################
@@ -36,28 +35,18 @@ class MultipleChoiceQuestion(BaseModel):
     options: Optional[list[MultipleChoiceOption]] = []
 
 
-
 class ShortAnswerQuestion(BaseModel):
     prompt: str
     subtitle: str
     answer_space: str
     image: str
 
-class DrawingCanvas(BaseModel, tk):
-    def getCanvas():
-        app = tk()
-        app.geometry("400x400")
-        app.mainloop()
-
-        canvas = tk.Canvas(app, bg='white')
-        canvas.pack(anchor='nw', fill='both', expand=1)
-
 
 class DrawingQuestion(BaseModel):
     title: str
     subtitle: str
     image: str
-    medium: DrawingCanvas
+    # medium: DrawingCanvas
 
 
 class Question(Document):
@@ -70,6 +59,8 @@ class Question(Document):
     shortAnswerQuestion: Optional[ShortAnswerQuestion] = None
     drawingQuestion: Optional[DrawingQuestion] = None
     lectureId: Indexed(int)
+    imageUrl: Optional[str]
+
 
 ##############################################################################
 ##############################################################################
@@ -108,3 +99,21 @@ class Course(Document):
 Course.update_forward_refs()
 Lecture.update_forward_refs()
 Question.update_forward_refs()
+
+##############################################################################
+##############################################################################
+##########################       USER MODEL       ############################
+##############################################################################
+##############################################################################
+
+class User(Document):
+    numId: Indexed(int)
+    first_name: str
+    last_name: str
+    email: str
+    registration_date: datetime = datetime.now()
+    courses_created: Optional[List[Course]]
+    courses_joined:  Optional[List[Course]]
+    
+
+
