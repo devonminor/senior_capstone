@@ -4,9 +4,6 @@ import styles from '../styles/TeacherQuestions.module.css';
 import QuestionButton from './QuestionButton';
 import QuestionCard from './QuestionCard';
 import QuestionInput from './QuestionInput';
-import { CloseButton } from 'react-bootstrap';
-import LiveIcon from './svg/LiveIcon';
-
 
 interface ITeacherQuestions {
     liveQuestion: any;
@@ -25,18 +22,18 @@ const TeacherQuestions = ({
 
     function numberOfResponses(responseChoice: string) {
         switch (responseChoice) {
-            case "A":
-                console.log("A")
-                return "10"
-            case "B":
-                console.log("B")
-                return "25"
-            case "C":
-                console.log("C")
-                return "3"
-            case "D":
-                console.log("D")
-                return "5"
+            case 'A':
+                console.log('A');
+                return '10';
+            case 'B':
+                console.log('B');
+                return '25';
+            case 'C':
+                console.log('C');
+                return '3';
+            case 'D':
+                console.log('D');
+                return '5';
         }
     }
 
@@ -84,11 +81,23 @@ const TeacherQuestions = ({
                     </>
                 )}
 
+            {/* <h3 className={styles.live}>Live</h3>
+
+            <QuestionCard
+                question={{
+                    multipleChoiceQuestion: {
+                        title: 'Which offsets do we use in linear regression’s least square line fit? Suppose the horizontal axis is the independent variable and the vertical axis is the dependent variable:',
+                    },
+                }}
+                course_id={course_id}
+                lecture_id={lecture_id}
+            /> */}
+
             {/* Only display header if there are questions still waiting to go live */}
             {questions.length > 0 && (
                 <h3 className={styles.notLive}>Waiting to go live</h3>
             )}
-
+            {/* 
             <div className={`card ${styles.cardCustom}`}>
                 <div className='card-body'>
                     <div className={`row ${styles.questionCardRow1}`}>
@@ -121,7 +130,7 @@ const TeacherQuestions = ({
                     </div>
                     
                 </div>
-            </div>
+            </div> */}
 
             {questions &&
                 questions.length > 0 &&
