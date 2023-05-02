@@ -22,4 +22,3 @@ async def get_question_with_id(question_id: int):
     Get a question by id from the database
     """
     return await Question.find_one(Question.numId == question_id)
-

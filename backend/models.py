@@ -5,6 +5,8 @@ from typing import List, Optional
 from beanie import Document, Indexed, Link
 from pydantic import BaseModel
 
+# import tkinter as tk
+
 ##############################################################################
 ##############################################################################
 ##########################      QUESTION MODEL      ##########################
@@ -46,6 +48,7 @@ class DrawingQuestion(BaseModel):
     title: str
     subtitle: str
     image: str
+    # medium: DrawingCanvas
     # medium: DrawingCanvas
 
 
@@ -90,12 +93,28 @@ class Course(Document):
     numId: Indexed(int)
     name: str
     description: Optional[str] = None
+    season: str
     createdAt: datetime = datetime.now()
     active: bool = False
     hasActiveLecture: bool = False
     lectures: Optional[List[Link[Lecture]]] = []
+    teacherEmails: Optional[List[str]] = []
+    studentEmails: Optional[List[str]] = []
 
 
+##############################################################################
+##############################################################################
+##########################       COURSE MODEL       ##########################
+##############################################################################
+##############################################################################
+
+class InternalUser(Document):
+    email: Indexed(str)
+    teacherCourses: Optional[List[Link[Course]]] = []
+    studentCourses: Optional[List[Link[Course]]] = []
+
+
+InternalUser.update_forward_refs()
 Course.update_forward_refs()
 Lecture.update_forward_refs()
 Question.update_forward_refs()

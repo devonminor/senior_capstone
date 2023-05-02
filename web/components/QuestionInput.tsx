@@ -4,8 +4,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import { addQuestionToLecture } from '../lib/api';
-import { QuestionTypeEnum } from '../lib/types';
+import useSWRMutation from 'swr/mutation';
+import { postRequest } from '../lib/server_requests';
 import ResponseOption from './ResponseOption';
 import styles from '../styles/QuestionInput.module.css';
 import QuestionTimeLimit from './QuestionTimeLimit';
@@ -26,21 +26,22 @@ export default function QuestionInput({
 }: QuestionInputProps) {
     const defaultNumResponseOptions = 2;
 
+    const { trigger } = useSWRMutation('/api/questions', postRequest);
+
     const handleSave = () => {
         const options = responseOptions.map((option, i) => {
             return { name: option.text, order: i + 1 };
         });
-        addQuestionToLecture(
-            course_id,
-            lecture_id,
-            QuestionTypeEnum.MULTIPLE_CHOICE,
-            questionTitle,
-            options
-        ).then((res) => {
-            // reload the page to update the question list
-            window.location.reload();
+        trigger({
+            course_id: parseInt(course_id),
+            lecture_id: parseInt(lecture_id),
+            mcq: {
+                title: questionTitle,
+                options,
+            },
         });
         setAddQuestion(false);
+        window.location.reload();
     };
 
     const [responseOptions, setResponseOptions] = useState<

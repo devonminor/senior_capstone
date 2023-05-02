@@ -34,4 +34,4 @@ def get_bearer_token(request: StarletteRequest) -> str:
         else:
             raise BadCredentialsException
     else:
-        raise
+        raise RequiresAuthenticationException
