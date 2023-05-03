@@ -58,7 +58,6 @@ class DrawingQuestion(BaseModel):
     title: str
     subtitle: str
     image: str
-    # medium: DrawingCanvas
 
 
 class Question(Document):
@@ -73,6 +72,8 @@ class Question(Document):
     drawingQuestion: Optional[DrawingQuestion] = None
     lectureId: Indexed(int)
     courseId: Indexed(int)
+    imageUrl: Optional[str]
+
 
 ##############################################################################
 ##############################################################################
@@ -127,3 +128,19 @@ InternalUser.update_forward_refs()
 Course.update_forward_refs()
 Lecture.update_forward_refs()
 Question.update_forward_refs()
+
+##############################################################################
+##############################################################################
+##########################       USER MODEL       ############################
+##############################################################################
+##############################################################################
+
+
+class User(Document):
+    numId: Indexed(int)
+    first_name: str
+    last_name: str
+    email: str
+    registration_date: datetime = datetime.now()
+    courses_created: Optional[List[Course]]
+    courses_joined:  Optional[List[Course]]

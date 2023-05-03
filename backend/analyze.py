@@ -28,21 +28,21 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial import distance
 from sklearn.preprocessing import StandardScaler
 from kneed import KneeLocator
-
 # nltk.download('punkt')
 # nltk.download('stopwords')
 
 # from nltk.corpus import stopwords
 # from nltk.tokenize import word_tokenize
 
+
+
 # Steps for clustering student responses
-# 
 #   1. Load the data (create a file with a bunch of potential responses to a single question)
 #   2. Process the data (check the spelling of each response, potentially remove stop words, remove punctuation, group like terms (ex. lbs, LBS, pounds), etc.)
 #   3. Vectorize the data (convert the responses into a vector of numbers)
 #   4. Cluster the data (use k-means to cluster the responses into groups)
 #   5. Display the results (print out the clusters and the responses in each cluster)
-#
+
 
 
 # Load the data from file and return array of responses
@@ -115,11 +115,11 @@ def standardize_number(text):
 
         elif elems[count] == '.':
             if (len(elems) - 1) <= count:
-                count += 1;
+                count += 1
             elif elems[count+1].isdigit():
                 rounded_num = round(float("".join([elems[count], elems[count+1]])), 3)
                 split_array.append(str(rounded_num))
-                count += 2;
+                count += 2
         else:
             get_string = re.sub('[^A-Za-z0-9]+', " ", elems[count])
             if not get_string.isspace():
@@ -192,20 +192,7 @@ def standardize_number(text):
 
 # main
 if __name__ == "__main__":
-    # convert_text_numbers_to_numeric_numbers("I have five dogs, three cats, and seventy seven birds")
-    
-    #print(responses)
 
-    #print(standardize_number(" .74567asdkjf"))
-    #print(standardize_number("241.13457Volts"))
-    ##print(standardize_number("241/77 Ohms"))
-    #print(standardize_number("11/8 Ohms"))
-    #print(standardize_number("241 Ohms"))
-    #print(standardize_number("2/5 Ohms"))
-
-    #print(convert_text_numbers_to_numeric_numbers(standardize_number("one hundred eighty nine")))
-
-  
     print("Welcome to my Algorithm")
 
     # Initialize tweeker
@@ -228,21 +215,20 @@ if __name__ == "__main__":
     matrix = count_vectorizer.fit_transform(final_arr)
     table = matrix.todense()
     df = pd.DataFrame(table, columns=count_vectorizer.get_feature_names_out())
-    #print(df)
+
 
     ## Aplying the Cosine similarity module 
     values = cosine_similarity(df, df)
     df = pd.DataFrame(values)
-    #print(df)
+
 
     ## Applying the Euclidean Distance
     matrix2 = distance.cdist(df, df, 'euclidean')
     df_eucl = pd.DataFrame(matrix2)
-    #print(df_eucl)
 
-    ## Standardization - not working well so I am ignoring this part.
-    scaler = StandardScaler()
-    scaled_features = scaler.fit_transform(df)
+    ## Standardization
+    # scaler = StandardScaler()
+    # scaled_features = scaler.fit_transform(df)
 
     # Varying the number of clusters and to see what the optimum k is
     kmeans_kwargs = {
@@ -263,21 +249,6 @@ if __name__ == "__main__":
     cluster_labels = kmeans.labels_
     silhouette_avg=[]
  
-    # silhouette score
-    #silhouette_avg.append(silhouette_score(df, cluster_labels))
-    #plt.plot(range(1,10),silhouette_avg,’bx-’)
-    #plt.xlabel(‘Values of K’) 
-    #plt.ylabel(‘Silhouette score’) 
-    #plt.title(‘Silhouette analysis For Optimal k’)
-    #plt.show()
-
-    # Plotting SSE values for each k to see
-    #plt.style.use("fivethirtyeight")
-    ##plt.plot(range(1, 10), sse)
-    #plt.xticks(range(1, 10))
-    ##plt.xlabel("Number of Clusters")
-    #plt.ylabel("SSE")
-    #plt.show()
 
     # Calculate true k from the results
     kl = KneeLocator(range(1, 10), sse, curve="convex", direction="decreasing")
