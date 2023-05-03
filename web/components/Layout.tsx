@@ -26,7 +26,8 @@ export default function Layout({ children, course_id }: LayoutProps) {
             setCourseName('Dashboard');
         } else if (
             router.route == '/courses/[course_id]' ||
-            router.route == '/courses/[course_id]/lectures/[lecture_id]'
+            router.route == '/courses/[course_id]/lectures/[lecture_id]' ||
+            router.route == '/courses/[course_id]/StudentResponse'
         ) {
             const { course_id } = router.query;
             fetch(`/api/courses/${course_id}`)

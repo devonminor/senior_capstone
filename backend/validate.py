@@ -1,4 +1,4 @@
-from models import MultipleChoiceQuestion
+from models import MultipleChoiceQuestion, ShortAnswerQuestion
 
 
 def validate_mcq(mcq: MultipleChoiceQuestion) -> bool:
@@ -15,4 +15,15 @@ def validate_mcq(mcq: MultipleChoiceQuestion) -> bool:
                 return False
             if not option.order:
                 return False
+    return True
+
+
+def validate_saq(saq: ShortAnswerQuestion) -> bool:
+    """
+    Validate a Short Answer Question
+    """
+    if (saq is None):
+        return False
+    if not saq.title:
+        return False
     return True

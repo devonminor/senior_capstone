@@ -1,15 +1,12 @@
 import React, { Dispatch, useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import useSWRMutation from 'swr/mutation';
 import { postRequest } from '../lib/server_requests';
-import ResponseOption from './ResponseOption';
+import { QuestionTypeEnum } from '../lib/types';
 import styles from '../styles/QuestionInput.module.css';
-import QuestionTimeLimit from './QuestionTimeLimit';
-
+import ResponseOption from './ResponseOption';
 
 type QuestionInputProps = {
     course_id: string;
@@ -26,20 +23,41 @@ export default function QuestionInput({
 }: QuestionInputProps) {
     const defaultNumResponseOptions = 2;
 
-    const { trigger } = useSWRMutation('/api/questions', postRequest);
+    const { trigger: createQuestionTrigger } = useSWRMutation(
+        '/api/questions',
+        postRequest
+    );
 
     const handleSave = () => {
         const options = responseOptions.map((option, i) => {
             return { name: option.text, order: i + 1 };
         });
-        trigger({
-            course_id: parseInt(course_id),
-            lecture_id: parseInt(lecture_id),
-            mcq: {
-                title: questionTitle,
-                options,
-            },
-        });
+
+        // IF ADDING MULTIPLE CHOICE QUESTION
+        if (questionType === 'multipleChoice') {
+            console.log('course_id', course_id);
+            console.log('lecture_id', lecture_id);
+            createQuestionTrigger({
+                courseId: parseInt(course_id),
+                lectureId: parseInt(lecture_id),
+                mcq: {
+                    title: questionTitle,
+                    options,
+                },
+                questionType: QuestionTypeEnum.MULTIPLE_CHOICE,
+            });
+        }
+        // IF ADDING FREE RESPONSE QUESTION
+        else if (questionType === 'freeResponse') {
+            createQuestionTrigger({
+                courseId: parseInt(course_id),
+                lectureId: parseInt(lecture_id),
+                saq: {
+                    title: questionTitle,
+                },
+                questionType: QuestionTypeEnum.SHORT_ANSWER,
+            });
+        }
         setAddQuestion(false);
         window.location.reload();
     };
@@ -51,60 +69,19 @@ export default function QuestionInput({
         }[]
     >([]);
     const [questionTitle, setQuestionTitle] = useState('');
-    const [questionType, setQuestionType] = useState("multipleChoice");
+    const [questionType, setQuestionType] = useState('multipleChoice');
 
     function handleQType(e: any) {
-        setQuestionType(e.target.value)
-        console.log(e.target.value)
+        console.log(e.target.value);
+        setQuestionType(e.target.value);
     }
-    
+
     // set default question type to multiple choice
     useEffect(() => {
         if (addQuestion) {
-            setQuestionType("multipleChoice")
+            setQuestionType('multipleChoice');
         }
-
-      }, [addQuestion]);
-
-    const responseOptionsUI =
-                <div>
-                    <br></br>
-
-                    <Modal.Title>Response Options</Modal.Title>
-                    
-                    {/* For each response option, render a ResponseOption */}
-                    {responseOptions.map((responseOption, i) => {
-                        return (
-                            <ResponseOption
-                                key={i}
-                                index={i + 1}
-                                responseIndex={responseOption.index}
-                                responseOptions={responseOptions}
-                                setResponseOptions={setResponseOptions}
-                            />
-                        );
-                    })}
-
-                    <button
-                        onClick={() => {
-                            setResponseOptions([
-                                ...responseOptions,
-                                {
-                                    index:
-                                        (responseOptions.length > 0 &&
-                                            responseOptions.at(-1) !=
-                                                undefined &&
-                                            responseOptions.at(-1)!.index +
-                                                1) ||
-                                        0,
-                                    text: '',
-                                },
-                            ]);
-                        }}
-                    >
-                        Add Option
-                    </button>
-                </div>
+    }, [addQuestion]);
 
     useEffect(() => {
         setQuestionTitle('');
@@ -122,10 +99,14 @@ export default function QuestionInput({
     return (
         <Modal show={addQuestion} onHide={() => setAddQuestion(false)}>
             <Modal.Header closeButton>
-                <select className={`form-select ${styles.questionSelect}`} aria-label="Default select example" onChange={handleQType}>
-                    <option value="multipleChoice">Multiple Choice</option>
-                    <option value="freeResponse">Free Response</option>
-                    <option value="freeDrawing">Free Drawing</option>
+                <select
+                    className={`form-select ${styles.questionSelect}`}
+                    aria-label='Default select example'
+                    onChange={handleQType}
+                >
+                    <option value='multipleChoice'>Multiple Choice</option>
+                    <option value='freeResponse'>Free Response</option>
+                    {/* <option value='freeDrawing'>Free Drawing</option> */}
                 </select>
             </Modal.Header>
             <Modal.Body>
@@ -151,13 +132,49 @@ export default function QuestionInput({
                     <Modal.Title>Image</Modal.Title>
 
                     <input type='file'></input>
-                    
-                    {questionType == "multipleChoice" ? responseOptionsUI : <></>}
-                    <br></br>
-                    <br></br>
 
-                    <Modal.Title>Time Limit</Modal.Title>
-                    <QuestionTimeLimit />
+                    {/* If the question is multiple choice, show options with flexible number of choices */}
+                    {questionType == 'multipleChoice' && (
+                        <div>
+                            <br></br>
+                            {/* <AddImageButton /> */}
+
+                            <Modal.Title>Response Options</Modal.Title>
+
+                            {/* For each response option, render a ResponseOption */}
+                            {responseOptions.map((responseOption, i) => {
+                                return (
+                                    <ResponseOption
+                                        key={i}
+                                        index={i + 1}
+                                        responseIndex={responseOption.index}
+                                        responseOptions={responseOptions}
+                                        setResponseOptions={setResponseOptions}
+                                    />
+                                );
+                            })}
+
+                            <button
+                                onClick={() => {
+                                    setResponseOptions([
+                                        ...responseOptions,
+                                        {
+                                            index:
+                                                (responseOptions.length > 0 &&
+                                                    responseOptions.at(-1) !=
+                                                        undefined &&
+                                                    responseOptions.at(-1)!
+                                                        .index + 1) ||
+                                                0,
+                                            text: '',
+                                        },
+                                    ]);
+                                }}
+                            >
+                                Add Option
+                            </button>
+                        </div>
+                    )}
                 </>
             </Modal.Body>
             <Modal.Footer>

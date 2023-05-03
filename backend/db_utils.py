@@ -49,3 +49,10 @@ async def get_question_with_id(question_id: int):
     Get a question by id from the database
     """
     return await Question.find_one(Question.numId == question_id)
+
+
+async def get_live_questions(course_id: int):
+    """
+    Get all live questions from the database
+    """
+    return await Question.find_many(Question.courseId == course_id, Question.live == True).to_list()

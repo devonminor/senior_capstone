@@ -1,18 +1,19 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { deleteRequest, fetcher } from '../lib/server_requests';
+import { deleteRequest } from '../lib/server_requests';
 
-export default function TeacherClassSettings() {
+interface ITeacherClassSettings {
+    course: any;
+}
+
+export default function TeacherClassSettings({
+    course,
+}: ITeacherClassSettings) {
     const router = useRouter();
     const { course_id } = router.query;
     const [courseData, setCourseData] = useState<any>(null);
-
-    const { data } = useSWR(`/api/courses/${course_id}`, fetcher, {
-        revalidateOnFocus: false,
-    });
 
     const { trigger } = useSWRMutation('/api/courses', deleteRequest);
 
@@ -25,12 +26,14 @@ export default function TeacherClassSettings() {
     };
 
     useEffect(() => {
-        if (data) setCourseData(data);
-    }, [data]);
+        if (course) {
+            setCourseData(course);
+        }
+    }, [course]);
 
     return (
         <div>
-            {courseData && data && (
+            {courseData && (
                 <>
                     <h2>{courseData.name}</h2>
                     <h5>Description: {courseData.description}</h5>

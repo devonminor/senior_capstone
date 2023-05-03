@@ -1,26 +1,21 @@
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import useSWR from 'swr';
-import { fetcher } from '../lib/server_requests';
 import styles from '../styles/TeacherRoster.module.css';
 import { RosterRow } from './RosterRow';
 
-export default function TeacherRoster() {
-    const router = useRouter();
-    const { course_id } = router.query;
+interface ITeacherRoster {
+    course: any;
+}
+
+export default function TeacherRoster({ course }: ITeacherRoster) {
     const [teachers, setTeachers] = useState([]);
     const [students, setStudents] = useState([]);
 
-    const { data: courseData } = useSWR(`/api/courses/${course_id}`, fetcher, {
-        revalidateOnFocus: false,
-    });
-
     useEffect(() => {
-        if (courseData) {
-            setTeachers(courseData.teacherEmails);
-            setStudents(courseData.studentEmails);
+        if (course) {
+            setTeachers(course.teacherEmails);
+            setStudents(course.studentEmails);
         }
-    }, [courseData]);
+    }, [course]);
 
     return (
         <div className={`row ${styles.rosterContainer}`}>

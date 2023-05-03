@@ -1,11 +1,12 @@
 import { getAccessToken, withApiAuthRequired } from "@auth0/nextjs-auth0";
+import { API_URL } from "../../lib/constants";
 
 export default withApiAuthRequired(async function lectures(req, res) {
     // HANDLE POST REQUESTS
     if (req.method === 'POST') {
         const { accessToken } = await getAccessToken(req, res);
         const courseId = req.body.courseId;
-        const response = await fetch(`http://127.0.0.1:5002/courses/${courseId}/lectures`, {
+        const response = await fetch(`${API_URL}/courses/${courseId}/lectures`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 'Content-Type': 'application/json'
@@ -20,7 +21,7 @@ export default withApiAuthRequired(async function lectures(req, res) {
     else if (req.method === 'GET') {
         const { accessToken } = await getAccessToken(req, res);
         const { courseId } = req.query;
-        const response = await fetch(`http://127.0.0.1:5002/courses/${courseId}/lectures`, {
+        const response = await fetch(`${API_URL}/courses/${courseId}/lectures`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -32,7 +33,7 @@ export default withApiAuthRequired(async function lectures(req, res) {
     else if (req.method === 'DELETE') {
         const { accessToken } = await getAccessToken(req, res);
         const { courseId, lectureId } = req.query;
-        const response = await fetch(`http://127.0.0.1:5002/courses/${courseId}/lectures/${lectureId}`, {
+        const response = await fetch(`${API_URL}/courses/${courseId}/lectures/${lectureId}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },

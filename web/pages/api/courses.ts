@@ -1,11 +1,12 @@
 import { getAccessToken, withApiAuthRequired } from "@auth0/nextjs-auth0";
+import { API_URL } from "../../lib/constants";
 
 export default withApiAuthRequired(async function courses(req, res) {
     // HANDLE POST REQUESTS
     // -- createCourse
     if (req.method === 'POST' && req.body.action === 'createCourse') {
         const { accessToken } = await getAccessToken(req, res);
-        const response = await fetch('http://127.0.0.1:5002/courses', {
+        const response = await fetch(`${API_URL}/courses`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 'Content-Type': 'application/json'
@@ -21,7 +22,7 @@ export default withApiAuthRequired(async function courses(req, res) {
         const { accessToken } = await getAccessToken(req, res);
         const courseId = req.body.courseId;
         delete req.body.courseId;
-        const response = await fetch(`http://127.0.0.1:5002/courses/${courseId}/student`, {
+        const response = await fetch(`${API_URL}/courses/${courseId}/student`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 'Content-Type': 'application/json'
@@ -35,7 +36,7 @@ export default withApiAuthRequired(async function courses(req, res) {
     // HANDLE GET REQUESTS
     else if (req.method === 'GET') {
         const { accessToken } = await getAccessToken(req, res);
-        const response = await fetch('http://127.0.0.1:5002/courses', {
+        const response = await fetch(`${API_URL}/courses`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -47,7 +48,7 @@ export default withApiAuthRequired(async function courses(req, res) {
     else if (req.method === 'DELETE') {
         const { accessToken } = await getAccessToken(req, res);
         const courseId = req.body.courseId;
-        const response = await fetch(`http://127.0.0.1:5002/courses/${courseId}`, {
+        const response = await fetch(`${API_URL}/courses/${courseId}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },

@@ -104,6 +104,7 @@ const Courses = () => {
                         instructorCourses.map((course: any) => {
                             return (
                                 <CourseCard
+                                    isTeacher={true}
                                     key={course.numId}
                                     course_id={course.numId}
                                     course_title={course.name}
@@ -192,6 +193,7 @@ const Courses = () => {
                         studentCourses.map((course: any) => {
                             return (
                                 <CourseCard
+                                    isTeacher={false}
                                     key={course.numId}
                                     course_id={course.numId}
                                     course_title={course.name}

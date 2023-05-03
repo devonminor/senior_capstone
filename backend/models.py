@@ -30,28 +30,28 @@ class MultipleChoiceOption(BaseModel):
     order: int
 
 
+class MultipleChoiceResponse(BaseModel):
+    email: str
+    order: int
+
+
 class MultipleChoiceQuestion(BaseModel):
     title: str
     subtitle: Optional[str]
     image: Optional[str]
     options: Optional[list[MultipleChoiceOption]] = []
+    responses: Optional[list[MultipleChoiceResponse]] = []
+
+
+class ShortAnswerResponse(BaseModel):
+    email: str
+    response: str
 
 
 class ShortAnswerQuestion(BaseModel):
-    prompt: str
-    subtitle: str
-    answer_space: str
-    image: str
-
-
-# class DrawingCanvas(BaseModel, tk):
-#     def getCanvas():
-#         app = tk()
-#         app.geometry("400x400")
-#         app.mainloop()
-
-#         canvas = tk.Canvas(app, bg='white')
-#         canvas.pack(anchor='nw', fill='both', expand=1)
+    title: str
+    image: Optional[str]
+    responses: Optional[list[ShortAnswerResponse]] = []
 
 
 class DrawingQuestion(BaseModel):
@@ -64,13 +64,15 @@ class DrawingQuestion(BaseModel):
 class Question(Document):
     numId: Indexed(int)
     questionType: QuestionType
-    active: bool = False
+    # active: bool = False
+    live: bool = False
     lastUpdated: datetime = datetime.now()
     createdAt: datetime = datetime.now()
     multipleChoiceQuestion: Optional[MultipleChoiceQuestion] = None
     shortAnswerQuestion: Optional[ShortAnswerQuestion] = None
     drawingQuestion: Optional[DrawingQuestion] = None
     lectureId: Indexed(int)
+    courseId: Indexed(int)
 
 ##############################################################################
 ##############################################################################
@@ -85,7 +87,7 @@ class Lecture(Document):
     description: Optional[str] = None
     lastUpdated: datetime = datetime.now()
     createdAt: datetime = datetime.now()
-    active: bool = False
+    # active: bool = False
     courseId: Indexed(int)
     questions: Optional[List[Link[Question]]] = []
 
@@ -102,8 +104,8 @@ class Course(Document):
     description: Optional[str] = None
     season: str
     createdAt: datetime = datetime.now()
-    active: bool = False
-    hasActiveLecture: bool = False
+    # hasActiveLecture: bool = False
+    liveQuestion: Optional[int] = None
     lectures: Optional[List[Link[Lecture]]] = []
     teacherEmails: Optional[List[str]] = []
     studentEmails: Optional[List[str]] = []

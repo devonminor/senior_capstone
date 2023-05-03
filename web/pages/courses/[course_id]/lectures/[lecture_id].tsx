@@ -14,10 +14,18 @@ const Lecture = () => {
     const router = useRouter();
     const { course_id, lecture_id } = router.query;
     const [questions, setQuestions] = useState([]); // TODO: type this
+    const [course, setCourse] = useState<any>(null);
+    const { data: courseData } = useSWR(`/api/courses/${course_id}`, fetcher);
     const { data: questionsData } = useSWR(
         `/api/questions?courseId=${course_id}&lectureId=${lecture_id}`,
         fetcher
     );
+
+    useEffect(() => {
+        if (courseData) {
+            setCourse(courseData);
+        }
+    }, [courseData]);
 
     useEffect(() => {
         if (questionsData) {
@@ -36,11 +44,15 @@ const Lecture = () => {
             >
                 <Tab eventKey='questions' title='Questions'>
                     <TeacherQuestions
+                        course={course}
                         liveQuestion={
                             questions &&
                             questions.length > 0 &&
-                            questions.find((q: any) => {
-                                return q.active;
+                            questions.find((q: any, index: number) => {
+                                if (!q.live) return;
+                                let liveQuestion = q.live;
+                                questions.splice(index, 1);
+                                return liveQuestion;
                             })
                         }
                         questions={questions}
@@ -49,13 +61,13 @@ const Lecture = () => {
                     />
                 </Tab>
                 <Tab eventKey='roster' title='Roster'>
-                    <TeacherRoster />
+                    <TeacherRoster course={course} />
                 </Tab>
                 <Tab eventKey='statistics' title='Statistics'>
                     <TeacherStatistics />
                 </Tab>
                 <Tab eventKey='class-settings' title='Class Settings'>
-                    <TeacherClassSettings />
+                    <TeacherClassSettings course={course} />
                 </Tab>
             </Tabs>
         </div>

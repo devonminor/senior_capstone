@@ -3,12 +3,14 @@ import jumbo from '../public/Tufts_Jumbos_logo.png';
 import styles from '../styles/courses.module.css';
 
 interface ICourseCard {
+    isTeacher: boolean;
     course_id: string;
     course_title: string;
     course_season: string;
 }
 
 const CourseCard = ({
+    isTeacher,
     course_id,
     course_title,
     course_season,
@@ -29,12 +31,24 @@ const CourseCard = ({
                                 {course_season}
                             </small>
                         </p>
-                        <a
-                            href={`/courses/${course_id}`}
-                            className='btn btn-primary'
-                        >
-                            View Course
-                        </a>
+                        {/* If the user is a teacher, redirect to course editing functions */}
+                        {isTeacher && (
+                            <a
+                                href={`/courses/${course_id}`}
+                                className='btn btn-primary'
+                            >
+                                View Course
+                            </a>
+                        )}
+                        {/* If the user is a student, redirect to live question */}
+                        {!isTeacher && (
+                            <a
+                                href={`/courses/${course_id}/StudentResponse`}
+                                className='btn btn-primary'
+                            >
+                                View Live Question
+                            </a>
+                        )}
                     </div>
                 </div>
             </div>

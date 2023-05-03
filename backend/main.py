@@ -1,18 +1,20 @@
 import secure
 from beanie import DeleteRules, init_beanie
 from db_utils import (get_course_with_id, get_lecture_with_id,
-                      get_question_with_id, get_user_with_email)
+                      get_live_questions, get_question_with_id,
+                      get_user_with_email)
 from dependencies import validate_token
 from fastapi import Body, Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from markupsafe import escape
 from models import (Course, DrawingQuestion, InternalUser, Lecture,
-                    MultipleChoiceOption, MultipleChoiceQuestion, Question,
-                    QuestionType, ShortAnswerQuestion)
+                    MultipleChoiceOption, MultipleChoiceQuestion,
+                    MultipleChoiceResponse, Question, QuestionType,
+                    ShortAnswerQuestion, ShortAnswerResponse)
 from motor.motor_asyncio import AsyncIOMotorClient
 from utils import (get_todays_date, random_course_id, random_lecture_id,
                    random_question_id)
-from validate import validate_mcq
+from validate import validate_mcq, validate_saq
 
 app = FastAPI()
 
@@ -347,6 +349,23 @@ async def delete_lecture(course_id: int, lecture_id: int):
 ##############################################################################
 
 
+async def create_question(type: str, courseId: int, lectureId: int) -> Question:
+    """
+    Create a question using model
+    """
+    numId = await random_question_id()
+
+    # create a new question
+    new_question = Question(
+        numId=numId,
+        questionType=type,
+        lectureId=lectureId,
+        courseId=courseId
+    )
+
+    return new_question
+
+
 @app.post("/courses/{course_id}/lectures/{lecture_id}/questions/")
 async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: MultipleChoiceQuestion | None = None, saq: ShortAnswerQuestion | None = None, dq: DrawingQuestion | None = None, active: bool = False, token: str = Depends(validate_token)):
     """
@@ -372,15 +391,9 @@ async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: 
         if not validate_mcq(mcq):
             raise HTTPException(status_code=400, detail="Invalid MCQ")
 
-        # get a random lecture id
-        numId = await random_question_id()
-
         # create a new question
-        new_question = Question(
-            numId=numId,
-            questionType=QuestionType.MULTIPLE_CHOICE,
-            lectureId=lecture.numId
-        )
+        new_question = await create_question(
+            QuestionType.MULTIPLE_CHOICE, course.numId, lecture.numId)
 
         # create multiple coice question
         new_mc = MultipleChoiceQuestion(
@@ -402,6 +415,29 @@ async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: 
 
         new_question.multipleChoiceQuestion = new_mc
 
+        await new_question.insert()
+
+        # update lecture to reflect new question
+        lecture.questions.append(new_question)
+        await lecture.save()
+
+        return new_question
+    elif (QuestionType.SHORT_ANSWER == questionType):
+        # validate the Short Answer Question
+        if not validate_saq(saq):
+            raise HTTPException(status_code=400, detail="Invalid SAQ")
+
+        # create a new question
+        new_question = await create_question(
+            QuestionType.SHORT_ANSWER, course.numId, lecture.numId)
+
+        # create short answer question
+        new_sc = ShortAnswerQuestion(
+            title=escape(saq.title),
+        )
+        new_question.shortAnswerQuestion = new_sc
+
+        # insert question
         await new_question.insert()
 
         # update lecture to reflect new question
@@ -436,12 +472,34 @@ async def get_questions(course_id: int, lecture_id: int, token: str = Depends(va
     return questions
 
 
+@app.get("/courses/{course_id}/questions/{question_id}")
 @app.get("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
-async def get_question(course_id: int, lecture_id: int, question_id: int):
+async def get_question(course_id: int, question_id: int, lecture_id: int | None = None, token: str = Depends(validate_token)):
     """
     Get a question from a lecture
     """
-    raise HTTPException(status_code=501, detail="Not implemented")
+    # get course
+    course = await get_course_with_id(course_id)
+    if not course:
+        return {'message': 'Course not found'}
+
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+    if email not in course.teacherEmails and email not in course.studentEmails:
+        return {'message': 'You are not authorized to get questions from this course.'}
+
+    # Only students are allowed to read questions without a lecture id
+    if not lecture_id and email in course.teacherEmails:
+        return {'message': 'Invalid query.'}
+
+    # get lecture
+    if lecture_id:
+        lecture = await get_lecture_with_id(lecture_id)
+        if not lecture:
+            return {'message': 'Lecture not found'}
+
+    # get question
+    question = await get_question_with_id(question_id)
+    return question
 
 
 @app.put("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
@@ -452,7 +510,148 @@ async def update_question(course_id: int, lecture_id: int, question_id: int, que
     raise HTTPException(status_code=501, detail="Not implemented")
 
 
-@app.delete("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
+@app.put("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}/live")
+async def update_question_live(course_id: int, lecture_id: int, question_id: int, live: bool, token: str = Depends(validate_token)):
+    """
+    Update a question from a lecture
+    """
+    # get course
+    course = await get_course_with_id(course_id)
+    if not course:
+        return {'message': 'Course not found'}
+
+    # validate user is teacher
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+    if email not in course.teacherEmails:
+        return {'message': 'You are not authorized to update questions in this course.'}
+
+    # get lecture
+    lecture = await get_lecture_with_id(lecture_id)
+    if not lecture:
+        return {'message': 'Lecture not found'}
+
+    # get question
+    question = await get_question_with_id(question_id)
+    if not question:
+        return {'message': 'Question not found'}
+
+    # if there are any live quesions, set them to not live
+    previous_live_questions = await get_live_questions(course_id)
+    for question in previous_live_questions:
+        question.live = False
+        await question.save()
+
+    # if we are taking a question offline, then we need to set the course liveQuestion to null
+    if not live:
+        course.liveQuestion = None
+        await course.save()
+    # otherwise, set the course liveQuestion to the question we are updating
+    else:
+        course.liveQuestion = question.numId
+        await course.save()
+
+    # update question
+    question.live = live
+    await question.save()
+
+    return question
+
+
+@app.put("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}/mcq")
+async def add_mcq_response(course_id: int, lecture_id: int, question_id: int, order: int, token: str = Depends(validate_token)):
+    """
+    Add a multiple choice question response
+    """
+    # get course
+    course = await get_course_with_id(course_id)
+    if not course:
+        return {'message': 'Course not found'}
+
+    # validate user is teacher
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+    if email not in course.studentEmails:
+        return {'message': 'You are not authorized to respond to this question.'}
+
+    # get lecture
+    lecture = await get_lecture_with_id(lecture_id)
+    if not lecture:
+        return {'message': 'Lecture not found'}
+
+    # get question
+    question = await get_question_with_id(question_id)
+    if not question:
+        return {'message': 'Question not found'}
+
+    # if the user had already responded to this question, update their response
+    for response in question.multipleChoiceQuestion.responses:
+        if response.email == email:
+            if response.order == order:
+                return question
+            response.order = order
+            await question.save()
+            return question
+
+    # create response
+    mcr = MultipleChoiceResponse(
+        order=order,
+        email=email,
+    )
+
+    # add response to question
+    question.multipleChoiceQuestion.responses.append(mcr)
+    await question.save()
+
+    return question
+
+
+@app.put("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}/saq")
+async def add_saq_response(course_id: int, lecture_id: int, question_id: int, freeResponse: str = Body(embed=True), token: str = Depends(validate_token)):
+    """
+    Add a multiple choice question response
+    """
+    # get course
+    course = await get_course_with_id(course_id)
+    if not course:
+        return {'message': 'Course not found'}
+
+    # validate user is teacher
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+    if email not in course.studentEmails:
+        return {'message': 'You are not authorized to respond to this question.'}
+
+    # get lecture
+    lecture = await get_lecture_with_id(lecture_id)
+    if not lecture:
+        return {'message': 'Lecture not found'}
+
+    # get question
+    question = await get_question_with_id(question_id)
+    if not question:
+        return {'message': 'Question not found'}
+
+    # if the user had already responded to this question, update their response
+    for res in question.shortAnswerQuestion.responses:
+        if res.email == email:
+            if res.response == freeResponse:
+                return question
+            res.response = freeResponse
+            await question.save()
+            return question
+
+    # create response
+    mcr = ShortAnswerResponse(
+        email=email,
+        response=freeResponse
+    )
+
+    # add response to question
+    question.shortAnswerQuestion.responses.append(mcr)
+    await question.save()
+
+    return question
+
+
+@ app.delete("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}")
 async def delete_question(course_id: int, lecture_id: int, question_id: int, token: str = Depends(validate_token)):
     """
     Delete a question from a lecture
@@ -464,8 +663,8 @@ async def delete_question(course_id: int, lecture_id: int, question_id: int, tok
 
     # validate token
     email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
-    if email not in course.teacherEmails and email not in course.studentEmails:
-        return {'message': 'You are not authorized to add questions to this course.'}
+    if email not in course.teacherEmails:
+        return {'message': 'You are not authorized to delete questions from this course.'}
 
     # get lecture
     lecture = await get_lecture_with_id(lecture_id)
@@ -494,7 +693,7 @@ async def delete_question(course_id: int, lecture_id: int, question_id: int, tok
 ##############################################################################
 
 
-@app.on_event("startup")
+@ app.on_event("startup")
 async def app_init():
     """
     Start mongodb (beanie) connection on startup
