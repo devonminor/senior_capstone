@@ -16,3 +16,4 @@ PyJWT
 starlette
 secure
 cloudinary
+python-multipart

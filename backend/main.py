@@ -1,13 +1,18 @@
+import os
+
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
 import secure
-from bson.binary import Binary
-# from PIL import Image
-from fastapi import status, File, UploadFile
 from beanie import DeleteRules, init_beanie
 from db_utils import (get_course_with_id, get_lecture_with_id,
                       get_live_questions, get_question_with_id,
                       get_user_with_email)
 from dependencies import validate_token
-from fastapi import Body, Depends, FastAPI, HTTPException
+from dotenv import load_dotenv
+# from PIL import Image
+from fastapi import (Body, Depends, FastAPI, File, HTTPException, UploadFile,
+                     status)
 from fastapi.middleware.cors import CORSMiddleware
 from markupsafe import escape
 from models import (Course, DrawingQuestion, InternalUser, Lecture,
@@ -19,20 +24,18 @@ from utils import (get_todays_date, random_course_id, random_lecture_id,
                    random_question_id)
 from validate import validate_mcq, validate_saq
 
+load_dotenv()
 
-import cloudinary
+CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME")
+CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
+CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET")
 
-cloudinary.config( 
-  cloud_name = "dzayk2ulr", 
-  api_key = "255829849559382", 
-  api_secret = "2FGLq1LipzLzkXViso-0waGkULM",
-  secure = True
+cloudinary.config(
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET,
+    secure=True
 )
-
-
-import cloudinary.uploader
-import cloudinary.api
-
 
 app = FastAPI()
 
@@ -103,6 +106,7 @@ async def me(token: str = Depends(validate_token)):
 ###########################     (CRUD) COURSES     ###########################
 ##############################################################################
 ##############################################################################
+
 
 @app.post("/courses/")
 async def add_course(name: str = Body(...), description: str = Body(...), season: str = Body(...), active: bool = False, hasActiveLecture: bool = False, token: str = Depends(validate_token)):
@@ -220,7 +224,6 @@ async def delete_course(course_id: int, token: str = Depends(validate_token)):
 
     await course.delete(link_rule=DeleteRules.DELETE_LINKS)
     return {'message': 'Course deleted'}
-
 
 
 ##############################################################################
@@ -386,6 +389,7 @@ async def create_question(type: str, courseId: int, lectureId: int) -> Question:
 
 @app.post("/courses/{course_id}/lectures/{lecture_id}/questions/")
 async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: MultipleChoiceQuestion | None = None, saq: ShortAnswerQuestion | None = None, dq: DrawingQuestion | None = None, active: bool = False, token: str = Depends(validate_token)):
+    # async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: MultipleChoiceQuestion | None = None, saq: ShortAnswerQuestion | None = None, dq: DrawingQuestion | None = None, active: bool = False, token: str = Depends(validate_token)):
     """
     Add a new question to a lecture
     """
@@ -704,24 +708,67 @@ async def delete_question(course_id: int, lecture_id: int, question_id: int, tok
 
     return {'message': 'Question deleted'}
 
+
 @app.post("/upload")
-def upload(question_id: int, file: UploadFile = File(...)):
+async def upload(file: UploadFile = File(...)):
     try:
         contents = file.file.read(1024 * 1024)
-        # with open(file.filename, 'wb') as f:
-        #     f.write(contents)
     except Exception:
         return {"message": "There was an error uploading the file"}
     finally:
         print(file.filename)
-        cloudinary.uploader.upload(file.filename, 
-        use_filename = True,
-        folder = "questions/",
-        overwrite = True)
+        res = cloudinary.uploader.upload(contents,
+                                         folder="questions/",
+                                         overwrite=True,
+                                         public_id="123456")
+        url = res.get('url')
         file.file.close()
 
-    return {"message": f"Successfully uploaded {file.filename}"}
+    return {"message": f"Successfully uploaded file. Can be found at {url}"}
 
+
+@app.put("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}/image")
+async def upload(course_id: int, lecture_id: int, question_id: int, file: UploadFile = File(...), token: str = Depends(validate_token)):
+    """
+    Upload an image for an existing question
+    """
+    # get course
+    course = await get_course_with_id(course_id)
+    if not course:
+        return {'message': 'Course not found'}
+
+    # validate token
+    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+    if email not in course.teacherEmails:
+        return {'message': 'You are not authorized to edit questions from this course.'}
+
+    # get lecture
+    lecture = await get_lecture_with_id(lecture_id)
+    if not lecture:
+        return {'message': 'Lecture not found'}
+
+    # get question
+    question = await get_question_with_id(question_id)
+    if not question:
+        return {'message': 'Question not found'}
+
+    try:
+        contents = file.file.read(1024 * 1024)
+    except Exception:
+        return {"message": "There was an error reading the file."}
+    finally:
+        res = cloudinary.uploader.upload(contents,
+                                         folder="questions/",
+                                         overwrite=True,
+                                         public_id="123456")
+        url = res.get('url')
+        file.file.close()
+
+        # update question with image url
+        question.imageUrl = url
+        await question.save()
+
+    return question
 
 
 ##############################################################################

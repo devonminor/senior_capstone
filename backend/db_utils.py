@@ -1,7 +1,7 @@
-from models import Course, Lecture, Question
-
-
 # Functions for obtaining ID's for courses, lectures, and questions
+
+from models import Course, InternalUser, Lecture, Question
+
 
 async def get_course_with_id(course_id: int):
     """
@@ -29,3 +29,10 @@ async def get_live_questions(course_id: int):
     Get all live questions from the database
     """
     return await Question.find_many(Question.courseId == course_id, Question.live == True).to_list()
+
+
+async def get_user_with_email(email: str):
+    """
+    Get a InternalUser by email from the database
+    """
+    return await InternalUser.find_one(InternalUser.email == email)
