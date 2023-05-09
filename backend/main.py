@@ -765,8 +765,12 @@ async def question_image_upload(course_id: int, lecture_id: int, question_id: in
         url = res.get('url')
         file.file.close()
 
-        # update question with image url
-        question.imageUrl = url
+        # update question with image url based on question type
+        if (question.questionType == QuestionType.MULTIPLE_CHOICE):
+            question.multipleChoiceQuestion.image = url
+        elif (question.questionType == QuestionType.SHORT_ANSWER):
+            question.shortAnswerQuestion.image = url
+
         await question.save()
 
     return question

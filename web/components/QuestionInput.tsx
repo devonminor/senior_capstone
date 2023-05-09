@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import useSWRMutation from 'swr/mutation';
+import { API_URL } from '../lib/constants';
 import { postRequest } from '../lib/server_requests';
 import { QuestionTypeEnum } from '../lib/types';
 import styles from '../styles/QuestionInput.module.css';
@@ -24,6 +25,7 @@ export default function QuestionInput({
     const DEFAULT_NUM_RESPONSE_OPTIONS = 2;
 
     const [previewImage, setPreviewImage] = useState<string>();
+    const [uploadImage, setUploadImage] = useState<File>();
     const [responseOptions, setResponseOptions] = useState<
         {
             index: number;
@@ -37,6 +39,24 @@ export default function QuestionInput({
         postRequest
     );
 
+    const handleImageUpload = (newQuestionId: string) => {
+        if (uploadImage) {
+            let formData = new FormData();
+            formData.append('file', uploadImage);
+            fetch(
+                `${API_URL}/courses/${course_id}/lectures/${lecture_id}/questions/${newQuestionId}/image`,
+                {
+                    method: 'PUT',
+                    body: formData,
+                }
+            )
+                .then((res) => res.json())
+                .then((res) => {
+                    console.log('afterimageupload', res);
+                });
+        }
+    };
+
     // Handle submit button click
     const handleSave = () => {
         const options = responseOptions.map((option, i) => {
@@ -47,7 +67,6 @@ export default function QuestionInput({
         if (questionType === 'multipleChoice') {
             console.log('course_id', course_id);
             console.log('lecture_id', lecture_id);
-            let newQuestionId;
             createQuestionTrigger({
                 courseId: parseInt(course_id),
                 lectureId: parseInt(lecture_id),
@@ -59,8 +78,7 @@ export default function QuestionInput({
             })
                 .then((res) => res?.json())
                 .then((res) => {
-                    console.log('QuestionInputRes', res);
-                    newQuestionId = res.numId;
+                    handleImageUpload(res.numId);
                 });
         }
         // IF ADDING FREE RESPONSE QUESTION
@@ -72,7 +90,12 @@ export default function QuestionInput({
                     title: questionTitle,
                 },
                 questionType: QuestionTypeEnum.SHORT_ANSWER,
-            });
+            })
+                .then((res) => res?.json())
+                .then((res) => {
+                    console.log('free response res', res);
+                    handleImageUpload(res.numId);
+                });
         }
         setAddQuestion(false);
         // window.location.reload();
@@ -89,13 +112,17 @@ export default function QuestionInput({
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const files = e.target.files;
-        if (files) setPreviewImage(URL.createObjectURL(files[0]));
+        if (files) {
+            setPreviewImage(URL.createObjectURL(files[0]));
+            setUploadImage(files[0]);
+        }
     };
 
     // on add question open/close reset state
     useEffect(() => {
         if (addQuestion) setQuestionType('multipleChoice');
         if (previewImage) setPreviewImage(undefined);
+        if (uploadImage) setUploadImage(undefined);
         if (questionTitle) setQuestionTitle('');
         setResponseOptions(
             [...Array(DEFAULT_NUM_RESPONSE_OPTIONS)].map((_, i) => {

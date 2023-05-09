@@ -40,6 +40,14 @@ const StudentMultipleChoice = ({ question }: IStudentMultipleChoice) => {
                     <p className='text-justify h5 pb-2 font-weight-bold'>
                         {question.multipleChoiceQuestion.title}
                     </p>
+                    {question.multipleChoiceQuestion.image && (
+                        <img
+                            className='mx-auto d-block my-3'
+                            src={question.multipleChoiceQuestion.image}
+                            height={300}
+                            width='auto'
+                        />
+                    )}
                     <div className='options py-1'>
                         {question.multipleChoiceQuestion.options.map(
                             (question: any, i: number) => (

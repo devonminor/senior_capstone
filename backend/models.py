@@ -63,7 +63,6 @@ class DrawingQuestion(BaseModel):
 class Question(Document):
     numId: Indexed(int)
     questionType: QuestionType
-    # active: bool = False
     live: bool = False
     lastUpdated: datetime = datetime.now()
     createdAt: datetime = datetime.now()
@@ -72,7 +71,6 @@ class Question(Document):
     drawingQuestion: Optional[DrawingQuestion] = None
     lectureId: Indexed(int)
     courseId: Indexed(int)
-    imageUrl: Optional[str]
 
 
 ##############################################################################
@@ -88,7 +86,6 @@ class Lecture(Document):
     description: Optional[str] = None
     lastUpdated: datetime = datetime.now()
     createdAt: datetime = datetime.now()
-    # active: bool = False
     courseId: Indexed(int)
     questions: Optional[List[Link[Question]]] = []
 
@@ -105,7 +102,6 @@ class Course(Document):
     description: Optional[str] = None
     season: str
     createdAt: datetime = datetime.now()
-    # hasActiveLecture: bool = False
     liveQuestion: Optional[int] = None
     lectures: Optional[List[Link[Lecture]]] = []
     teacherEmails: Optional[List[str]] = []
@@ -128,19 +124,3 @@ InternalUser.update_forward_refs()
 Course.update_forward_refs()
 Lecture.update_forward_refs()
 Question.update_forward_refs()
-
-##############################################################################
-##############################################################################
-##########################       USER MODEL       ############################
-##############################################################################
-##############################################################################
-
-
-class User(Document):
-    numId: Indexed(int)
-    first_name: str
-    last_name: str
-    email: str
-    registration_date: datetime = datetime.now()
-    courses_created: Optional[List[Course]]
-    courses_joined:  Optional[List[Course]]
