@@ -17,3 +17,4 @@ starlette
 secure
 cloudinary
 python-multipart
+matplotlib

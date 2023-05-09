@@ -1,16 +1,17 @@
 import os
+from typing import List
 
 import cloudinary
 import cloudinary.api
 import cloudinary.uploader
 import secure
+from analyze import cluster_list
 from beanie import DeleteRules, init_beanie
 from db_utils import (get_course_with_id, get_lecture_with_id,
                       get_live_questions, get_question_with_id,
                       get_user_with_email)
 from dependencies import validate_token
 from dotenv import load_dotenv
-# from PIL import Image
 from fastapi import (Body, Depends, FastAPI, File, HTTPException, UploadFile,
                      status)
 from fastapi.middleware.cors import CORSMiddleware
@@ -775,6 +776,16 @@ async def question_image_upload(course_id: int, lecture_id: int, question_id: in
 
     return question
 
+
+@app.post("/analyze_responses")
+async def analyze_responses(responses: List[str] = Body(embed=True)):
+    """
+    Given a set of user responses, group them by similar responses
+    """
+    # print(responses)
+    clusters = cluster_list(responses)
+    print(clusters)
+    return clusters
 
 ##############################################################################
 ##############################################################################

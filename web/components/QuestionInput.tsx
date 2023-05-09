@@ -98,7 +98,7 @@ export default function QuestionInput({
                 });
         }
         setAddQuestion(false);
-        // window.location.reload();
+        window.location.reload();
     };
 
     // Handle question type change
