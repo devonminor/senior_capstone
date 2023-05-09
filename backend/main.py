@@ -728,7 +728,7 @@ async def upload(file: UploadFile = File(...)):
 
 
 @app.put("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}/image")
-async def upload(course_id: int, lecture_id: int, question_id: int, file: UploadFile = File(...), token: str = Depends(validate_token)):
+async def question_image_upload(course_id: int, lecture_id: int, question_id: int, file: UploadFile = File(...)):
     """
     Upload an image for an existing question
     """
@@ -737,10 +737,11 @@ async def upload(course_id: int, lecture_id: int, question_id: int, file: Upload
     if not course:
         return {'message': 'Course not found'}
 
+    # TODO: add back validation to this route
     # validate token
-    email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
-    if email not in course.teacherEmails:
-        return {'message': 'You are not authorized to edit questions from this course.'}
+    # email = token["https://github.com/dorinclisu/fastapi-auth0/email"]
+    # if email not in course.teacherEmails:
+    #     return {'message': 'You are not authorized to edit questions from this course.'}
 
     # get lecture
     lecture = await get_lecture_with_id(lecture_id)

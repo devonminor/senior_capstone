@@ -21,13 +21,23 @@ export default function QuestionInput({
     addQuestion,
     setAddQuestion,
 }: QuestionInputProps) {
-    const defaultNumResponseOptions = 2;
+    const DEFAULT_NUM_RESPONSE_OPTIONS = 2;
 
+    const [previewImage, setPreviewImage] = useState<string>();
+    const [responseOptions, setResponseOptions] = useState<
+        {
+            index: number;
+            text: string;
+        }[]
+    >([]);
+    const [questionTitle, setQuestionTitle] = useState('');
+    const [questionType, setQuestionType] = useState('multipleChoice');
     const { trigger: createQuestionTrigger } = useSWRMutation(
         '/api/questions',
         postRequest
     );
 
+    // Handle submit button click
     const handleSave = () => {
         const options = responseOptions.map((option, i) => {
             return { name: option.text, order: i + 1 };
@@ -37,6 +47,7 @@ export default function QuestionInput({
         if (questionType === 'multipleChoice') {
             console.log('course_id', course_id);
             console.log('lecture_id', lecture_id);
+            let newQuestionId;
             createQuestionTrigger({
                 courseId: parseInt(course_id),
                 lectureId: parseInt(lecture_id),
@@ -45,7 +56,12 @@ export default function QuestionInput({
                     options,
                 },
                 questionType: QuestionTypeEnum.MULTIPLE_CHOICE,
-            });
+            })
+                .then((res) => res?.json())
+                .then((res) => {
+                    console.log('QuestionInputRes', res);
+                    newQuestionId = res.numId;
+                });
         }
         // IF ADDING FREE RESPONSE QUESTION
         else if (questionType === 'freeResponse') {
@@ -59,34 +75,30 @@ export default function QuestionInput({
             });
         }
         setAddQuestion(false);
-        window.location.reload();
+        // window.location.reload();
     };
 
-    const [responseOptions, setResponseOptions] = useState<
-        {
-            index: number;
-            text: string;
-        }[]
-    >([]);
-    const [questionTitle, setQuestionTitle] = useState('');
-    const [questionType, setQuestionType] = useState('multipleChoice');
-
-    function handleQType(e: any) {
+    // Handle question type change
+    const handleQType = (e: any) => {
         console.log(e.target.value);
         setQuestionType(e.target.value);
-    }
+    };
 
-    // set default question type to multiple choice
-    useEffect(() => {
-        if (addQuestion) {
-            setQuestionType('multipleChoice');
-        }
-    }, [addQuestion]);
+    // Handle image preview
+    const handleImageUploadChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const files = e.target.files;
+        if (files) setPreviewImage(URL.createObjectURL(files[0]));
+    };
 
+    // on add question open/close reset state
     useEffect(() => {
-        setQuestionTitle('');
+        if (addQuestion) setQuestionType('multipleChoice');
+        if (previewImage) setPreviewImage(undefined);
+        if (questionTitle) setQuestionTitle('');
         setResponseOptions(
-            [...Array(defaultNumResponseOptions)].map((_, i) => {
+            [...Array(DEFAULT_NUM_RESPONSE_OPTIONS)].map((_, i) => {
                 return { index: i, text: '' };
             })
         );
@@ -129,16 +141,35 @@ export default function QuestionInput({
                         </Form.Group>
                     </Form>
 
-                    <Modal.Title>Image</Modal.Title>
-
-                    <input type='file'></input>
+                    {/* Image select */}
+                    <div style={{ marginBottom: '15px' }}>
+                        <Modal.Title>Image</Modal.Title>
+                        <input
+                            type='file'
+                            accept='image/*'
+                            multiple={false}
+                            onChange={handleImageUploadChange}
+                        />
+                        <div
+                            style={{
+                                width: '100%',
+                                marginTop: '15px',
+                            }}
+                        >
+                            <img
+                                src={previewImage}
+                                style={{
+                                    display: 'block',
+                                    width: '75%',
+                                    margin: 'auto',
+                                }}
+                            />
+                        </div>
+                    </div>
 
                     {/* If the question is multiple choice, show options with flexible number of choices */}
                     {questionType == 'multipleChoice' && (
                         <div>
-                            <br></br>
-                            {/* <AddImageButton /> */}
-
                             <Modal.Title>Response Options</Modal.Title>
 
                             {/* For each response option, render a ResponseOption */}

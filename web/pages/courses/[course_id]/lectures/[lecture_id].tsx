@@ -6,7 +6,6 @@ import useSWR from 'swr';
 import TeacherClassSettings from '../../../../components/TeacherClassSettings';
 import TeacherQuestions from '../../../../components/TeacherQuestions';
 import TeacherRoster from '../../../../components/TeacherRoster';
-import TeacherStatistics from '../../../../components/TeacherStatistics';
 import { fetcher } from '../../../../lib/server_requests';
 import styles from '../../../../styles/[lecture_id].module.css';
 
@@ -62,9 +61,6 @@ const Lecture = () => {
                 </Tab>
                 <Tab eventKey='roster' title='Roster'>
                     <TeacherRoster course={course} />
-                </Tab>
-                <Tab eventKey='statistics' title='Statistics'>
-                    <TeacherStatistics />
                 </Tab>
                 <Tab eventKey='class-settings' title='Class Settings'>
                     <TeacherClassSettings course={course} />
