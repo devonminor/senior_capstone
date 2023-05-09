@@ -1,5 +1,4 @@
 // import styled from 'styled-components'
-import Image from 'next/image';
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import useSWRMutation from 'swr/mutation';
@@ -42,10 +41,11 @@ const StudentFreeResponse = ({ question }: IStudentFreeResponse) => {
 
                     <div className='form-group'>
                         {question.shortAnswerQuestion.image && (
-                            <Image
-                                className='rounded mx-auto d-block my-3'
+                            <img
+                                className='mx-auto d-block my-3'
                                 src={question.shortAnswerQuestion.image}
-                                alt='Free Response Image'
+                                height={300}
+                                width='auto'
                             />
                         )}
 

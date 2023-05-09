@@ -79,6 +79,7 @@ const QuestionCard = ({
                 setNumAnswered(question.shortAnswerQuestion.responses.length);
             }
         }
+        console.log('question', question);
     }, [question]);
 
     return (
@@ -170,14 +171,32 @@ const QuestionCard = ({
                 {showStats &&
                     question.questionType ===
                         QuestionTypeEnum.MULTIPLE_CHOICE && (
-                        <MultipleChoiceStats
-                            mcq={question.multipleChoiceQuestion}
-                        />
+                        <>
+                            {question.multipleChoiceQuestion.image && (
+                                <img
+                                    src={question.multipleChoiceQuestion.image}
+                                    height={200}
+                                />
+                            )}
+                            <MultipleChoiceStats
+                                mcq={question.multipleChoiceQuestion}
+                            />
+                        </>
                     )}
 
                 {showStats &&
                     question.questionType === QuestionTypeEnum.SHORT_ANSWER && (
-                        <FreeResponseStats saq={question.shortAnswerQuestion} />
+                        <>
+                            {question.shortAnswerQuestion.image && (
+                                <img
+                                    src={question.shortAnswerQuestion.image}
+                                    height={200}
+                                />
+                            )}
+                            <FreeResponseStats
+                                saq={question.shortAnswerQuestion}
+                            />
+                        </>
                     )}
             </div>
         </div>
