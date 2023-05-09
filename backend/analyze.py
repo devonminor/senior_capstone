@@ -1,38 +1,18 @@
-import sklearn
-import pandas as pd
+
 import numpy as np
+import re
+import pandas as pd
 
-import matplotlib
-import matplotlib.pyplot as plt
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial import distance
-from sklearn.preprocessing import StandardScaler
 from kneed import KneeLocator
-
 from word2number import w2n
-import re
-import nltk
-import matplotlib.pyplot as plt
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
-from sklearn.datasets import make_blobs
-from sklearn.feature_extraction.text import CountVectorizer
-import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.tokenize import TweetTokenizer
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial import distance
-from sklearn.preprocessing import StandardScaler
 from kneed import KneeLocator
-# nltk.download('punkt')
-# nltk.download('stopwords')
-
-# from nltk.corpus import stopwords
-# from nltk.tokenize import word_tokenize
 
 
 # Steps for clustering student responses
@@ -63,7 +43,7 @@ def process2_data(responses):
         x = convert_text_numbers_to_numeric_numbers(elem)
         y = standardize_number(x)
         final_arr.append(y)
-        print(str(elem) + " -> " + str(y))
+
     return final_arr
 
 
@@ -207,15 +187,9 @@ def beginClustering(words_list_param=None):
     unprocessed_responses = []
 
     words_list = []
-    if words_list_param is None:
-        print("No list provided!")
-        loaded_data = load_data(
-            "./cluster_example_data/text_responses_bell3.txt")
-        for word in loaded_data:
-            words_list.append(word)
-    else:
-        for word in words_list_param:
-            words_list.append(word)
+
+    for word in words_list_param:
+        words_list.append(word)
 
     # Comment this out for devon, and rename param to words_list
 
@@ -256,15 +230,10 @@ def beginClustering(words_list_param=None):
         kmeans = KMeans(n_clusters=k, **kmeans_kwargs)
         kmeans.fit(df)
         sse.append(kmeans.inertia_)
-        cluster_labels = kmeans.labels_
-        silhouette_avg = []
-
-    cluster_labels = kmeans.labels_
-    silhouette_avg = []
 
     # Calculate true k from the results
     kl = KneeLocator(range(1, 10), sse, curve="convex", direction="decreasing")
-    print("True K: " + str(kl.elbow))
+    # print("True K: " + str(kl.elbow))
     true_k = kl.elbow + 3
 
     # ACTUAL K means - COSINE
@@ -278,8 +247,6 @@ def beginClustering(words_list_param=None):
         cluster = []
         for x in range(len(responses)):
             if predict[x] == i:
-                # fp.write(responses[x])
-                # fp.write(" | ")
                 cluster.append(responses[x])
         if (len(cluster) != 0):
             final_result.append(cluster)
@@ -297,6 +264,8 @@ if __name__ == "__main__":
                      '.83v', '5/12000A', '5/6 volts', '5/6 volts', '5 V']
 
     final_result = beginClustering(raw_responses)
+
+    print(final_result)
 
     # # Initialize tweeker
     # tk = TweetTokenizer()
