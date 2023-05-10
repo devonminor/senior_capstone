@@ -1,6 +1,8 @@
 from pydantic import BaseSettings, validator
 
 
+# Class for setting up and configuring login settings, including audience and domain.
+
 class Settings(BaseSettings):
     auth0_audience: str
     auth0_domain: str

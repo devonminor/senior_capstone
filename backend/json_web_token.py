@@ -5,6 +5,7 @@ from config import settings
 from custom_exceptions import (BadCredentialsException,
                                UnableCredentialsException)
 
+# Class for including Json web token for Auth0 authentication
 
 @dataclass
 class JsonWebToken:

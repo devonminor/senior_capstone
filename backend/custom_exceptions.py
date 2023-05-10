@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status
 
+# Classes for different types of exceptions
 
 class BadCredentialsException(HTTPException):
     def __init__(self):
