@@ -39,22 +39,19 @@ export default function QuestionInput({
         postRequest
     );
 
-    const handleImageUpload = (newQuestionId: string) => {
+    const handleImageUpload = (newQuestionId: string): Promise<Response> => {
         if (uploadImage) {
             let formData = new FormData();
             formData.append('file', uploadImage);
-            fetch(
+            return fetch(
                 `${API_URL}/courses/${course_id}/lectures/${lecture_id}/questions/${newQuestionId}/image`,
                 {
                     method: 'PUT',
                     body: formData,
                 }
-            )
-                .then((res) => res.json())
-                .then((res) => {
-                    console.log('afterimageupload', res);
-                });
+            );
         }
+        return Promise.resolve(new Response());
     };
 
     // Handle submit button click
@@ -78,7 +75,10 @@ export default function QuestionInput({
             })
                 .then((res) => res?.json())
                 .then((res) => {
-                    handleImageUpload(res.numId);
+                    handleImageUpload(res.numId).then(() => {
+                        setAddQuestion(false);
+                        window.location.reload();
+                    });
                 });
         }
         // IF ADDING FREE RESPONSE QUESTION
@@ -94,11 +94,12 @@ export default function QuestionInput({
                 .then((res) => res?.json())
                 .then((res) => {
                     console.log('free response res', res);
-                    handleImageUpload(res.numId);
+                    handleImageUpload(res.numId).then(() => {
+                        setAddQuestion(false);
+                        window.location.reload();
+                    });
                 });
         }
-        setAddQuestion(false);
-        window.location.reload();
     };
 
     // Handle question type change
