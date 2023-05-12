@@ -1,4 +1,11 @@
-# Functions for obtaining ID's for courses, lectures, and questions
+################################################################################
+#  db_utils.py
+#  PollAnywhere - CS 98 Capstone Project
+#
+#  This file handles database queries.
+#
+#  Last updated: 05/12/2023
+################################################################################
 
 from models import Course, InternalUser, Lecture, Question
 

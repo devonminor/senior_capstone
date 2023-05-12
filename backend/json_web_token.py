@@ -1,3 +1,13 @@
+################################################################################
+#  json_web_token.py
+#  PollAnywhere - CS 98 Capstone Project
+#
+#  This file handles the construction and validation of the JSON Web Token
+#  via Auth0.
+#
+#  Last updated: 05/12/2023
+################################################################################
+
 from dataclasses import dataclass
 
 import jwt
@@ -5,7 +15,6 @@ from config import settings
 from custom_exceptions import (BadCredentialsException,
                                UnableCredentialsException)
 
-# Class for including Json web token for Auth0 authentication
 
 @dataclass
 class JsonWebToken:

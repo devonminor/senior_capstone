@@ -1,6 +1,14 @@
+################################################################################
+#  custom_exceptions.py
+#  PollAnywhere - CS 98 Capstone Project
+#
+#  This file contains the code for setting up custom exceptions for credentials.
+#
+#  Last updated: 05/12/2023
+################################################################################
+
 from fastapi import HTTPException, status
 
-# Classes for different types of exceptions
 
 class BadCredentialsException(HTTPException):
     def __init__(self):

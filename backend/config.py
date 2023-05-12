@@ -1,7 +1,15 @@
+################################################################################
+#  config.py
+#  PollAnywhere - CS 98 Capstone Project
+#
+#  This file contains the code for setting up and configuring login settings,
+#  including audience and domain.
+#
+#  Last updated: 05/12/2023
+################################################################################
+
 from pydantic import BaseSettings, validator
 
-
-# Class for setting up and configuring login settings, including audience and domain.
 
 class Settings(BaseSettings):
     auth0_audience: str

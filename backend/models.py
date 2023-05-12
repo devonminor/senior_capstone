@@ -1,11 +1,18 @@
+################################################################################
+#  models.py
+#  PollAnywhere - CS 98 Capstone Project
+#
+#  This file handles the MongoDB database models for PollAnywhere.
+#
+#  Last updated: 05/12/2023
+################################################################################
+
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 
 from beanie import Document, Indexed, Link
 from pydantic import BaseModel
-
-# import tkinter as tk
 
 ##############################################################################
 ##############################################################################

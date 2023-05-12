@@ -1,3 +1,12 @@
+################################################################################
+#  utils.py
+#  PollAnywhere - CS 98 Capstone Project
+#
+#  This file contains miscellaneous utility functions for small tasks.
+#
+#  Last updated: 05/12/2023
+################################################################################
+
 import random
 from datetime import date
 

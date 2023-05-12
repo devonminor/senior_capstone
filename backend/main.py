@@ -1,3 +1,12 @@
+################################################################################
+#  main.py
+#  PollAnywhere - CS 98 Capstone Project
+#
+#  This file handles all the backend routes for the PollAnywhere application.
+#
+#  Last updated: 05/12/2023
+################################################################################
+
 import os
 from typing import List
 

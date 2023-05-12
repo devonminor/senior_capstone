@@ -1,3 +1,12 @@
+################################################################################
+#  validate.py
+#  PollAnywhere - CS 98 Capstone Project
+#
+#  This file handles validation for Multiple Choice and Short Answer Questions.
+#
+#  Last updated: 05/12/2023
+################################################################################
+
 from models import MultipleChoiceQuestion, ShortAnswerQuestion
 
 

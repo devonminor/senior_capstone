@@ -1,3 +1,12 @@
+################################################################################
+#  analyze.py
+#  PollAnywhere - CS 98 Capstone Project
+#
+#  This file contains the code for analyzing student a list of responses to a
+#  question.
+#
+#  Last updated: 05/12/2023
+################################################################################
 
 import re
 

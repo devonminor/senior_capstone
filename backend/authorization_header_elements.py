@@ -1,3 +1,12 @@
+################################################################################
+#  authorizations_header_elements.py
+#  PollAnywhere - CS 98 Capstone Project
+#
+#  This file contains the code for setting up bearer tokens and authorization.
+#
+#  Last updated: 05/12/2023
+################################################################################
+
 from typing import NamedTuple
 
 from custom_exceptions import (BadCredentialsException,
@@ -5,6 +14,7 @@ from custom_exceptions import (BadCredentialsException,
 from starlette.requests import Request as StarletteRequest
 
 # Class for setting up bearer tokens and authorization scheme
+
 
 class AuthorizationHeaderElements(NamedTuple):
     authorization_scheme: str
