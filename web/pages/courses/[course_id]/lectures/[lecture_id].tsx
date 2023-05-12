@@ -1,3 +1,14 @@
+/*
+ *  [lecture_id].tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  This is the entry point for lecture questions. From the page, you can
+ *  add/remove questions, view the roster, and view the info/settings of the
+ *  course.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Tab from 'react-bootstrap/Tab';
@@ -12,7 +23,7 @@ import styles from '../../../../styles/[lecture_id].module.css';
 const Lecture = () => {
     const router = useRouter();
     const { course_id, lecture_id } = router.query;
-    const [questions, setQuestions] = useState([]); // TODO: type this
+    const [questions, setQuestions] = useState([]);
     const [course, setCourse] = useState<any>(null);
     const { data: courseData } = useSWR(`/api/courses/${course_id}`, fetcher);
     const { data: questionsData } = useSWR(
@@ -21,9 +32,7 @@ const Lecture = () => {
     );
 
     useEffect(() => {
-        if (courseData) {
-            setCourse(courseData);
-        }
+        if (courseData) setCourse(courseData);
     }, [courseData]);
 
     useEffect(() => {
@@ -41,6 +50,7 @@ const Lecture = () => {
                 className='mb-3'
                 fill
             >
+                {/* Tab for questions */}
                 <Tab eventKey='questions' title='Questions'>
                     <TeacherQuestions
                         course={course}
@@ -59,9 +69,13 @@ const Lecture = () => {
                         lecture_id={lecture_id as string}
                     />
                 </Tab>
+
+                {/* Tab for rosters */}
                 <Tab eventKey='roster' title='Roster'>
                     <TeacherRoster course={course} />
                 </Tab>
+
+                {/* Tab for settings */}
                 <Tab eventKey='class-settings' title='Class Settings'>
                     <TeacherClassSettings course={course} />
                 </Tab>

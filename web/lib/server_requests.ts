@@ -1,3 +1,12 @@
+/*
+ *  server_requests.ts
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  SWR fetcher and request functions.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 export const fetcher = async (uri: string) => {
     const response = await fetch(uri);
     return response.json();

@@ -1,3 +1,15 @@
+/*
+ *  StudentLectures.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  This file is not currently being used in the application.
+ *
+ *  It is a template for how lectures could be displayed to students or
+ *  teachers. It was not removed because it could be useful.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import styles from '../styles/Layout.module.css';
 

@@ -1,3 +1,12 @@
+/*
+ *  CreateCourseModal.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  The modal that pops up when the user wants to create a new course.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import useSWRMutation from 'swr/mutation';
@@ -19,6 +28,8 @@ const CreateCourseModal = ({
 
     const { trigger } = useSWRMutation('/api/courses', postRequest);
 
+    // When the user clicks the save course button, send a request to the
+    // server to create the course and refresh the page.
     const saveCourse = () => {
         trigger({
             name: courseName,
@@ -37,6 +48,7 @@ const CreateCourseModal = ({
             </Modal.Header>
             <Modal.Body>
                 <Form>
+                    {/* Course Name Input */}
                     <h4>Course Name</h4>
                     <Form.Control
                         value={courseName}
@@ -45,6 +57,7 @@ const CreateCourseModal = ({
 
                     <br />
 
+                    {/* Course Description Input */}
                     <h4>Description</h4>
                     <Form.Control
                         as='textarea'
@@ -56,6 +69,7 @@ const CreateCourseModal = ({
 
                     <br />
 
+                    {/* Course Season Selection */}
                     <h4>Course Season</h4>
                     <div
                         style={{
@@ -83,6 +97,8 @@ const CreateCourseModal = ({
                     </div>
                 </Form>
             </Modal.Body>
+
+            {/* Save Course Button */}
             <Modal.Footer>
                 <Button variant='primary' onClick={saveCourse}>
                     Save Course

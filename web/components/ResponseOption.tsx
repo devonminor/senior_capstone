@@ -1,3 +1,13 @@
+/*
+ *  ResponseOption.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  The ResponseOption component is a dynamic input field that allows the user to
+ *  add any number of responses to a multiple choice question.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { useEffect, useState } from 'react';
 import { CloseButton } from 'react-bootstrap';
 

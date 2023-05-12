@@ -1,4 +1,14 @@
-import { useEffect, useState } from 'react';
+/*
+ *  StudentMultipleChoice.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  The StudentMultipleChoice component displays a multiple choice question for a student
+ *  once the question has gone live by the instructor.
+ *
+ *  Last updated: 05/12/2023
+ */
+
+import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import useSWRMutation from 'swr/mutation';
 import { putRequest } from '../lib/server_requests';
@@ -15,10 +25,8 @@ const StudentMultipleChoice = ({ question }: IStudentMultipleChoice) => {
         putRequest
     );
 
-    useEffect(() => {
-        console.log('mcq', question);
-    }, []);
-
+    // Once the the user has clicked save, send the response to the backend
+    // to update their choice
     const handleResponse = () => {
         mcqResponseTrigger({
             courseId: parseInt(question.courseId),
@@ -40,6 +48,8 @@ const StudentMultipleChoice = ({ question }: IStudentMultipleChoice) => {
                     <p className='text-justify h5 pb-2 font-weight-bold'>
                         {question.multipleChoiceQuestion.title}
                     </p>
+
+                    {/* Question Image */}
                     {question.multipleChoiceQuestion.image && (
                         <img
                             className='mx-auto d-block my-3'
@@ -48,6 +58,8 @@ const StudentMultipleChoice = ({ question }: IStudentMultipleChoice) => {
                             width='auto'
                         />
                     )}
+
+                    {/* Multiple Choice Options */}
                     <div className='options py-1'>
                         {question.multipleChoiceQuestion.options.map(
                             (question: any, i: number) => (
@@ -69,6 +81,7 @@ const StudentMultipleChoice = ({ question }: IStudentMultipleChoice) => {
                             )
                         )}
 
+                        {/* Question Save Button */}
                         <Button
                             variant='btn btn-outline-primary my-1'
                             onClick={handleResponse}

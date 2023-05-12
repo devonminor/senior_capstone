@@ -1,4 +1,13 @@
-// import styled from 'styled-components'
+/*
+ *  StudentFreeResponse.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  The StudentFreeResponse component displays a free response question for a student
+ *  once the question has gone live by the instructor.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import useSWRMutation from 'swr/mutation';
@@ -35,11 +44,14 @@ const StudentFreeResponse = ({ question }: IStudentFreeResponse) => {
             <div className='card' style={{ width: 55 + 'rem' }}>
                 <div className='content px-5'>
                     <p className='text-muted'>Free Response Question</p>
+
+                    {/* Question Title */}
                     <p className='text-justify h5 pb-2 font-weight-bold'>
                         {question.shortAnswerQuestion.title}
                     </p>
 
                     <div className='form-group'>
+                        {/* Question Image */}
                         {question.shortAnswerQuestion.image && (
                             <img
                                 className='mx-auto d-block my-3'
@@ -49,6 +61,7 @@ const StudentFreeResponse = ({ question }: IStudentFreeResponse) => {
                             />
                         )}
 
+                        {/* Free Response Input */}
                         <textarea
                             className='form-control'
                             id='exampleFormControlTextarea1'
@@ -56,6 +69,8 @@ const StudentFreeResponse = ({ question }: IStudentFreeResponse) => {
                             value={response}
                             onChange={(e) => setResponse(e.target.value)}
                         ></textarea>
+
+                        {/* Question Save Button */}
                         <Button
                             variant='btn btn-outline-primary my-2'
                             onClick={handleResponse}

@@ -1,3 +1,12 @@
+/*
+ *  MultipleChoiceStats.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  The stasistics dropdown for multiple choice questions.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 interface IMultipleChoiceStats {
     mcq: any;
 }

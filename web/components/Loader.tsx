@@ -1,3 +1,12 @@
+/*
+ *  Loader.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  Spinning Animation to indicate loading.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { Spinner } from 'react-bootstrap';
 
 const Loader = () => {

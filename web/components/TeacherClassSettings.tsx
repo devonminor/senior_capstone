@@ -1,3 +1,13 @@
+/*
+ *  TeacherClassSettings.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  This component is displayed once a teacher clicks into a lecture.
+ *  It displays the lecture name, description, season, and course code.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
@@ -26,9 +36,7 @@ export default function TeacherClassSettings({
     };
 
     useEffect(() => {
-        if (course) {
-            setCourseData(course);
-        }
+        if (course) setCourseData(course);
     }, [course]);
 
     return (

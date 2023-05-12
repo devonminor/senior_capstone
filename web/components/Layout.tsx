@@ -1,3 +1,12 @@
+/*
+ *  Layout.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  The layout displayed on every page of the website.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -17,10 +26,7 @@ export default function Layout({ children, course_id }: LayoutProps) {
     const router = useRouter();
     const { user, isLoading: userLoading } = useUser();
 
-    useEffect(() => {
-        console.log('user', user);
-    }, [user]);
-
+    // Set the course name at the top of the page as appropriate
     useEffect(() => {
         if (router.route == '/courses') {
             setCourseName('Dashboard');
@@ -39,7 +45,8 @@ export default function Layout({ children, course_id }: LayoutProps) {
     }, [router]);
 
     return (
-        <div>
+        <>
+            {/* Navigation header for every page */}
             <nav
                 className={`navbar navbar-expand-fluid sticky-top bg-light ${styles.navbarCustom}`}
             >
@@ -56,6 +63,7 @@ export default function Layout({ children, course_id }: LayoutProps) {
                     <div className={`col ${styles.navCenter}`}>
                         <h1 className={styles.courseText}>{courseName}</h1>
                     </div>
+
                     {/* Logged Out */}
                     {!user && !userLoading && (
                         <div className={`col ${styles.navRight}`}>
@@ -64,6 +72,7 @@ export default function Layout({ children, course_id }: LayoutProps) {
                             </Button>
                         </div>
                     )}
+
                     {/* Logged In */}
                     {user && (
                         <div className={`col ${styles.navRight}`}>
@@ -80,9 +89,9 @@ export default function Layout({ children, course_id }: LayoutProps) {
                     )}
                 </div>
             </nav>
-            <div>
-                <main>{children}</main>
-            </div>
-        </div>
+
+            {/* Main content of each page */}
+            <main>{children}</main>
+        </>
     );
 }

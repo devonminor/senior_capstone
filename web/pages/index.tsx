@@ -1,10 +1,13 @@
+/*
+ *  index.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  This page is not in use. See next.config.js for redirect from "/"
+ *  to "/courses".
+ *
+ *  Last updated: 05/12/2023
+ */
+
 export default function Home() {
-    return (
-        <>
-            <h1>Home Page</h1>
-            <a href='/courses'>Example Teacher Flow</a>
-            <br />
-            <a href='/StudentDashboard'>Student Dashboard</a>
-        </>
-    );
+    return <></>;
 }

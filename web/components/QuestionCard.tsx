@@ -1,3 +1,13 @@
+/*
+ *  QuestionCard.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  The card that displays all of the relevant information for a question
+ *  that a teacher has added to a lecture.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { useEffect, useState } from 'react';
 import { CloseButton } from 'react-bootstrap';
 import { ImStatsBars } from 'react-icons/im';
@@ -36,6 +46,8 @@ const QuestionCard = ({
         putRequest
     );
 
+    // When the user clicks the live button, send a request to the server
+    // to update the question's live status and reload the page.
     const handleLive = (isGoingLive: boolean) => {
         console.log('live');
         console.log('course_id', course_id);
@@ -50,6 +62,8 @@ const QuestionCard = ({
         window.location.reload();
     };
 
+    // When a user clicks the delete button, send a request to the server
+    // to delete the question and reload the page.
     const handleDelete = () => {
         deleteQuestionTrigger({
             courseId: parseInt(course_id),
@@ -59,10 +73,12 @@ const QuestionCard = ({
         window.location.reload();
     };
 
+    // When a user clicks the stats button, toggle the stats dropdown.
     const handleStatsClick = () => {
         setShowStats(!showStats);
     };
 
+    // Once a question is loaded, set the number of students who have answered it.
     useEffect(() => {
         if (question) {
             if (
@@ -87,6 +103,7 @@ const QuestionCard = ({
             <div className='card-body'>
                 <div className={`row ${styles.questionCardContainer}`}>
                     <div className='col'>
+                        {/* Show the title/name for the question */}
                         <div className='row'>
                             <div
                                 className={`col ${styles.questionCardQuestion}`}
@@ -100,7 +117,7 @@ const QuestionCard = ({
                             </div>
                         </div>
 
-                        {/* TODO: UPDATE THIS WITH ACTUAL NUMBERS */}
+                        {/* Show the ratio to answered vs. total on roster */}
                         <div className='row'>
                             <div className={`col ${styles.numAnswered}`}>
                                 <small className='text-muted'>
@@ -110,6 +127,7 @@ const QuestionCard = ({
                         </div>
                     </div>
 
+                    {/* Show the buttons for stats, live, and deletion */}
                     <div className={`col`}>
                         <div className={styles.questionCardIcons}>
                             <button
@@ -168,6 +186,8 @@ const QuestionCard = ({
                     </div>
                 </div>
 
+                {/* When the stats button is clickd and the type is multiple choice,
+                    show the statistics dropdown for multiple choice. */}
                 {showStats &&
                     question.questionType ===
                         QuestionTypeEnum.MULTIPLE_CHOICE && (
@@ -184,6 +204,8 @@ const QuestionCard = ({
                         </>
                     )}
 
+                {/* When the stats button is clicked and the type is short answer/free response
+                    show the stasistics button for free response. */}
                 {showStats &&
                     question.questionType === QuestionTypeEnum.SHORT_ANSWER && (
                         <>

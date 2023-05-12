@@ -1,3 +1,14 @@
+/*
+ *  index.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  This file is the main entry point of the application and for all users.
+ *  Once a user has logged in, they will be able to see the courses that
+ *  they have added both as a student and as an instructor.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { Fragment, useEffect, useState } from 'react';
 import { Container, Row, Spinner } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
@@ -27,6 +38,7 @@ const Courses = () => {
 
     const { trigger } = useSWRMutation('/api/courses', postRequest);
 
+    // Save the student course to the database
     const saveStudentCourse = () => {
         toggleAddStudentCourse(false);
         trigger({
@@ -38,6 +50,8 @@ const Courses = () => {
         window.location.reload();
     };
 
+    // Once the course data and user data has been fetched, find the student
+    // and instructor courses
     useEffect(() => {
         if (courseData && meData) {
             let localInstructorCourses = [];
@@ -65,11 +79,13 @@ const Courses = () => {
 
     return (
         <div className={styles.pageBody}>
+            {/* Modal for the instructor courses */}
             <CreateCourseModal
                 displayAddCourse={displayAddInstructorCourse}
                 toggleAddCourse={toggleAddInstructorCourse}
             />
 
+            {/* Button for adding an instructor course */}
             <div className='row'>
                 <h2>Instructor Courses</h2>
                 <Col className={styles.addCourseButton}>
@@ -84,6 +100,7 @@ const Courses = () => {
                 </Col>
             </div>
 
+            {/* Display Instructor Courses */}
             <div className={styles.cardContainer}>
                 <div className='row'>
                     {courseDataLoading && (
@@ -100,7 +117,6 @@ const Courses = () => {
                     {instructorCourses &&
                         instructorCourses.length > 0 &&
                         // TODO: Give this a proper Course type
-                        // TODO: Add a season to the course in database or remove it from the card
                         instructorCourses.map((course: any) => {
                             return (
                                 <CourseCard
@@ -115,6 +131,7 @@ const Courses = () => {
                 </div>
             </div>
 
+            {/* Button for adding a student course */}
             <div className='row'>
                 <h2>Student Courses</h2>
                 <div className='d-grid gap-2 my-3'>
@@ -129,6 +146,7 @@ const Courses = () => {
                 </div>
             </div>
 
+            {/* Display input for adding a student course */}
             {displayAddStudentCourse && (
                 <Fragment>
                     <Container>
@@ -173,6 +191,7 @@ const Courses = () => {
                 </Fragment>
             )}
 
+            {/* Display Student Courses */}
             <div className={styles.cardContainer}>
                 <div className='row'>
                     {courseDataLoading && (

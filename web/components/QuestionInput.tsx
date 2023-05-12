@@ -1,3 +1,12 @@
+/*
+ *  QuestionInput.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  The QuestionInput component is a modal that allows the user to create a new question.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import React, { Dispatch, useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -39,6 +48,7 @@ export default function QuestionInput({
         postRequest
     );
 
+    // Handle the image upload independently and asynchonously using image data from form
     const handleImageUpload = (newQuestionId: string): Promise<Response> => {
         if (uploadImage) {
             let formData = new FormData();
@@ -93,7 +103,6 @@ export default function QuestionInput({
             })
                 .then((res) => res?.json())
                 .then((res) => {
-                    console.log('free response res', res);
                     handleImageUpload(res.numId).then(() => {
                         setAddQuestion(false);
                         window.location.reload();
@@ -138,6 +147,7 @@ export default function QuestionInput({
 
     return (
         <Modal show={addQuestion} onHide={() => setAddQuestion(false)}>
+            {/* Select Question Type */}
             <Modal.Header closeButton>
                 <select
                     className={`form-select ${styles.questionSelect}`}
@@ -149,6 +159,7 @@ export default function QuestionInput({
                     {/* <option value='freeDrawing'>Free Drawing</option> */}
                 </select>
             </Modal.Header>
+
             <Modal.Body>
                 <>
                     <Modal.Title>Question</Modal.Title>
@@ -236,6 +247,8 @@ export default function QuestionInput({
                     )}
                 </>
             </Modal.Body>
+
+            {/* Save Question Button */}
             <Modal.Footer>
                 <Button variant='primary' onClick={handleSave}>
                     Save Changes

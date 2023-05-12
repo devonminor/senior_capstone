@@ -1,3 +1,15 @@
+/*
+ *  CourseCard.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  The CourseCard component is displayed on the "/courses" page. It is a card
+ *  that displays the course title and season. If the user is a teacher, they
+ *  will be able to view the course details. If the user is a student, they
+ *  will be redirected to the live question page.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import Image from 'next/image';
 import jumbo from '../public/Tufts_Jumbos_logo.png';
 import styles from '../styles/courses.module.css';
@@ -31,6 +43,7 @@ const CourseCard = ({
                                 {course_season}
                             </small>
                         </p>
+
                         {/* If the user is a teacher, redirect to course editing functions */}
                         {isTeacher && (
                             <a
@@ -40,6 +53,7 @@ const CourseCard = ({
                                 View Course
                             </a>
                         )}
+
                         {/* If the user is a student, redirect to live question */}
                         {!isTeacher && (
                             <a

@@ -1,3 +1,14 @@
+/*
+ *  StudentResponses.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  If a student is in a course that has a live question, this page will
+ *  display the question and allow the student to respond to it. If their
+ *  isn't a live question, the student will be shown a waiting page.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
@@ -13,12 +24,11 @@ const StudentResponse = () => {
     const [course, setCourse] = useState<any>(null);
     const [question, setQuestion] = useState<any>(null);
 
+    // Once the course data has been fetched, set the question data
     useEffect(() => {
         if (courseData) {
             setCourse(courseData);
             console.log('courseData', courseData);
-
-            // If the course has a live question, get the question data
             fetch(
                 `/api/courses/${course_id}/questions/${courseData.liveQuestion}`
             )
@@ -31,13 +41,20 @@ const StudentResponse = () => {
 
     return (
         <div>
-            {course && !course.liveQuestion && <StudentWaiting />}
+            {/* If there isn't a live question, show waiting screen. */}
+            {!course || (course && !course.liveQuestion && <StudentWaiting />)}
+
+            {/* If there is a live question and it's multiple choice,
+                show the Multiple Choice Response screen */}
             {course &&
                 course.liveQuestion &&
                 question &&
                 question.questionType == 'multiple_choice' && (
                     <StudentMultipleChoice question={question} />
                 )}
+
+            {/* If there is a live question and it's free response,
+                show the Free Response screen */}
             {course &&
                 course.liveQuestion &&
                 question &&

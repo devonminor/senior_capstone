@@ -1,3 +1,13 @@
+/*
+ *  [question_id].ts
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  This file handles all requests to the /api/courses/[course_id]/questions/[question_id] endpoint.
+ *  It is used to get a specific question.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { getAccessToken, withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { API_URL } from "../../../../../lib/constants";
 

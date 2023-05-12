@@ -1,3 +1,14 @@
+/*
+ *  TeacherQuestions.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  This component dislays all of the questions for a lecture in a course.
+ *  It also allows the teacher to add questions and view/update live questions.
+ *  Teachers can also see the statistics for each question.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { useEffect, useState } from 'react';
 import { QuestionTypeEnum } from '../lib/types';
 import styles from '../styles/TeacherQuestions.module.css';
@@ -28,11 +39,12 @@ const TeacherQuestions = ({
 
     return (
         <div>
+            {/* Add a Question Button */}
             <QuestionButton
                 addQuestion={addQuestion}
                 setAddQuestion={setAddQuestion}
             />
-
+            {/* Add a Question Input Modal */}
             <QuestionInput
                 course_id={course_id}
                 lecture_id={lecture_id}

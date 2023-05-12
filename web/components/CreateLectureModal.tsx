@@ -1,3 +1,12 @@
+/*
+ *  CreateLectureModal.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  The modal that pops up when the user wants to create a new lecture.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
@@ -23,6 +32,8 @@ const CreateLectureModal = ({
         toggleAddFolder(false);
     };
 
+    // When the user clicks the save lecture button, sena d request to the
+    // server to create the lecture and refresh the page.
     const saveLecture = () => {
         trigger({
             courseId: course_id,
@@ -40,6 +51,7 @@ const CreateLectureModal = ({
             </Modal.Header>
             <Modal.Body>
                 <Form>
+                    {/* Lectute Name Input */}
                     <h4>Lecture Name</h4>
                     <Form.Control
                         value={lectureName}
@@ -48,6 +60,7 @@ const CreateLectureModal = ({
 
                     <br />
 
+                    {/* Lecture Description Input */}
                     <h4>Lecture Description</h4>
                     <Form.Control
                         as='textarea'
@@ -58,6 +71,8 @@ const CreateLectureModal = ({
                     />
                 </Form>
             </Modal.Body>
+
+            {/* Save Lecture Button */}
             <Modal.Footer>
                 <Button variant='primary' onClick={saveLecture}>
                     Save Lecture

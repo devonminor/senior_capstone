@@ -1,3 +1,12 @@
+/*
+ *  FreeResponseStats.tsx
+ *  PollAnywhere - CS 98 Capstone Project
+ *
+ *  The stasistics dropdown for free response/short answer questions.
+ *
+ *  Last updated: 05/12/2023
+ */
+
 import { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { API_URL } from '../lib/constants';
@@ -9,9 +18,11 @@ interface IFreeResponseStats {
 const FreeResponseStats = ({ saq }: IFreeResponseStats) => {
     const [clusters, setClusters] = useState<any>([]);
 
+    // When the user clicks the cluster button, send a request to the
+    // server to cluster the responses as long as there are at least 3.
     const handleClustering = () => {
         if (!saq.responses) return;
-        if (saq.response < 2) return;
+        if (saq.response <= 2) return;
         const responses = saq.responses.map(
             (response: any) => response.response
         );
@@ -31,6 +42,7 @@ const FreeResponseStats = ({ saq }: IFreeResponseStats) => {
 
     return (
         <div>
+            {/* List view of student responses */}
             <hr></hr>
             <div className='card'>
                 <ul className='list-group list-group-flush'>
@@ -53,9 +65,13 @@ const FreeResponseStats = ({ saq }: IFreeResponseStats) => {
                         ))}
                 </ul>
             </div>
+
+            {/* Button to run clustering */}
             <Button style={{ marginTop: '8px' }} onClick={handleClustering}>
                 Run Clustering
             </Button>
+
+            {/* If there are clusters, display them */}
             <div>
                 {clusters && clusters.length > 0 && (
                     <div>
