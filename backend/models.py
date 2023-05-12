@@ -62,6 +62,7 @@ class ShortAnswerQuestion(BaseModel):
 
 
 class DrawingQuestion(BaseModel):
+    # Never implemented.
     title: str
     subtitle: str
     image: str

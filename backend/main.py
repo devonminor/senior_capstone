@@ -36,10 +36,10 @@ from validate import validate_mcq, validate_saq
 
 load_dotenv()
 
+# SETUP CLOUDINARY
 CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME")
 CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
 CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET")
-
 cloudinary.config(
     cloud_name=CLOUDINARY_CLOUD_NAME,
     api_key=CLOUDINARY_API_KEY,
@@ -47,6 +47,7 @@ cloudinary.config(
     secure=True
 )
 
+# SETUP API
 app = FastAPI()
 
 csp = secure.ContentSecurityPolicy().default_src(
@@ -56,7 +57,6 @@ referrer = secure.ReferrerPolicy().no_referrer()
 cache_value = secure.CacheControl().no_cache(
 ).no_store().max_age(0).must_revalidate()
 x_frame_options = secure.XFrameOptions().deny()
-
 secure_headers = secure.Secure(
     csp=csp,
     hsts=hsts,
@@ -399,11 +399,9 @@ async def create_question(type: str, courseId: int, lectureId: int) -> Question:
 
 @app.post("/courses/{course_id}/lectures/{lecture_id}/questions/")
 async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: MultipleChoiceQuestion | None = None, saq: ShortAnswerQuestion | None = None, dq: DrawingQuestion | None = None, active: bool = False, token: str = Depends(validate_token)):
-    # async def add_question(course_id: int, lecture_id: int, questionType: str, mcq: MultipleChoiceQuestion | None = None, saq: ShortAnswerQuestion | None = None, dq: DrawingQuestion | None = None, active: bool = False, token: str = Depends(validate_token)):
     """
     Add a new question to a lecture
     """
-
     # get course
     course = await get_course_with_id(course_id)
     if not course:
@@ -719,24 +717,6 @@ async def delete_question(course_id: int, lecture_id: int, question_id: int, tok
     return {'message': 'Question deleted'}
 
 
-@app.post("/upload")
-async def upload(file: UploadFile = File(...)):
-    try:
-        contents = file.file.read(1024 * 1024)
-    except Exception:
-        return {"message": "There was an error uploading the file"}
-    finally:
-        print(file.filename)
-        res = cloudinary.uploader.upload(contents,
-                                         folder="questions/",
-                                         overwrite=True,
-                                         public_id="123456")
-        url = res.get('url')
-        file.file.close()
-
-    return {"message": f"Successfully uploaded file. Can be found at {url}"}
-
-
 @app.put("/courses/{course_id}/lectures/{lecture_id}/questions/{question_id}/image")
 async def question_image_upload(course_id: int, lecture_id: int, question_id: int, file: UploadFile = File(...)):
     """
@@ -791,8 +771,8 @@ async def analyze_responses(responses: List[str] = Body(embed=True)):
     """
     Given a set of user responses, group them by similar responses
     """
-    # print(responses)
     clusters = cluster_list(responses)
+    print("Printing clusters:")
     print(clusters)
     return clusters
 
@@ -809,5 +789,4 @@ async def app_init():
     Start mongodb (beanie) connection on startup
     """
     client = AsyncIOMotorClient("mongodb://localhost:27017")
-    # app.db = client.PollAnywhere
     await init_beanie(database=client.PollAnywhere, document_models=[InternalUser, Course, Lecture, Question])

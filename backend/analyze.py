@@ -53,6 +53,10 @@ def convert_text_numbers_to_numeric_numbers(sentence):
 
 
 def standardize_number(text):
+    """
+    Standardize all numbers in a string to a single format
+    """
+
     # split elements via digits
     elems = re.split(r'(\d+)', text)
     split_array = []
@@ -111,8 +115,15 @@ def standardize_number(text):
 
 
 def cluster_list(words_list_param=None):
+    """
+    Clusters a list of words. Must be atleast 3 words in the list.
+    """
     if words_list_param is None:
         return []
+
+    if len(words_list_param) < 3:
+        raise Exception(
+            "Must have atleast 3 words in the list to perform clustering")
 
     # Initialize tweeker
     tk = TweetTokenizer()

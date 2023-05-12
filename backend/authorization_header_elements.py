@@ -13,10 +13,11 @@ from custom_exceptions import (BadCredentialsException,
                                RequiresAuthenticationException)
 from starlette.requests import Request as StarletteRequest
 
-# Class for setting up bearer tokens and authorization scheme
-
 
 class AuthorizationHeaderElements(NamedTuple):
+    """
+    Class for setting up bearer tokens and authorization scheme
+    """
     authorization_scheme: str
     bearer_token: str
     are_valid: bool
